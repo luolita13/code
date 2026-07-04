@@ -5,7 +5,7 @@
 	>
 		<span>{{ formatMessage(messages.notSignedIn) }}</span>
 		<ButtonStyled color="brand">
-			<button color="primary" :disabled="loginDisabled" @click="login()">
+			<button color="primary" :disabled="loginDisabled" @click="openLoginModal()">
 				<LogInIcon v-if="!loginDisabled" />
 				<SpinnerIcon v-else class="animate-spin" />
 				{{ formatMessage(messages.signInToMinecraft) }}
@@ -59,6 +59,9 @@
 						>
 							{{ account.profile.name }}
 						</p>
+						<span v-if="getAccountBadgeText(account)" class="text-xs text-secondary shrink-0 ml-auto pr-2">
+							{{ getAccountBadgeText(account) }}
+						</span>
 					</button>
 					<ButtonStyled circular color="red" color-fill="none" hover-color-fill="background">
 						<button
@@ -73,7 +76,7 @@
 			</template>
 			<div class="flex flex-col gap-2 px-2 pt-2">
 				<ButtonStyled v-if="accounts.length > 0" class="w-full">
-					<button :disabled="loginDisabled" @click="login()">
+					<button :disabled="loginDisabled" @click="openLoginModal()">
 						<PlusIcon />
 						{{ formatMessage(messages.addAccount) }}
 					</button>
@@ -81,6 +84,7 @@
 			</div>
 		</div>
 	</Accordion>
+	<MinecraftLoginModal ref="loginModal" @success="onLoginSuccess" />
 </template>
 
 <script setup lang="ts">
@@ -106,7 +110,6 @@ import { computed, onUnmounted, ref } from 'vue'
 import { trackEvent } from '@/helpers/analytics'
 import {
 	get_default_user,
-	login as login_flow,
 	remove_user,
 	set_default_user,
 	users,
@@ -115,7 +118,7 @@ import { process_listener } from '@/helpers/events'
 import { getPlayerHeadUrl } from '@/helpers/rendering/batch-skin-renderer.ts'
 import type { Skin } from '@/helpers/skins'
 import { get_available_skins } from '@/helpers/skins'
-import { handleSevereError } from '@/store/error.js'
+import MinecraftLoginModal from '@/components/ui/modal/MinecraftLoginModal.vue'
 
 const { formatMessage } = useVIntl()
 const { handleError } = injectNotificationManager()
@@ -124,11 +127,15 @@ const emit = defineEmits<{
 	change: []
 }>()
 
+type LoginType = 'microsoft' | 'offline' | 'yggdrasil'
+
 type MinecraftCredential = {
 	profile: {
 		id: string
 		name: string
 	}
+	login_type?: LoginType
+	server_url?: string | null
 }
 
 const accounts: Ref<MinecraftCredential[]> = ref([])
@@ -136,6 +143,7 @@ const loginDisabled = ref(false)
 const defaultUser = ref<string | undefined>()
 const equippedSkin = ref<Skin | null>(null)
 const headUrlCache = ref(new Map<string, string>())
+const loginModal = ref<InstanceType<typeof MinecraftLoginModal>>()
 
 async function refreshValues() {
 	defaultUser.value = await get_default_user().catch(handleError)
@@ -218,6 +226,17 @@ function getAccountAvatarUrl(account: MinecraftCredential) {
 	return `https://mc-heads.net/avatar/${account.profile.id}/128`
 }
 
+function getAccountBadgeText(account: MinecraftCredential): string {
+	switch (account.login_type) {
+		case 'offline':
+			return formatMessage(messages.offlineBadge)
+		case 'yggdrasil':
+			return formatMessage(messages.yggdrasilBadge)
+		default:
+			return ''
+	}
+}
+
 async function setAccount(account: MinecraftCredential) {
 	defaultUser.value = account.profile.id
 	await set_default_user(account.profile.id).catch(handleError)
@@ -225,16 +244,12 @@ async function setAccount(account: MinecraftCredential) {
 	emit('change')
 }
 
-async function login() {
-	loginDisabled.value = true
-	const loggedIn = await login_flow().catch(handleSevereError)
+function openLoginModal() {
+	loginModal.value?.show('microsoft')
+}
 
-	if (loggedIn) {
-		await setAccount(loggedIn)
-	}
-
-	trackEvent('AccountLogIn')
-	loginDisabled.value = false
+async function onLoginSuccess(credential: MinecraftCredential) {
+	await setAccount(credential)
 }
 
 async function logout(id: string) {
@@ -282,6 +297,14 @@ const messages = defineMessages({
 	signInToMinecraft: {
 		id: 'minecraft-account.sign-in',
 		defaultMessage: 'Sign in to Minecraft',
+	},
+	offlineBadge: {
+		id: 'minecraft-account.badge.offline',
+		defaultMessage: 'Offline',
+	},
+	yggdrasilBadge: {
+		id: 'minecraft-account.badge.yggdrasil',
+		defaultMessage: 'Yggdrasil',
 	},
 })
 </script>

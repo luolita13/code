@@ -7,6 +7,13 @@ import { get, set } from '@/helpers/settings.ts'
 
 const settings = ref(await get())
 
+// Permanently disable privacy features for customized build
+settings.value.personalized_ads = false
+settings.value.telemetry = false
+settings.value.discord_rpc = false
+// Save the disabled state immediately
+await set(settings.value)
+
 watch(
 	settings,
 	async () => {
@@ -30,8 +37,9 @@ watch(
 				Modrinth's ad provider, Aditude, shows ads based on your preferences. By disabling this
 				option, you opt out and ads will no longer be shown based on your interests.
 			</p>
+			<span class="text-xs text-secondary italic">Disabled in this build</span>
 		</div>
-		<Toggle id="personalized-ads" v-model="settings.personalized_ads" />
+		<Toggle id="personalized-ads" v-model="settings.personalized_ads" :disabled="true" />
 	</div>
 
 	<div class="mt-4 flex items-center justify-between gap-4">
@@ -42,8 +50,9 @@ watch(
 				customize your experience. By disabling this option, you opt out and your data will no
 				longer be collected.
 			</p>
+			<span class="text-xs text-secondary italic">Disabled in this build</span>
 		</div>
-		<Toggle id="opt-out-analytics" v-model="settings.telemetry" />
+		<Toggle id="opt-out-analytics" v-model="settings.telemetry" :disabled="true" />
 	</div>
 
 	<div class="mt-4 flex items-center justify-between gap-4">
@@ -57,7 +66,8 @@ watch(
 				Note: This will not prevent any instance-specific Discord Rich Presence integrations, such
 				as those added by mods. (app restart required to take effect)
 			</p>
+			<span class="text-xs text-secondary italic">Disabled in this build</span>
 		</div>
-		<Toggle id="disable-discord-rpc" v-model="settings.discord_rpc" />
+		<Toggle id="disable-discord-rpc" v-model="settings.discord_rpc" :disabled="true" />
 	</div>
 </template>

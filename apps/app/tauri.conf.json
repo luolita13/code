@@ -102,9 +102,18 @@
 					"$APPDATA/caches/icons/*",
 					"$APPCONFIG/caches/icons/*",
 					"$CONFIG/caches/icons/*",
-					"$APPDATA/profiles/*/saves/*/icon.png",
-					"$APPCONFIG/profiles/*/saves/*/icon.png",
-					"$CONFIG/profiles/*/saves/*/icon.png"
+					"$APPDATA/profiles/**/saves/*/icon.png",
+					"$APPCONFIG/profiles/**/saves/*/icon.png",
+					"$CONFIG/profiles/**/saves/*/icon.png",
+					"$APPDATA/profiles/**/screenshots/*",
+					"$APPCONFIG/profiles/**/screenshots/*",
+					"$CONFIG/profiles/**/screenshots/*",
+					"$APPDATA/profiles/**/resourcepacks/*",
+					"$APPCONFIG/profiles/**/resourcepacks/*",
+					"$CONFIG/profiles/**/resourcepacks/*",
+					"$APPDATA/profiles/**/shaderpacks/*",
+					"$APPCONFIG/profiles/**/shaderpacks/*",
+					"$CONFIG/profiles/**/shaderpacks/*"
 				],
 				"enable": true
 			},

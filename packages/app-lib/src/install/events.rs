@@ -1,3 +1,4 @@
+use super::control::JobGuard;
 use super::model::{
     InstallJobSnapshot, InstallJobState, InstallPhaseDetails, InstallPhaseId,
     InstallProgress,
@@ -7,10 +8,19 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct InstallProgressReporter {
     job_id: Uuid,
     state: Arc<Mutex<InstallJobState>>,
+    guard: Arc<Mutex<Option<JobGuard>>>,
+}
+
+impl std::fmt::Debug for InstallProgressReporter {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("InstallProgressReporter")
+            .field("job_id", &self.job_id)
+            .finish_non_exhaustive()
+    }
 }
 
 impl InstallProgressReporter {
@@ -18,6 +28,15 @@ impl InstallProgressReporter {
         Self {
             job_id,
             state: Arc::new(Mutex::new(state)),
+            guard: Arc::new(Mutex::new(None)),
+        }
+    }
+
+    pub fn with_guard(job_id: Uuid, state: InstallJobState, guard: JobGuard) -> Self {
+        Self {
+            job_id,
+            state: Arc::new(Mutex::new(state)),
+            guard: Arc::new(Mutex::new(Some(guard))),
         }
     }
 
@@ -27,6 +46,11 @@ impl InstallProgressReporter {
         progress: Option<InstallProgress>,
         details: InstallPhaseDetails,
     ) -> crate::Result<()> {
+        // Check for cancellation/pause on every progress update
+        if let Some(guard) = self.guard.lock().await.as_mut() {
+            guard.check().await?;
+        }
+
         let app_state = crate::State::get().await?;
         let mut state = self.state.lock().await;
         state.progress.phase = phase;

@@ -44,7 +44,13 @@ const messages = defineMessages({
 		defaultMessage: 'Enter modpack description...',
 	},
 	exportButton: { id: 'app.export-modal.export-button', defaultMessage: 'Export' },
+	formatLabel: { id: 'app.export-modal.format-label', defaultMessage: 'Format' },
 })
+
+const formatOptions = [
+	{ value: 'mrpack', label: 'Modrinth (.mrpack)' },
+	{ value: 'zip', label: 'ZIP archive (.zip)' },
+]
 
 const props = defineProps({
 	instance: {
@@ -65,6 +71,7 @@ const exportModal = ref(null)
 const nameInput = ref(props.instance.name)
 const exportDescription = ref('')
 const versionInput = ref('1.0.0')
+const exportFormat = ref('mrpack')
 const files = ref([])
 const selectedFilePaths = ref([])
 const fileTreeKey = ref(0)
@@ -93,25 +100,41 @@ async function initFiles() {
 }
 
 const exportPack = async () => {
+	const isZip = exportFormat.value === 'zip'
+	const extension = isZip ? 'zip' : 'mrpack'
 	const outputPath = await save({
-		defaultPath: `${nameInput.value} ${versionInput.value}.mrpack`,
+		defaultPath: `${nameInput.value} ${versionInput.value}.${extension}`,
 		filters: [
 			{
-				name: 'Modrinth Modpack',
-				extensions: ['mrpack'],
+				name: isZip ? 'ZIP archive' : 'Modrinth Modpack',
+				extensions: [extension],
 			},
 		],
 	})
 
 	if (outputPath) {
-		export_instance_mrpack(
-			props.instance.id,
-			outputPath,
-			selectedFilePaths.value,
-			versionInput.value,
-			exportDescription.value,
-			nameInput.value,
-		).catch((err) => handleError(err))
+		if (isZip) {
+			// ZIP export: use Rust's fs to create a zip archive
+			try {
+				const { invoke } = await import('@tauri-apps/api/core')
+				await invoke('plugin:instance|instance_export_zip', {
+					instanceId: props.instance.id,
+					exportLocation: outputPath,
+					includedOverrides: selectedFilePaths.value,
+				})
+			} catch (err) {
+				handleError(err)
+			}
+		} else {
+			export_instance_mrpack(
+				props.instance.id,
+				outputPath,
+				selectedFilePaths.value,
+				versionInput.value,
+				exportDescription.value,
+				nameInput.value,
+			).catch((err) => handleError(err))
+		}
 		exportModal.value.hide()
 	}
 }
@@ -263,6 +286,24 @@ function isExportCandidateDisabled(path) {
 						clearable
 						wrapper-class="w-full"
 					/>
+				</div>
+			</div>
+			<div class="flex flex-col gap-2">
+				<p class="m-0 text-contrast font-semibold">{{ formatMessage(messages.formatLabel) }}</p>
+				<div class="flex gap-2">
+					<button
+						v-for="opt in formatOptions"
+						:key="opt.value"
+						:class="[
+							'cursor-pointer rounded-full border border-solid px-3 py-1.5 text-sm font-semibold transition-all duration-100 active:scale-[0.97]',
+							exportFormat === opt.value
+								? 'border-brand bg-brand-highlight text-brand'
+								: 'border-surface-5 bg-surface-4 text-primary hover:bg-surface-5',
+						]"
+						@click="exportFormat = opt.value"
+					>
+						{{ opt.label }}
+					</button>
 				</div>
 			</div>
 			<div class="flex flex-col gap-2 min-w-0">

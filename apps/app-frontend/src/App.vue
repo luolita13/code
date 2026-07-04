@@ -146,6 +146,10 @@ const APP_LEFT_NAV_WIDTH = '4rem'
 const APP_SIDEBAR_WIDTH = 300
 const INTERCOM_BUBBLE_DEFAULT_PADDING = 20
 const PRIDE_FUNDRAISER_END_DATE = new Date('2026-07-01T00:00:00Z').getTime()
+// Modrinth platform (Labrinth) account login is currently disabled on the
+// frontend. The full sign-in flow is preserved in `signIn()` for future reuse;
+// this flag only suppresses UI entry points and short-circuits invocations.
+const MODRINTH_LOGIN_DISABLED = true
 const credentials = ref()
 const sidebarToggled = ref(true)
 const unsubscribeSidebarToggle = themeStore.$subscribe(() => {
@@ -230,8 +234,8 @@ providePageContext({
 })
 provideModalBehavior({
 	noblur: computed(() => !themeStore.advancedRendering),
-	onShow: () => hide_ads_window(),
-	onHide: () => show_ads_window(),
+	onShow: () => {}, // Ads disabled: hide_ads_window()
+	onHide: () => {}, // Ads disabled: show_ads_window()
 })
 
 const {
@@ -420,21 +424,22 @@ async function setupApp() {
 			)
 		})
 
-	fetch(`https://modrinth.com/news/feed/articles.json`)
-		.then((response) => response.json())
-		.then((res) => {
-			if (res && res.articles) {
-				news.value = res.articles
-					.map((article) => ({
-						...article,
-						path: article.link,
-					}))
-					.slice(0, 4)
-			}
-		})
-		.catch((error) => {
-			console.error('Failed to fetch news articles', error)
-		})
+	// News disabled: skip fetching articles
+	// fetch(`https://modrinth.com/news/feed/articles.json`)
+	// 	.then((response) => response.json())
+	// 	.then((res) => {
+	// 		if (res && res.articles) {
+	// 			news.value = res.articles
+	// 				.map((article) => ({
+	// 					...article,
+	// 					path: article.link,
+	// 				}))
+	// 				.slice(0, 4)
+	// 		}
+	// 	})
+	// 	.catch((error) => {
+	// 		console.error('Failed to fetch news articles', error)
+	// 	})
 
 	get_opening_command().then(handleCommand)
 	fetchCredentials()
@@ -678,6 +683,11 @@ async function fetchCredentials() {
 }
 
 async function signIn() {
+	if (MODRINTH_LOGIN_DISABLED) {
+		// Modrinth account login is temporarily disabled; the underlying flow
+		// below is intentionally kept intact for future re-enablement.
+		return
+	}
 	modrinthLoginFlowWaitModal.value.show()
 
 	try {
@@ -740,13 +750,14 @@ async function fetchIntercomToken() {
 	return await response.json()
 }
 
-watch(showAd, () => {
-	if (!showAd.value) {
-		hide_ads_window(true)
-	} else {
-		init_ads_window(true)
-	}
-})
+// Ads disabled: skip init/hide ads window watch
+// watch(showAd, () => {
+// 	if (!showAd.value) {
+// 		hide_ads_window(true)
+// 	} else {
+// 		init_ads_window(true)
+// 	}
+// })
 
 onMounted(() => {
 	invoke('show_window')
@@ -1300,24 +1311,24 @@ async function openSurvey() {
 		onOpen: () => console.info('Opened user survey'),
 		onClose: () => {
 			console.info('Closed user survey')
-			show_ads_window()
+			// Ads disabled: show_ads_window()
 		},
 		onSubmit: () => console.info('Active user survey submitted'),
 	}
 
 	try {
-		hide_ads_window()
+		// Ads disabled: hide_ads_window()
 		if (window.Tally?.openPopup) {
 			console.info(`Opening Tally popup for user survey (form ID: ${formId})`)
 			dismissSurvey()
 			window.Tally.openPopup(formId, popupOptions)
 		} else {
 			console.warn('Tally script not yet loaded')
-			show_ads_window()
+			// Ads disabled: show_ads_window()
 		}
 	} catch (e) {
 		console.error('Error opening Tally popup:', e)
-		show_ads_window()
+		// Ads disabled: show_ads_window()
 	}
 
 	console.info(`Found user survey to show with tally_id: ${formId}`)
@@ -1449,6 +1460,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 				<LibraryIcon />
 			</NavButton>
 			<NavButton
+				v-if="false"
 				v-tooltip.right="'Modrinth Hosting'"
 				to="/hosting/manage"
 				:is-primary="(r) => r.path === '/hosting/manage' || r.path === '/hosting/manage/'"
@@ -1462,7 +1474,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 			</suspense>
 			<NavButton
 				v-tooltip.right="'Create new instance'"
-				:to="() => installationModal?.show()"
+				to="/create"
 				:disabled="offline"
 			>
 				<PlusIcon />
@@ -1475,7 +1487,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 				<SettingsIcon />
 			</NavButton>
 			<OverflowMenu
-				v-if="credentials?.user"
+				v-if="credentials?.user && !MODRINTH_LOGIN_DISABLED"
 				v-tooltip.right="`Modrinth account`"
 				class="w-12 h-12 text-primary rounded-full flex items-center justify-center text-2xl transition-all bg-transparent hover:bg-button-bg hover:text-contrast border-0 cursor-pointer"
 				:options="[
@@ -1505,7 +1517,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 				</template>
 				<template #sign-out> <LogOutIcon /> Sign out </template>
 			</OverflowMenu>
-			<NavButton v-else v-tooltip.right="'Sign in to a Modrinth account'" :to="() => signIn()">
+			<NavButton v-else-if="!MODRINTH_LOGIN_DISABLED" v-tooltip.right="'Sign in to a Modrinth account'" :to="() => signIn()">
 				<LogInIcon class="text-brand" />
 			</NavButton>
 		</div>
@@ -1650,7 +1662,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 							<AccountsCard ref="accounts" />
 						</suspense>
 					</div>
-					<div class="p-4 border-0 border-b-[1px] border-[--brand-gradient-border] border-solid">
+					<div v-if="!MODRINTH_LOGIN_DISABLED" class="p-4 border-0 border-b-[1px] border-[--brand-gradient-border] border-solid">
 						<suspense>
 							<FriendsList :credentials="credentials" :sign-in="() => signIn()" />
 						</suspense>
@@ -1659,7 +1671,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 						v-if="prideFundraiserEnabled"
 						class="p-4 border-0 border-b-[1px] border-[--brand-gradient-border] border-solid"
 					/>
-					<div v-if="news && news.length > 0" class="p-4 flex flex-col items-center">
+					<div v-if="false && news && news.length > 0" class="p-4 flex flex-col items-center">
 						<h3 class="text-base mb-4 text-primary font-medium m-0 text-left w-full">News</h3>
 						<div class="space-y-4 flex flex-col items-center w-full">
 							<NewsArticleCard
@@ -1676,7 +1688,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 					</div>
 				</div>
 			</div>
-			<template v-if="showAd">
+			<template v-if="false && showAd">
 				<a
 					href="https://modrinth.plus?app"
 					class="absolute bottom-[250px] w-full flex justify-center items-center gap-1 px-4 py-3 text-purple font-medium hover:underline z-10"

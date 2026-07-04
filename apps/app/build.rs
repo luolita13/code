@@ -14,6 +14,8 @@ fn main() {
                     .commands(&[
                         "check_reachable",
                         "login",
+                        "login_offline",
+                        "login_yggdrasil",
                         "remove_user",
                         "get_default_user",
                         "set_default_user",
@@ -156,6 +158,8 @@ fn main() {
                         "install_job_get",
                         "install_job_retry",
                         "install_job_cancel",
+                        "install_job_pause",
+                        "install_job_resume",
                         "install_job_dismiss",
                     ])
                     .default_permission(
@@ -210,6 +214,7 @@ fn main() {
                         "instance_edit",
                         "instance_edit_icon",
                         "instance_export_mrpack",
+                        "instance_export_zip",
                         "instance_get_pack_export_candidates",
                     ])
                     .default_permission(

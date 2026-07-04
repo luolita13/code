@@ -305,3 +305,80 @@ async fn add_all_recursive_folder_paths(
 
     Ok(())
 }
+
+/// Export an instance as a plain ZIP archive (no modrinth.index.json).
+/// Only files matching `included_export_candidates` (top-level folders/files) are added.
+#[tracing::instrument(skip_all)]
+pub async fn export_zip(
+    instance_id: &str,
+    export_path: PathBuf,
+    included_export_candidates: Vec<String>,
+) -> crate::Result<()> {
+    let state = State::get().await?;
+    let _permit: tokio::sync::SemaphorePermit =
+        state.io_semaphore.0.acquire().await?;
+
+    let instance_base_path = get_full_path(instance_id).await?;
+    let mut file = File::create(&export_path)
+        .await
+        .map_err(|e| IOError::with_path(e, &export_path))?;
+    let mut writer = ZipFileWriter::with_tokio(&mut file);
+
+    let included_export_candidates = included_export_candidates
+        .into_iter()
+        .filter(|x| {
+            if let Some(f) = PathBuf::from(x).file_name()
+                && f.to_string_lossy().starts_with(".DS_Store")
+            {
+                return false;
+            }
+            true
+        })
+        .collect::<Vec<_>>();
+
+    let mut path_list = Vec::new();
+    add_all_recursive_folder_paths(&instance_base_path, &mut path_list).await?;
+    let loading_bar = init_loading(
+        LoadingBarType::ZipExtract {
+            instance_id: instance_id.to_string(),
+            instance_name: instance_id.to_string(),
+        },
+        path_list.len() as f64,
+        "Exporting instance to .zip",
+    )
+    .await?;
+
+    for path in path_list {
+        emit_loading(&loading_bar, 1.0, None)?;
+        let relative_path = pack_get_relative_path(&instance_base_path, &path)?;
+        let relative_str = relative_path.as_str();
+
+        if !is_export_candidate_included(relative_str, &included_export_candidates) {
+            continue;
+        }
+        // Skip instance metadata files
+        if relative_str == "profile.json"
+            || relative_str.starts_with("modrinth_logs")
+            || relative_str.starts_with(".fabric")
+            || relative_str.starts_with("__MACOSX")
+        {
+            continue;
+        }
+
+        if path.is_file() {
+            let mut src = File::open(&path)
+                .await
+                .map_err(|e| IOError::with_path(e, &path))?;
+            let mut data = Vec::new();
+            src.read_to_end(&mut data).await.map_err(IOError::from)?;
+            let builder = ZipEntryBuilder::new(
+                relative_str.to_string().into(),
+                Compression::Deflate,
+            );
+            writer.write_entry_whole(builder, &data).await?;
+        }
+    }
+
+    writer.close().await?;
+    Ok(())
+}

@@ -16,8 +16,9 @@ use crate::server_address::{ServerAddress, parse_server_address};
 use crate::state::server_join_log::JoinLogEntry;
 use crate::state::{
     Credentials, InstanceInstallStage, InstanceLaunchContext, InstanceLink,
-    JavaVersion, MemorySettings, ProcessMetadata, WindowSize,
+    JavaVersion, LoginType, MemorySettings, ProcessMetadata, WindowSize,
 };
+use crate::state::yggdrasil_auth;
 use crate::util::io;
 use crate::util::rpc::RpcServerBuilder;
 use crate::{State, get_resource_file, process};
@@ -901,6 +902,36 @@ pub async fn launch_minecraft(
         )?
         .into_iter(),
     );
+
+    // If the account uses a third-party (authlib-injector / Yggdrasil) auth
+    // server, inject `authlib-injector.jar` as a -javaagent and pre-fetch the
+    // server metadata so Minecraft launches against the third-party skin
+    // and session servers instead of Mojang's.
+    if credentials.login_type == LoginType::Yggdrasil {
+        if let Some(api_root) = credentials.server_url.as_ref() {
+            let jar_path = yggdrasil_auth::ensure_authlib_injector(
+                &state.directories.caches_dir(),
+            )
+            .await?;
+
+            let prefetched =
+                yggdrasil_auth::build_prefetch_payload(api_root).await?;
+
+            command.arg(format!(
+                "-javaagent:{}={}",
+                jar_path.display(),
+                api_root
+            ));
+            command.arg("-Dauthlibinjector.side=client");
+            command.arg(format!(
+                "-Dauthlibinjector.yggdrasil.prefetched={prefetched}"
+            ));
+        } else {
+            tracing::warn!(
+                "Yggdrasil credentials are missing server_url; skipping authlib-injector injection"
+            );
+        }
+    }
 
     // The java launcher requires access to java.lang.reflect in order to force access in to
     // whatever module the main class is in

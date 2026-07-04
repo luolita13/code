@@ -490,9 +490,14 @@ export function createCreationFlowContext(
 				selectedLoaderVersion.value = null
 				loaderVersionType.value = 'stable'
 			}
-			// both custom and vanilla go to custom-setup
-			// vanilla just hides loader chips via hideLoaderChips computed
-			modal.value?.setStage('custom-setup')
+			// For instance flow + custom, use new PCL-style stages
+			if (flowType === 'instance' && type === 'custom') {
+				modal.value?.setStage('game-version-select')
+			} else {
+				// both custom (non-instance) and vanilla go to custom-setup
+				// vanilla just hides loader chips via hideLoaderChips computed
+				modal.value?.setStage('custom-setup')
+			}
 		}
 	}
 

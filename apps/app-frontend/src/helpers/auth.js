@@ -34,6 +34,38 @@ export async function login() {
 }
 
 /**
+ * Creates an offline (cracked) Minecraft account for the given username.
+ * No network requests are made; the UUID is derived from the username using
+ * the vanilla `OfflinePlayer:<name>` algorithm.
+ *
+ * @param {string} username - The desired Minecraft username (3-16 chars, alphanumeric + _)
+ * @returns {Promise<Credentials>} The newly created offline credentials
+ */
+export async function login_offline(username) {
+	return await invoke('plugin:auth|login_offline', { username })
+}
+
+/**
+ * Performs a full Yggdrasil (authlib-injector) login flow against a third-party
+ * authentication server (e.g. LittleSkin, Blessing Skin Server).
+ *
+ * The server URL may be either the api root or the authserver endpoint; the
+ * `X-Authlib-Injector-Api-Location` header is honored if present.
+ *
+ * @param {string} serverUrl - The Yggdrasil server URL (e.g. https://littleskin.cn/api/yggdrasil)
+ * @param {string} username - The account username (often the email)
+ * @param {string} password - The account password
+ * @returns {Promise<Credentials>} The newly created Yggdrasil credentials
+ */
+export async function login_yggdrasil(serverUrl, username, password) {
+	return await invoke('plugin:auth|login_yggdrasil', {
+		serverUrl,
+		username,
+		password,
+	})
+}
+
+/**
  * Retrieves the default user
  * @return {Promise<UUID | undefined>}
  */

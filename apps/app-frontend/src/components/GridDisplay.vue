@@ -167,18 +167,19 @@ const filteredResults = computed(() => {
 	const { group = 'Group', sortBy = 'Name' } = state.value
 
 	const instances = props.instances.filter((instance) => {
-		return instance.name.toLowerCase().includes(search.value.toLowerCase())
+		const name = instance.name ?? ''
+		return name.toLowerCase().includes(search.value.toLowerCase())
 	})
 
 	if (sortBy === 'Name') {
 		instances.sort((a, b) => {
-			return a.name.localeCompare(b.name)
+			return (a.name ?? '').localeCompare(b.name ?? '')
 		})
 	}
 
 	if (sortBy === 'Game version') {
 		instances.sort((a, b) => {
-			return a.game_version.localeCompare(b.game_version, undefined, { numeric: true })
+			return (a.game_version ?? '').localeCompare(b.game_version ?? '', undefined, { numeric: true })
 		})
 	}
 
@@ -190,13 +191,13 @@ const filteredResults = computed(() => {
 
 	if (sortBy === 'Date created') {
 		instances.sort((a, b) => {
-			return dayjs(b.date_created).diff(dayjs(a.date_created))
+			return dayjs(b.created ?? 0).diff(dayjs(a.created ?? 0))
 		})
 	}
 
 	if (sortBy === 'Date modified') {
 		instances.sort((a, b) => {
-			return dayjs(b.date_modified).diff(dayjs(a.date_modified))
+			return dayjs(b.modified ?? 0).diff(dayjs(a.modified ?? 0))
 		})
 	}
 
@@ -221,11 +222,10 @@ const filteredResults = computed(() => {
 		})
 	} else if (group === 'Group') {
 		instances.forEach((instance) => {
-			if (instance.groups.length === 0) {
-				instance.groups.push('None')
-			}
+			const groups = instance.groups ?? []
+			const effectiveGroups = groups.length > 0 ? groups : ['None']
 
-			for (const category of instance.groups) {
+			for (const category of effectiveGroups) {
 				if (!instanceMap.has(category)) {
 					instanceMap.set(category, [])
 				}

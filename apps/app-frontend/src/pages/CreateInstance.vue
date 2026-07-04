@@ -1,0 +1,957 @@
+<script setup lang="ts">
+import {
+	ArrowLeftIcon,
+	CheckIcon,
+	ChevronDownIcon,
+	ImageIcon,
+	SearchIcon,
+	UploadIcon,
+	XIcon,
+} from '@modrinth/assets'
+import {
+	Avatar,
+	ButtonStyled,
+	Card,
+	commonMessages,
+	defineMessages,
+	injectNotificationManager,
+	StyledInput,
+	Toggle,
+	useVIntl,
+} from '@modrinth/ui'
+import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+
+import { install_create_instance } from '@/helpers/install'
+import { get_game_versions, get_loader_versions } from '@/helpers/metadata'
+import { list } from '@/helpers/instance'
+import type { InstanceLoader } from '@/helpers/types'
+
+const router = useRouter()
+const { formatMessage } = useVIntl()
+const { handleError, addNotification } = injectNotificationManager()
+
+// Messages
+const messages = defineMessages({
+	title: {
+		id: 'app.create-instance.title',
+		defaultMessage: 'Create new instance',
+	},
+	stepVersion: {
+		id: 'app.create-instance.step.version',
+		defaultMessage: 'Game version',
+	},
+	stepLoader: {
+		id: 'app.create-instance.step.loader',
+		defaultMessage: 'Loader',
+	},
+	stepConfig: {
+		id: 'app.create-instance.step.config',
+		defaultMessage: 'Final config',
+	},
+	searchPlaceholder: {
+		id: 'app.create-instance.search-placeholder',
+		defaultMessage: 'Search versions...',
+	},
+	showAllVersions: {
+		id: 'app.create-instance.show-all',
+		defaultMessage: 'Show snapshots and old versions',
+	},
+	latestVersions: {
+		id: 'app.create-instance.group.latest',
+		defaultMessage: 'Latest versions',
+	},
+	releases: {
+		id: 'app.create-instance.group.releases',
+		defaultMessage: 'Releases',
+	},
+	snapshots: {
+		id: 'app.create-instance.group.snapshots',
+		defaultMessage: 'Snapshots',
+	},
+	oldBeta: {
+		id: 'app.create-instance.group.old-beta',
+		defaultMessage: 'Old Beta',
+	},
+	oldAlpha: {
+		id: 'app.create-instance.group.old-alpha',
+		defaultMessage: 'Old Alpha',
+	},
+	noVersionsFound: {
+		id: 'app.create-instance.no-versions',
+		defaultMessage: 'No versions found',
+	},
+	selectVersionHint: {
+		id: 'app.create-instance.select-version-hint',
+		defaultMessage: 'Select a Minecraft version to continue',
+	},
+	selectedGameVersion: {
+		id: 'app.create-instance.selected-game-version',
+		defaultMessage: 'Selected Minecraft version',
+	},
+	changeVersion: {
+		id: 'app.create-instance.change-version',
+		defaultMessage: 'Change',
+	},
+	selectLoaderHint: {
+		id: 'app.create-instance.select-loader-hint',
+		defaultMessage: 'Expand a loader card to choose a version, or select Vanilla',
+	},
+	vanilla: {
+		id: 'app.create-instance.loader.vanilla',
+		defaultMessage: 'Vanilla',
+	},
+	vanillaDesc: {
+		id: 'app.create-instance.loader.vanilla.desc',
+		defaultMessage: 'No mod loader',
+	},
+	versionsAvailable: {
+		id: 'app.create-instance.loader.versions-available',
+		defaultMessage: '{count} versions available',
+	},
+	noVersions: {
+		id: 'app.create-instance.loader.no-versions',
+		defaultMessage: 'No compatible versions',
+	},
+	incompatible: {
+		id: 'app.create-instance.loader.incompatible',
+		defaultMessage: 'Incompatible with {version}',
+	},
+	notSupported: {
+		id: 'app.create-instance.loader.not-supported',
+		defaultMessage: 'Not supported yet',
+	},
+	selectedVersion: {
+		id: 'app.create-instance.loader.selected',
+		defaultMessage: 'Selected: {version}',
+	},
+	loaderVersionLabel: {
+		id: 'app.create-instance.loader-version.label',
+		defaultMessage: 'Loader version',
+	},
+	nameLabel: {
+		id: 'app.create-instance.name.label',
+		defaultMessage: 'Instance name',
+	},
+	namePlaceholder: {
+		id: 'app.create-instance.name.placeholder',
+		defaultMessage: 'Enter instance name',
+	},
+	selectIcon: {
+		id: 'app.create-instance.icon.select',
+		defaultMessage: 'Select icon',
+	},
+	removeIcon: {
+		id: 'app.create-instance.icon.remove',
+		defaultMessage: 'Remove icon',
+	},
+	createButton: {
+		id: 'app.create-instance.create',
+		defaultMessage: 'Create instance',
+	},
+	creatingButton: {
+		id: 'app.create-instance.creating',
+		defaultMessage: 'Creating...',
+	},
+})
+
+// Steps
+const STEP_VERSION = 1
+const STEP_LOADER = 2
+const STEP_CONFIG = 3
+const step = ref(STEP_VERSION)
+
+// Data
+interface GameVersion {
+	id: string
+	type: 'release' | 'snapshot' | 'old_beta' | 'old_alpha'
+	releaseTime: string
+}
+
+const manifest = await get_game_versions().catch((err) => {
+	handleError(err)
+	return null
+})
+
+const allVersions = computed<GameVersion[]>(() => {
+	if (!manifest) return []
+	return manifest.versions.map((v: any) => ({
+		id: v.id,
+		type: versionTypeFromApi(v.type),
+		releaseTime: v.releaseTime,
+	}))
+})
+
+const latestRelease = computed(() => manifest?.latest?.release ?? null)
+const latestSnapshot = computed(() => manifest?.latest?.snapshot ?? null)
+
+function versionTypeFromApi(type: string): GameVersion['type'] {
+	switch (type) {
+		case 'release':
+			return 'release'
+		case 'snapshot':
+			return 'snapshot'
+		case 'old_beta':
+			return 'old_beta'
+		case 'old_alpha':
+			return 'old_alpha'
+		default:
+			return 'release'
+	}
+}
+
+const showAllVersions = ref(false)
+const searchQuery = ref('')
+
+const filteredVersions = computed(() => {
+	let list = allVersions.value
+	if (!showAllVersions.value) {
+		list = list.filter((v) => v.type === 'release')
+	}
+	const q = searchQuery.value.trim().toLowerCase()
+	if (q) {
+		list = list.filter((v) => v.id.toLowerCase().includes(q))
+	}
+	return list.sort((a, b) => Date.parse(b.releaseTime) - Date.parse(a.releaseTime))
+})
+
+const latestVersions = computed(() => {
+	const result: GameVersion[] = []
+	if (latestRelease.value) {
+		const v = allVersions.value.find((x) => x.id === latestRelease.value)
+		if (v) result.push(v)
+	}
+	if (latestSnapshot.value) {
+		const v = allVersions.value.find((x) => x.id === latestSnapshot.value)
+		if (v && !result.find((x) => x.id === v.id)) result.push(v)
+	}
+	return result
+})
+
+const releaseVersions = computed(() =>
+	filteredVersions.value.filter((v) => v.type === 'release' && !latestVersions.value.find((l) => l.id === v.id)),
+)
+const snapshotVersions = computed(() => filteredVersions.value.filter((v) => v.type === 'snapshot'))
+const oldBetaVersions = computed(() => filteredVersions.value.filter((v) => v.type === 'old_beta'))
+const oldAlphaVersions = computed(() => filteredVersions.value.filter((v) => v.type === 'old_alpha'))
+
+const versionGroups = computed(() => [
+	{ id: 'latest', label: formatMessage(messages.latestVersions), versions: latestVersions.value, expanded: true, pinned: true },
+	{ id: 'release', label: formatMessage(messages.releases), versions: releaseVersions.value },
+	{ id: 'snapshot', label: formatMessage(messages.snapshots), versions: snapshotVersions.value },
+	{ id: 'old-beta', label: formatMessage(messages.oldBeta), versions: oldBetaVersions.value },
+	{ id: 'old-alpha', label: formatMessage(messages.oldAlpha), versions: oldAlphaVersions.value },
+])
+
+const expandedGroups = ref<Record<string, boolean>>({
+	latest: true,
+	release: false,
+	snapshot: false,
+	'old-beta': false,
+	'old-alpha': false,
+})
+
+function toggleGroup(id: string) {
+	expandedGroups.value[id] = !expandedGroups.value[id]
+}
+
+const selectedGameVersion = ref<string | null>(null)
+
+function selectGameVersion(version: string) {
+	selectedGameVersion.value = version
+	step.value = STEP_LOADER
+	// Reset loader selection when version changes
+	selectedLoader.value = 'vanilla'
+	selectedLoaderVersion.value = null
+	loaderVersions.value = []
+}
+
+function goBackToVersions() {
+	step.value = STEP_VERSION
+}
+
+// Loader selection
+const selectedLoader = ref<string>('vanilla')
+const selectedLoaderVersion = ref<string | null>(null)
+const loaderVersions = ref<{ id: string; stable: boolean }[]>([])
+const loaderVersionsLoading = ref(false)
+const loaderVersionsCache = ref<Record<string, { gameVersions: { id: string; loaders: { id: string; stable: boolean }[] }[] }>>({})
+const expandedLoaderCards = ref<Record<string, boolean>>({})
+
+const SUPPORTED_LOADERS = ['vanilla', 'forge', 'neoforge', 'fabric', 'quilt']
+
+const loaderInfoMap: Record<string, { label: string; iconChar: string; colorClass: string }> = {
+	vanilla: { label: 'Vanilla', iconChar: 'V', colorClass: 'loader-icon-vanilla' },
+	forge: { label: 'Forge', iconChar: 'F', colorClass: 'loader-icon-forge' },
+	neoforge: { label: 'NeoForge', iconChar: 'N', colorClass: 'loader-icon-neoforge' },
+	fabric: { label: 'Fabric', iconChar: 'A', colorClass: 'loader-icon-fabric' },
+	quilt: { label: 'Quilt', iconChar: 'Q', colorClass: 'loader-icon-quilt' },
+	optifine: { label: 'OptiFine', iconChar: 'O', colorClass: 'loader-icon-optifine' },
+	liteloader: { label: 'LiteLoader', iconChar: 'L', colorClass: 'loader-icon-liteloader' },
+	cleanroom: { label: 'Cleanroom', iconChar: 'C', colorClass: 'loader-icon-cleanroom' },
+	labymod: { label: 'LabyMod', iconChar: 'B', colorClass: 'loader-icon-labymod' },
+}
+
+const loaders = computed(() => [
+	{ id: 'vanilla', ...loaderInfoMap.vanilla },
+	{ id: 'forge', ...loaderInfoMap.forge },
+	{ id: 'neoforge', ...loaderInfoMap.neoforge },
+	{ id: 'fabric', ...loaderInfoMap.fabric },
+	{ id: 'quilt', ...loaderInfoMap.quilt },
+	{ id: 'optifine', ...loaderInfoMap.optifine },
+	{ id: 'liteloader', ...loaderInfoMap.liteloader },
+	{ id: 'cleanroom', ...loaderInfoMap.cleanroom },
+	{ id: 'labymod', ...loaderInfoMap.labymod },
+])
+
+function toApiLoaderName(loader: string): string {
+	return loader === 'neoforge' ? 'neo' : loader
+}
+
+async function fetchLoaderManifest(loader: string) {
+	const apiLoader = toApiLoaderName(loader)
+	if (loaderVersionsCache.value[apiLoader]) return
+	try {
+		const data = await get_loader_versions(apiLoader)
+		loaderVersionsCache.value[apiLoader] = data
+	} catch (err) {
+		loaderVersionsCache.value[apiLoader] = { gameVersions: [] }
+	}
+}
+
+function getLoaderVersionCount(loader: string): number {
+	const gameVersion = selectedGameVersion.value
+	if (!gameVersion) return 0
+	const apiLoader = toApiLoaderName(loader)
+	const manifest = loaderVersionsCache.value[apiLoader]
+	if (!manifest) return 0
+	const placeholder = manifest.gameVersions.find((x: any) => x.id === '${modrinth.gameVersion}')
+	if (placeholder) {
+		const hasVersion = manifest.gameVersions.some((x: any) => x.id === gameVersion)
+		return hasVersion ? placeholder.loaders.length : 0
+	}
+	const entry = manifest.gameVersions.find((x: any) => x.id === gameVersion)
+	return entry?.loaders?.length ?? 0
+}
+
+function isLoaderCompatible(loader: string): boolean {
+	if (!SUPPORTED_LOADERS.includes(loader)) return false
+	if (loader === 'vanilla') return true
+	return getLoaderVersionCount(loader) > 0
+}
+
+function isLoaderSupported(loader: string): boolean {
+	return SUPPORTED_LOADERS.includes(loader)
+}
+
+function getLoaderVersions(loader: string): { id: string; stable: boolean }[] {
+	const gameVersion = selectedGameVersion.value
+	if (!gameVersion || loader === 'vanilla') return []
+	const apiLoader = toApiLoaderName(loader)
+	const manifest = loaderVersionsCache.value[apiLoader]
+	if (!manifest) return []
+	const placeholder = manifest.gameVersions.find((x: any) => x.id === '${modrinth.gameVersion}')
+	if (placeholder) {
+		if (!manifest.gameVersions.some((x: any) => x.id === gameVersion)) return []
+		return placeholder.loaders
+	}
+	const entry = manifest.gameVersions.find((x: any) => x.id === gameVersion)
+	return entry?.loaders ?? []
+}
+
+async function expandLoaderCard(loader: string) {
+	if (!isLoaderSupported(loader)) return
+	expandedLoaderCards.value[loader] = !expandedLoaderCards.value[loader]
+	if (loader !== 'vanilla' && expandedLoaderCards.value[loader]) {
+		loaderVersionsLoading.value = true
+		await fetchLoaderManifest(loader)
+		loaderVersionsLoading.value = false
+		if (selectedLoader.value === loader && loaderVersions.value.length === 0) {
+			loaderVersions.value = getLoaderVersions(loader)
+			if (!selectedLoaderVersion.value && loaderVersions.value.length > 0) {
+				selectedLoaderVersion.value = loaderVersions.value[0].id
+			}
+		}
+	}
+}
+
+function selectLoader(loader: string) {
+	if (!isLoaderSupported(loader)) return
+	selectedLoader.value = loader
+	expandedLoaderCards.value = { [loader]: true }
+	if (loader === 'vanilla') {
+		selectedLoaderVersion.value = null
+		loaderVersions.value = []
+	} else {
+		loaderVersions.value = getLoaderVersions(loader)
+		if (loaderVersions.value.length > 0) {
+			selectedLoaderVersion.value = loaderVersions.value[0].id
+		} else {
+			selectedLoaderVersion.value = null
+		}
+	}
+}
+
+function selectLoaderVersion(versionId: string) {
+	selectedLoaderVersion.value = versionId
+}
+
+watch(
+	() => selectedGameVersion.value,
+	() => {
+		loaderVersionsCache.value = {}
+		loaderVersions.value = []
+		selectedLoaderVersion.value = null
+		expandedLoaderCards.value = {}
+		selectLoader('vanilla')
+	},
+)
+
+// Final config
+const instanceName = ref('')
+const instanceIconUrl = ref<string | null>(null)
+const instanceIconPath = ref<string | null>(null)
+const instanceIconFile = ref<File | null>(null)
+
+const existingInstanceNames = ref<string[]>([])
+list().then((instances) => {
+	existingInstanceNames.value = instances.map((i) => i.name)
+}).catch(handleError)
+
+const autoInstanceName = computed(() => {
+	const loader = selectedLoader.value
+	const version = selectedGameVersion.value
+	if (!version) return ''
+	const loaderName = loader === 'vanilla' ? 'Vanilla' : loaderInfoMap[loader]?.label ?? loader
+	const baseName = `${loaderName} ${version}`
+	const names = new Set(existingInstanceNames.value)
+	if (!names.has(baseName)) return baseName
+	let counter = 1
+	while (names.has(`${baseName} (${counter})`)) {
+		counter++
+	}
+	return `${baseName} (${counter})`
+})
+
+const finalName = computed(() => instanceName.value.trim() || autoInstanceName.value)
+
+async function selectIcon() {
+	try {
+		const { open } = await import('@tauri-apps/plugin-dialog')
+		const result = await open({
+			multiple: false,
+			directory: false,
+			filters: [{ name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'webp', 'gif'] }],
+		})
+		if (result && typeof result === 'string') {
+			instanceIconPath.value = result
+			instanceIconUrl.value = `file://${result}`
+		}
+	} catch (err) {
+		handleError(err as Error)
+	}
+}
+
+function removeIcon() {
+	instanceIconUrl.value = null
+	instanceIconPath.value = null
+	instanceIconFile.value = null
+}
+
+const creating = ref(false)
+
+async function createInstance() {
+	if (!selectedGameVersion.value) return
+	creating.value = true
+	try {
+		const loader = selectedLoader.value
+		const loaderVersion = loader === 'vanilla' ? null : (selectedLoaderVersion.value ?? 'latest')
+		await install_create_instance({
+			name: finalName.value,
+			gameVersion: selectedGameVersion.value,
+			loader: loader as InstanceLoader,
+			loaderVersion,
+			iconPath: instanceIconPath.value,
+		})
+		addNotification({ type: 'success', title: 'Instance created' })
+		router.push('/library')
+	} catch (err) {
+		handleError(err as Error)
+	} finally {
+		creating.value = false
+	}
+}
+
+function formatDate(dateStr: string): string {
+	try {
+		const d = new Date(dateStr)
+		return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+	} catch {
+		return ''
+	}
+}
+
+function versionGroupClass(id: string): string {
+	switch (id) {
+		case 'latest':
+			return 'version-icon-recent'
+		case 'release':
+			return 'version-icon-release'
+		case 'snapshot':
+			return 'version-icon-snapshot'
+		case 'old-beta':
+			return 'version-icon-old-beta'
+		case 'old-alpha':
+			return 'version-icon-old-alpha'
+		default:
+			return 'version-icon-release'
+	}
+}
+</script>
+
+<template>
+	<div class="flex flex-col gap-4 p-6 max-w-5xl mx-auto">
+		<!-- Header -->
+		<div class="flex items-center gap-4 mb-2">
+			<ButtonStyled circular type="transparent" @click="router.push('/library')">
+				<button>
+					<ArrowLeftIcon class="size-5" />
+				</button>
+			</ButtonStyled>
+			<h1 class="text-2xl font-bold text-contrast">{{ formatMessage(messages.title) }}</h1>
+		</div>
+
+		<!-- Stepper -->
+		<div class="flex items-center gap-2 mb-4">
+			<div
+				class="step-item"
+				:class="{ 'step-item-active': step >= STEP_VERSION, 'step-item-current': step === STEP_VERSION }"
+			>
+				<span class="step-number">1</span>
+				<span>{{ formatMessage(messages.stepVersion) }}</span>
+			</div>
+			<div class="step-divider" :class="{ 'step-divider-active': step >= STEP_LOADER }" />
+			<div
+				class="step-item"
+				:class="{ 'step-item-active': step >= STEP_LOADER, 'step-item-current': step === STEP_LOADER }"
+			>
+				<span class="step-number">2</span>
+				<span>{{ formatMessage(messages.stepLoader) }}</span>
+			</div>
+			<div class="step-divider" :class="{ 'step-divider-active': step >= STEP_CONFIG }" />
+			<div
+				class="step-item"
+				:class="{ 'step-item-active': step >= STEP_CONFIG, 'step-item-current': step === STEP_CONFIG }"
+			>
+				<span class="step-number">3</span>
+				<span>{{ formatMessage(messages.stepConfig) }}</span>
+			</div>
+		</div>
+
+		<!-- Step 1: Game version selection -->
+		<template v-if="step === STEP_VERSION">
+			<Card class="p-4">
+				<div class="flex flex-col gap-4">
+					<StyledInput v-model="searchQuery" :placeholder="formatMessage(messages.searchPlaceholder)" type="text">
+						<template #icon>
+							<SearchIcon />
+						</template>
+					</StyledInput>
+					<div class="flex items-center justify-between">
+						<span class="text-sm text-secondary">{{ formatMessage(messages.showAllVersions) }}</span>
+						<Toggle v-model="showAllVersions" />
+					</div>
+				</div>
+			</Card>
+
+			<div class="flex flex-col gap-3">
+				<template v-for="group in versionGroups" :key="group.id">
+					<Card v-if="group.versions.length > 0" class="version-group-card">
+						<div
+							class="version-group-header"
+							:class="{ 'cursor-pointer': !group.pinned }"
+							@click="!group.pinned && toggleGroup(group.id)"
+						>
+							<div class="flex items-center gap-3">
+								<div class="version-icon" :class="versionGroupClass(group.id)">
+									{{ group.label.charAt(0) }}
+								</div>
+								<div class="flex flex-col">
+									<span class="font-semibold text-contrast">{{ group.label }}</span>
+									<span class="text-xs text-secondary">{{ group.versions.length }} versions</span>
+								</div>
+							</div>
+							<ChevronDownIcon v-if="!group.pinned" class="size-5 text-secondary transition-transform" :class="{ 'rotate-180': expandedGroups[group.id] }" />
+						</div>
+						<div v-if="expandedGroups[group.id] || group.pinned" class="version-group-content">
+							<div
+								v-for="v in group.versions"
+								:key="v.id"
+								class="version-row"
+								:class="{ 'version-row-selected': selectedGameVersion === v.id }"
+								@click="selectGameVersion(v.id)"
+							>
+								<div class="flex items-center gap-3 flex-1 min-w-0">
+									<div class="version-icon small" :class="versionGroupClass(group.id)">
+										{{ v.id.charAt(0) }}
+									</div>
+									<div class="flex flex-col min-w-0">
+										<span class="font-semibold text-contrast truncate">{{ v.id }}</span>
+										<span v-if="v.releaseTime" class="text-xs text-secondary">{{ formatDate(v.releaseTime) }}</span>
+									</div>
+								</div>
+								<CheckIcon v-if="selectedGameVersion === v.id" class="size-5 text-brand" />
+							</div>
+						</div>
+					</Card>
+				</template>
+				<div v-if="filteredVersions.length === 0" class="text-center text-secondary py-8">
+					{{ formatMessage(messages.noVersionsFound) }}
+				</div>
+			</div>
+		</template>
+
+		<!-- Step 2: Loader selection -->
+		<template v-if="step === STEP_LOADER">
+			<Card class="p-4">
+				<div class="flex items-center justify-between">
+					<div class="flex items-center gap-3">
+						<div class="version-icon version-icon-release">M</div>
+						<div class="flex flex-col">
+							<span class="text-sm text-secondary">{{ formatMessage(messages.selectedGameVersion) }}</span>
+							<span class="font-semibold text-contrast text-lg">{{ selectedGameVersion }}</span>
+						</div>
+					</div>
+					<ButtonStyled type="outlined" @click="goBackToVersions">
+						<button>{{ formatMessage(messages.changeVersion) }}</button>
+					</ButtonStyled>
+				</div>
+			</Card>
+
+			<div class="text-sm text-secondary">{{ formatMessage(messages.selectLoaderHint) }}</div>
+
+			<div class="flex flex-col gap-3">
+				<Card
+					v-for="opt in loaders"
+					:key="opt.id"
+					class="loader-group-card"
+					:class="{ 'loader-group-card-selected': selectedLoader === opt.id }"
+				>
+					<div
+						class="loader-group-header"
+						:class="{
+							'cursor-pointer': isLoaderSupported(opt.id) && opt.id !== 'vanilla',
+							'opacity-50': !isLoaderCompatible(opt.id),
+						}"
+						@click="opt.id === 'vanilla' ? selectLoader('vanilla') : expandLoaderCard(opt.id)"
+					>
+						<div class="flex items-center gap-3 flex-1">
+							<div class="loader-icon" :class="opt.colorClass">{{ opt.iconChar }}</div>
+							<div class="flex flex-col">
+								<span class="font-semibold text-contrast">{{ opt.label }}</span>
+								<span class="text-xs text-secondary">
+									<span v-if="opt.id === 'vanilla'">{{ formatMessage(messages.vanillaDesc) }}</span>
+									<span v-else-if="!isLoaderSupported(opt.id)">
+										{{ formatMessage(messages.notSupported) }}
+									</span>
+									<span v-else-if="!isLoaderCompatible(opt.id)">
+										{{ formatMessage(messages.incompatible, { version: selectedGameVersion }) }}
+									</span>
+									<span v-else-if="selectedLoader === opt.id && selectedLoaderVersion">
+										{{ formatMessage(messages.selectedVersion, { version: selectedLoaderVersion }) }}
+									</span>
+									<span v-else>
+										{{ formatMessage(messages.versionsAvailable, { count: getLoaderVersionCount(opt.id) }) }}
+									</span>
+								</span>
+							</div>
+						</div>
+						<CheckIcon v-if="selectedLoader === opt.id" class="size-5 text-brand" />
+						<ChevronDownIcon v-else-if="opt.id !== 'vanilla' && isLoaderSupported(opt.id)" class="size-5 text-secondary transition-transform" :class="{ 'rotate-180': expandedLoaderCards[opt.id] }" />
+					</div>
+
+					<div v-if="opt.id !== 'vanilla' && expandedLoaderCards[opt.id]" class="loader-group-content">
+						<div v-if="loaderVersionsLoading" class="text-center text-secondary py-4">
+							{{ formatMessage(commonMessages.loadingLabel) }}
+						</div>
+						<template v-else>
+							<div class="flex items-center justify-between mb-2">
+								<span class="font-semibold text-contrast text-sm">{{ formatMessage(messages.loaderVersionLabel) }}</span>
+							</div>
+							<div class="flex flex-col gap-1 max-h-60 overflow-y-auto">
+								<div
+									v-for="v in getLoaderVersions(opt.id)"
+									:key="v.id"
+									class="loader-version-row"
+									:class="{ 'loader-version-row-selected': selectedLoader === opt.id && selectedLoaderVersion === v.id }"
+									@click="selectLoader(opt.id); selectLoaderVersion(v.id)"
+								>
+									<div class="flex items-center gap-2 flex-1 min-w-0">
+										<span class="font-semibold text-contrast truncate">{{ v.id }}</span>
+										<span v-if="v.stable" class="text-xs px-1.5 py-0.5 rounded bg-green-highlight text-green">Stable</span>
+									</div>
+									<CheckIcon v-if="selectedLoader === opt.id && selectedLoaderVersion === v.id" class="size-4 text-brand" />
+								</div>
+							</div>
+						</template>
+					</div>
+				</Card>
+			</div>
+
+			<div class="flex justify-end mt-4">
+				<ButtonStyled color="brand" size="large" @click="step = STEP_CONFIG">
+					<button>
+						{{ formatMessage(commonMessages.nextButton) }}
+						<ArrowLeftIcon class="size-4 rotate-180" />
+					</button>
+				</ButtonStyled>
+			</div>
+		</template>
+
+		<!-- Step 3: Final config -->
+		<template v-if="step === STEP_CONFIG">
+			<Card class="p-4">
+				<div class="flex flex-col gap-6">
+					<div class="flex items-center gap-4">
+						<Avatar :src="instanceIconUrl ?? undefined" size="5rem">
+							<ImageIcon class="size-8 text-secondary" />
+						</Avatar>
+						<div class="flex flex-col gap-2">
+							<ButtonStyled type="outlined" @click="selectIcon">
+								<button>
+									<UploadIcon class="size-4" />
+									{{ formatMessage(messages.selectIcon) }}
+								</button>
+							</ButtonStyled>
+							<ButtonStyled type="outlined" @click="removeIcon">
+								<button :disabled="!instanceIconUrl">
+									<XIcon class="size-4" />
+									{{ formatMessage(messages.removeIcon) }}
+								</button>
+							</ButtonStyled>
+						</div>
+					</div>
+
+					<div class="flex flex-col gap-2">
+						<span class="font-semibold text-contrast">{{ formatMessage(messages.nameLabel) }}</span>
+						<StyledInput v-model="instanceName" :placeholder="autoInstanceName" type="text" />
+					</div>
+
+					<div class="rounded-lg bg-surface-2 border border-surface-5 p-4 flex flex-col gap-2">
+						<div class="flex justify-between">
+							<span class="text-sm text-secondary">Game version</span>
+							<span class="font-semibold text-contrast">{{ selectedGameVersion }}</span>
+						</div>
+						<div class="flex justify-between">
+							<span class="text-sm text-secondary">Loader</span>
+							<span class="font-semibold text-contrast">{{ loaderInfoMap[selectedLoader]?.label ?? selectedLoader }}</span>
+						</div>
+						<div v-if="selectedLoaderVersion" class="flex justify-between">
+							<span class="text-sm text-secondary">Loader version</span>
+							<span class="font-semibold text-contrast">{{ selectedLoaderVersion }}</span>
+						</div>
+					</div>
+
+					<div class="flex justify-between">
+						<ButtonStyled type="outlined" @click="step = STEP_LOADER">
+							<button>{{ formatMessage(commonMessages.backButton) }}</button>
+						</ButtonStyled>
+						<ButtonStyled color="brand" size="large" @click="createInstance">
+							<button :disabled="creating">
+								{{ creating ? formatMessage(messages.creatingButton) : formatMessage(messages.createButton) }}
+							</button>
+						</ButtonStyled>
+					</div>
+				</div>
+			</Card>
+		</template>
+	</div>
+</template>
+
+<style scoped lang="scss">
+.step-item {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 0.75rem;
+	border-radius: 0.5rem;
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: var(--color-secondary);
+	background: var(--color-surface-2);
+	border: 1px solid var(--color-surface-5);
+}
+
+.step-item-active {
+	color: var(--color-contrast);
+	border-color: var(--color-brand);
+}
+
+.step-item-current {
+	background: var(--color-brand-highlight);
+}
+
+.step-number {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.5rem;
+	height: 1.5rem;
+	border-radius: 9999px;
+	background: var(--color-surface-5);
+	font-size: 0.75rem;
+	font-weight: 700;
+}
+
+.step-item-active .step-number {
+	background: var(--color-brand);
+	color: white;
+}
+
+.step-divider {
+	flex: 1;
+	height: 2px;
+	background: var(--color-surface-5);
+	border-radius: 1px;
+}
+
+.step-divider-active {
+	background: var(--color-brand);
+}
+
+.version-group-card,
+.loader-group-card {
+	overflow: hidden;
+}
+
+.version-group-header,
+.loader-group-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem;
+	gap: 1rem;
+}
+
+.version-group-content,
+.loader-group-content {
+	padding: 0 1rem 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.version-row,
+.loader-version-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.5rem 0.75rem;
+	border-radius: 0.5rem;
+	border: 1px solid var(--color-surface-5);
+	background: var(--color-surface-2);
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+
+.version-row:hover,
+.loader-version-row:hover {
+	background: var(--color-surface-3);
+	border-color: var(--color-brand);
+}
+
+.version-row-selected,
+.loader-version-row-selected {
+	background: var(--color-brand-highlight);
+	border-color: var(--color-brand);
+}
+
+.version-icon {
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 0.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	color: white;
+	flex-shrink: 0;
+}
+
+.version-icon.small {
+	width: 2rem;
+	height: 2rem;
+	border-radius: 0.375rem;
+	font-size: 0.875rem;
+}
+
+.loader-icon {
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 0.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	color: white;
+	flex-shrink: 0;
+}
+
+.version-icon-recent,
+.loader-icon-vanilla {
+	background: linear-gradient(135deg, #00b884, #008660);
+}
+
+.version-icon-release {
+	background: linear-gradient(135deg, #1bd96a, #0f9c47);
+}
+
+.version-icon-snapshot {
+	background: linear-gradient(135deg, #ff9a3c, #ff6b00);
+}
+
+.version-icon-old-beta {
+	background: linear-gradient(135deg, #6b7280, #374151);
+}
+
+.version-icon-old-alpha {
+	background: linear-gradient(135deg, #9ca3af, #4b5563);
+}
+
+.loader-icon-forge {
+	background: linear-gradient(135deg, #d97706, #92400e);
+}
+
+.loader-icon-neoforge {
+	background: linear-gradient(135deg, #f97316, #c2410c);
+}
+
+.loader-icon-fabric {
+	background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+}
+
+.loader-icon-quilt {
+	background: linear-gradient(135deg, #ec4899, #be185d);
+}
+
+.loader-icon-optifine {
+	background: linear-gradient(135deg, #06b6d4, #0e7490);
+}
+
+.loader-icon-liteloader {
+	background: linear-gradient(135deg, #6b7280, #374151);
+}
+
+.loader-icon-cleanroom {
+	background: linear-gradient(135deg, #14b8a6, #0f766e);
+}
+
+.loader-icon-labymod {
+	background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.loader-group-card-selected {
+	border-color: var(--color-brand);
+	box-shadow: 0 0 0 1px var(--color-brand);
+}
+</style>

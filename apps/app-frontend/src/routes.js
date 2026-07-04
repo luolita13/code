@@ -93,11 +93,27 @@ export default new createRouter({
 			},
 		},
 		{
+			path: '/downloads',
+			name: 'Downloads',
+			component: Pages.Downloads,
+			meta: {
+				breadcrumb: [{ name: 'Downloads' }],
+			},
+		},
+		{
 			path: '/skins',
 			name: 'Skin selector',
 			component: Pages.Skins,
 			meta: {
 				breadcrumb: [{ name: 'Skin selector' }],
+			},
+		},
+		{
+			path: '/create',
+			name: 'CreateInstance',
+			component: Pages.CreateInstance,
+			meta: {
+				breadcrumb: [{ name: 'Create instance' }],
 			},
 		},
 		{
@@ -197,15 +213,15 @@ export default new createRouter({
 			component: Instance.Index,
 			props: true,
 			children: [
-				// {
-				//   path: '',
-				//   name: 'Overview',
-				//   component: Instance.Overview,
-				//   meta: {
-				//     useRootContext: true,
-				//     breadcrumb: [{ name: '?Instance' }],
-				//   },
-				// },
+				{
+					path: '',
+					name: 'Overview',
+					component: Instance.Overview,
+					meta: {
+						useRootContext: true,
+						breadcrumb: [{ name: '?Instance' }],
+					},
+				},
 				{
 					path: 'worlds',
 					name: 'InstanceWorlds',
@@ -216,7 +232,7 @@ export default new createRouter({
 					},
 				},
 				{
-					path: '',
+					path: 'mods',
 					name: 'Mods',
 					component: Instance.Mods,
 					meta: {
@@ -240,6 +256,42 @@ export default new createRouter({
 					meta: {
 						useRootContext: true,
 						breadcrumb: [{ name: '?Instance', link: '/instance/{id}/' }, { name: 'Files' }],
+					},
+				},
+				{
+					path: 'screenshots',
+					name: 'InstanceScreenshots',
+					component: Instance.Screenshots,
+					meta: {
+						useRootContext: true,
+						breadcrumb: [
+							{ name: '?Instance', link: '/instance/{id}/' },
+							{ name: 'Screenshots' },
+						],
+					},
+				},
+				{
+					path: 'resource-packs',
+					name: 'InstanceResourcePacks',
+					component: Instance.ResourcePacks,
+					meta: {
+						useRootContext: true,
+						breadcrumb: [
+							{ name: '?Instance', link: '/instance/{id}/' },
+							{ name: 'Resource packs' },
+						],
+					},
+				},
+				{
+					path: 'shader-packs',
+					name: 'InstanceShaderPacks',
+					component: Instance.ShaderPacks,
+					meta: {
+						useRootContext: true,
+						breadcrumb: [
+							{ name: '?Instance', link: '/instance/{id}/' },
+							{ name: 'Shader packs' },
+						],
 					},
 				},
 				{

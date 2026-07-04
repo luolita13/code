@@ -6,7 +6,7 @@
 			type="transparent"
 			circular
 		>
-			<button v-tooltip="formatMessage(messages.viewActiveDownloads)" @click="openDownloadToast()">
+			<button v-tooltip="formatMessage(messages.viewActiveDownloads)" @click="router.push('/downloads')">
 				<DownloadIcon />
 			</button>
 		</ButtonStyled>

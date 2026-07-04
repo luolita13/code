@@ -9,6 +9,8 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
         .invoke_handler(tauri::generate_handler![
             check_reachable,
             login,
+            login_offline,
+            login_yggdrasil,
             remove_user,
             get_default_user,
             set_default_user,
@@ -81,6 +83,28 @@ pub async fn login<R: Runtime>(
 
     window.close()?;
     Ok(None)
+}
+
+/// Creates an offline (cracked) Minecraft account for the given username.
+/// No network requests are made; the UUID is derived from the username.
+#[tauri::command]
+pub async fn login_offline(username: String) -> Result<Credentials> {
+    Ok(minecraft_auth::login_offline(&username).await?)
+}
+
+/// Performs a full Yggdrasil (authlib-injector) login flow.
+#[tauri::command]
+pub async fn login_yggdrasil(
+    server_url: String,
+    username: String,
+    password: String,
+) -> Result<Credentials> {
+    Ok(minecraft_auth::login_yggdrasil(
+        &server_url,
+        &username,
+        &password,
+    )
+    .await?)
 }
 
 #[tauri::command]

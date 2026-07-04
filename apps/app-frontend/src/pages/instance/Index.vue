@@ -280,6 +280,8 @@ import {
 	FolderOpenIcon,
 	GlobeIcon,
 	HashIcon,
+	HomeIcon,
+	ImageIcon,
 	MoreVerticalIcon,
 	PackageIcon,
 	PlayIcon,
@@ -501,8 +503,13 @@ const contentSubpageProps = computed(() =>
 
 const tabs = computed(() => [
 	{
-		label: 'Content',
+		label: 'Overview',
 		href: `${basePath.value}`,
+		icon: HomeIcon,
+	},
+	{
+		label: 'Content',
+		href: `${basePath.value}/mods`,
 		icon: BoxesIcon,
 	},
 	{
@@ -514,6 +521,21 @@ const tabs = computed(() => [
 		label: 'Worlds',
 		href: `${basePath.value}/worlds`,
 		icon: GlobeIcon,
+	},
+	{
+		label: 'Screenshots',
+		href: `${basePath.value}/screenshots`,
+		icon: ImageIcon,
+	},
+	{
+		label: 'Resource packs',
+		href: `${basePath.value}/resource-packs`,
+		icon: PackageIcon,
+	},
+	{
+		label: 'Shader packs',
+		href: `${basePath.value}/shader-packs`,
+		icon: ImageIcon,
 	},
 	{
 		label: 'Logs',

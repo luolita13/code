@@ -50,6 +50,7 @@ pub fn init<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
             instance_edit,
             instance_edit_icon,
             instance_export_mrpack,
+            instance_export_zip,
             instance_get_pack_export_candidates,
         ])
         .build()
@@ -693,6 +694,16 @@ pub async fn instance_export_mrpack(
         name,
     )
     .await?;
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn instance_export_zip(
+    instance_id: &str,
+    export_location: PathBuf,
+    included_overrides: Vec<String>,
+) -> Result<()> {
+    theseus::instance::export_zip(instance_id, export_location, included_overrides).await?;
     Ok(())
 }
 

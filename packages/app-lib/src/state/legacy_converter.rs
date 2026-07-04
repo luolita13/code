@@ -9,7 +9,7 @@ use crate::state::{
     CacheValue, CachedEntry, CachedFile, CachedFileHash, CachedFileUpdate,
     Credentials, DefaultPage, DependencyType, DeviceToken, DeviceTokenKey,
     DeviceTokenPair, FileType, Hooks, InstanceInstallStage,
-    LauncherFeatureVersion, MemorySettings, ModrinthCredentials,
+    LauncherFeatureVersion, LoginType, MemorySettings, ModrinthCredentials,
     ReleaseChannel, TeamMember, Theme, VersionFile, WindowSize,
 };
 use crate::util::fetch::{IoSemaphore, read_json};
@@ -133,6 +133,9 @@ where
                     expires: legacy_credentials.expires,
                     active: minecraft_auth.default_user == Some(uuid)
                         || minecraft_users_len == 1,
+                    // Legacy credentials were always Microsoft accounts.
+                    login_type: LoginType::Microsoft,
+                    server_url: None,
                 }
                 .upsert(exec)
                 .await?;

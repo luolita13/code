@@ -139,7 +139,7 @@ const javaStepMessages = defineMessages({
 	},
 })
 
-const visibleJobStatuses = new Set<InstallJobStatus>(['queued', 'running', 'failed', 'interrupted'])
+const visibleJobStatuses = new Set<InstallJobStatus>(['queued', 'running', 'paused', 'failed', 'interrupted'])
 
 function getDisplayIconUrl(icon: string | null | undefined): string | null {
 	if (!icon) return null

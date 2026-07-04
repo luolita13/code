@@ -45,6 +45,38 @@ pub enum MinecraftAuthStep {
     MinecraftProfile,
 }
 
+/// The authentication method used to obtain a set of credentials.
+///
+/// - `Microsoft`: legacy SISU + Xbox Live + Minecraft services flow (kept as-is)
+/// - `Offline`: locally generated profile, no network, UUID derived from username
+/// - `Yggdrasil`: third-party authlib-injector server (LittleSkin / custom)
+#[derive(Deserialize, Serialize, Debug, Default, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum LoginType {
+    #[default]
+    Microsoft,
+    Offline,
+    Yggdrasil,
+}
+
+impl LoginType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Microsoft => "microsoft",
+            Self::Offline => "offline",
+            Self::Yggdrasil => "yggdrasil",
+        }
+    }
+
+    pub fn from_str(s: &str) -> Self {
+        match s {
+            "offline" => Self::Offline,
+            "yggdrasil" => Self::Yggdrasil,
+            _ => Self::Microsoft,
+        }
+    }
+}
+
 #[derive(thiserror::Error, Debug)]
 pub enum MinecraftAuthenticationError {
     #[error("Error reading public key during generation")]
@@ -155,6 +187,8 @@ pub async fn login_finish(
         expires: oauth_token.date
             + Duration::seconds(oauth_token.value.expires_in as i64),
         active: true,
+        login_type: LoginType::Microsoft,
+        server_url: None,
     };
 
     // During login, we need to fetch the online profile at least once to get the
@@ -177,6 +211,63 @@ pub async fn login_finish(
     Ok(credentials)
 }
 
+/// Generates an offline (cracked) Minecraft account for the given username.
+///
+/// The UUID is computed using the vanilla `OfflinePlayer:<name>` MD5 algorithm,
+/// matching the behavior of official Minecraft dedicated servers in offline mode.
+/// No network requests are made, and the resulting access token is the UUID itself,
+/// as is conventional for offline accounts.
+#[tracing::instrument(skip(exec))]
+pub async fn login_offline(
+    username: &str,
+    exec: impl sqlx::Executor<'_, Database = sqlx::Sqlite> + Copy,
+) -> crate::Result<Credentials> {
+    let uuid = generate_offline_uuid(username);
+
+    let credentials = Credentials {
+        offline_profile: MinecraftProfile {
+            id: uuid,
+            name: username.to_string(),
+            ..MinecraftProfile::default()
+        },
+        // Offline accounts use the UUID as a placeholder access token; vanilla
+        // servers in offline mode accept any token, but using a stable value
+        // keeps the launch argument template consistent.
+        access_token: uuid.simple().to_string(),
+        refresh_token: String::new(),
+        // Offline accounts never expire. Set far-future timestamp (year 9999).
+        expires: Utc
+            .timestamp_opt(2_534_022_143_999, 0)
+            .single()
+            .unwrap_or_else(|| Utc::now() + Duration::days(365 * 100)),
+        active: true,
+        login_type: LoginType::Offline,
+        server_url: None,
+    };
+
+    credentials.upsert(exec).await?;
+
+    Ok(credentials)
+}
+
+/// Computes the Java `OfflinePlayer:<name>` MD5-based version-3 UUID.
+fn generate_offline_uuid(username: &str) -> Uuid {
+    use md5::{Digest, Md5};
+
+    let mut hasher = Md5::new();
+    hasher.update(b"OfflinePlayer:");
+    hasher.update(username.as_bytes());
+    let mut bytes = hasher.finalize();
+
+    // Clear version bits and set to 3 (name-based with MD5 hashing, RFC 4122)
+    bytes[6] = (bytes[6] & 0x0F) | 0x30;
+    // Clear variant bits and set to IETF variant (10xx)
+    bytes[8] = (bytes[8] & 0x3F) | 0x80;
+
+    let arr: [u8; 16] = bytes.into();
+    Uuid::from_bytes(arr)
+}
+
 #[derive(Deserialize, Debug)]
 pub struct Credentials {
     /// The offline profile of the user these credentials are for.
@@ -190,6 +281,14 @@ pub struct Credentials {
     pub refresh_token: String,
     pub expires: DateTime<Utc>,
     pub active: bool,
+    /// Authentication method used to obtain these credentials.
+    /// Defaults to `Microsoft` for backward compatibility with rows created before
+    /// the `login_type` column existed.
+    #[serde(default)]
+    pub login_type: LoginType,
+    /// Yggdrasil API root URL, only present for `LoginType::Yggdrasil`.
+    #[serde(default)]
+    pub server_url: Option<String>,
 }
 
 /// An entry in the player profile cache, keyed by player UUID.
@@ -251,6 +350,21 @@ impl Credentials {
         &mut self,
         exec: impl sqlx::Executor<'_, Database = sqlx::Sqlite> + Copy,
     ) -> crate::Result<()> {
+        // Offline credentials never expire and have no remote refresh source.
+        if self.login_type == LoginType::Offline {
+            return Ok(());
+        }
+
+        // Yggdrasil credentials use a separate refresh path handled elsewhere.
+        // The Mojang SISU refresh below is Microsoft-only.
+        if self.login_type == LoginType::Yggdrasil {
+            return crate::state::yggdrasil_auth::refresh_credentials(
+                self,
+                exec,
+            )
+            .await;
+        }
+
         // Use a margin of 5 minutes to give e.g. Minecraft and potentially
         // other operations that depend on a fresh token 5 minutes to complete
         // from now, and deal with some classes of clock skew
@@ -479,33 +593,15 @@ impl Credentials {
     pub async fn get_active(
         exec: impl sqlx::Executor<'_, Database = sqlx::Sqlite> + Copy,
     ) -> crate::Result<Option<Self>> {
-        let res = sqlx::query!(
-            "
-            SELECT
-                uuid, active, username, access_token, refresh_token, expires
-            FROM minecraft_users
-            WHERE active = TRUE
-            "
+        let row = sqlx::query_as::<_, UserRow>(
+            "SELECT uuid, active, username, access_token, refresh_token, expires, login_type, server_url FROM minecraft_users WHERE active = TRUE",
         )
         .fetch_optional(exec)
         .await?;
 
-        Ok(match res {
+        Ok(match row {
             Some(x) => {
-                let mut credentials = Self {
-                    offline_profile: MinecraftProfile {
-                        id: Uuid::parse_str(&x.uuid).unwrap_or_default(),
-                        name: x.username,
-                        ..MinecraftProfile::default()
-                    },
-                    access_token: x.access_token,
-                    refresh_token: x.refresh_token,
-                    expires: Utc
-                        .timestamp_opt(x.expires, 0)
-                        .single()
-                        .unwrap_or_else(Utc::now),
-                    active: x.active == 1,
-                };
+                let mut credentials = Self::from_row(&x);
                 credentials.refresh(exec).await.ok();
                 Some(credentials)
             }
@@ -516,30 +612,13 @@ impl Credentials {
     pub async fn get_all(
         exec: impl sqlx::Executor<'_, Database = sqlx::Sqlite> + Copy,
     ) -> crate::Result<DashMap<Uuid, Self>> {
-        let res = sqlx::query!(
-            "
-            SELECT
-                uuid, active, username, access_token, refresh_token, expires
-            FROM minecraft_users
-            "
+        let rows = sqlx::query_as::<_, UserRow>(
+            "SELECT uuid, active, username, access_token, refresh_token, expires, login_type, server_url FROM minecraft_users",
         )
         .fetch(exec)
         .try_fold(DashMap::new(), |acc, x| {
             let uuid = Uuid::parse_str(&x.uuid).unwrap_or_default();
-            let mut credentials = Self {
-                offline_profile: MinecraftProfile {
-                    id: uuid,
-                    name: x.username,
-                    ..MinecraftProfile::default()
-                },
-                access_token: x.access_token,
-                refresh_token: x.refresh_token,
-                expires: Utc
-                    .timestamp_opt(x.expires, 0)
-                    .single()
-                    .unwrap_or_else(Utc::now),
-                active: x.active == 1,
-            };
+            let mut credentials = Self::from_row(&x);
 
             async move {
                 credentials.refresh(exec).await.ok();
@@ -550,7 +629,7 @@ impl Credentials {
         })
         .await?;
 
-        Ok(res)
+        Ok(rows)
     }
 
     pub async fn upsert(
@@ -560,38 +639,38 @@ impl Credentials {
         let profile = self.maybe_online_profile().await;
         let expires = self.expires.timestamp();
         let uuid = profile.id.as_hyphenated().to_string();
+        let login_type = self.login_type.as_str().to_string();
 
         if self.active {
-            sqlx::query!(
-                "
-                UPDATE minecraft_users
-                SET active = FALSE
-                ",
+            sqlx::query(
+                "UPDATE minecraft_users SET active = FALSE",
             )
             .execute(exec)
             .await?;
         }
 
-        sqlx::query!(
-            "
-            INSERT INTO minecraft_users (uuid, active, username, access_token, refresh_token, expires)
-            VALUES ($1, $2, $3, $4, $5, $6)
-            ON CONFLICT (uuid) DO UPDATE SET
-                active = $2,
-                username = $3,
-                access_token = $4,
-                refresh_token = $5,
-                expires = $6
-            ",
-            uuid,
-            self.active,
-            profile.name,
-            self.access_token,
-            self.refresh_token,
-            expires,
+        sqlx::query(
+            "INSERT INTO minecraft_users (uuid, active, username, access_token, refresh_token, expires, login_type, server_url) \
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8) \
+             ON CONFLICT (uuid) DO UPDATE SET \
+                active = $2, \
+                username = $3, \
+                access_token = $4, \
+                refresh_token = $5, \
+                expires = $6, \
+                login_type = $7, \
+                server_url = $8",
         )
-            .execute(exec)
-            .await?;
+        .bind(uuid)
+        .bind(self.active)
+        .bind(profile.name.as_str())
+        .bind(&self.access_token)
+        .bind(&self.refresh_token)
+        .bind(expires)
+        .bind(&login_type)
+        .bind(&self.server_url)
+        .execute(exec)
+        .await?;
 
         Ok(())
     }
@@ -602,16 +681,55 @@ impl Credentials {
     ) -> crate::Result<()> {
         let uuid = uuid.as_hyphenated().to_string();
 
-        sqlx::query!(
-            "
-            DELETE FROM minecraft_users WHERE uuid = $1
-            ",
-            uuid,
-        )
-        .execute(exec)
-        .await?;
+        sqlx::query("DELETE FROM minecraft_users WHERE uuid = $1")
+            .bind(uuid)
+            .execute(exec)
+            .await?;
 
         Ok(())
+    }
+}
+
+/// Row mapping for `minecraft_users` SELECT queries.
+/// Used to avoid the `sqlx::query!` macro so that adding columns via migration
+/// does not require regenerating the offline `.sqlx` cache.
+#[derive(sqlx::FromRow)]
+struct UserRow {
+    uuid: String,
+    active: bool,
+    username: String,
+    access_token: String,
+    refresh_token: String,
+    expires: i64,
+    login_type: Option<String>,
+    server_url: Option<String>,
+}
+
+impl Credentials {
+    fn from_row(row: &UserRow) -> Self {
+        let uuid = Uuid::parse_str(&row.uuid).unwrap_or_default();
+        let login_type = row
+            .login_type
+            .as_deref()
+            .map(LoginType::from_str)
+            .unwrap_or_default();
+
+        Self {
+            offline_profile: MinecraftProfile {
+                id: uuid,
+                name: row.username.clone(),
+                ..MinecraftProfile::default()
+            },
+            access_token: row.access_token.clone(),
+            refresh_token: row.refresh_token.clone(),
+            expires: Utc
+                .timestamp_opt(row.expires, 0)
+                .single()
+                .unwrap_or_else(Utc::now),
+            active: row.active,
+            login_type,
+            server_url: row.server_url.clone(),
+        }
     }
 }
 
@@ -645,12 +763,14 @@ impl Serialize for Credentials {
                 ),
         };
 
-        let mut ser = serializer.serialize_struct("Credentials", 5)?;
+        let mut ser = serializer.serialize_struct("Credentials", 7)?;
         ser.serialize_field("profile", &*profile)?;
         ser.serialize_field("access_token", &self.access_token)?;
         ser.serialize_field("refresh_token", &self.refresh_token)?;
         ser.serialize_field("expires", &self.expires)?;
         ser.serialize_field("active", &self.active)?;
+        ser.serialize_field("login_type", &self.login_type)?;
+        ser.serialize_field("server_url", &self.server_url)?;
         ser.end()
     }
 }

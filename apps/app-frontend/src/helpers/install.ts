@@ -47,6 +47,7 @@ export interface InstallPostInstallEdit {
 export type InstallJobStatus =
 	| 'queued'
 	| 'running'
+	| 'paused'
 	| 'succeeded'
 	| 'failed'
 	| 'interrupted'
@@ -191,6 +192,14 @@ export async function install_job_retry(jobId: string) {
 
 export async function install_job_cancel(jobId: string) {
 	return await invoke<InstallJobSnapshot>('plugin:install|install_job_cancel', { jobId })
+}
+
+export async function install_job_pause(jobId: string) {
+	return await invoke<InstallJobSnapshot>('plugin:install|install_job_pause', { jobId })
+}
+
+export async function install_job_resume(jobId: string) {
+	return await invoke<InstallJobSnapshot>('plugin:install|install_job_resume', { jobId })
 }
 
 export async function install_job_dismiss(jobId: string) {

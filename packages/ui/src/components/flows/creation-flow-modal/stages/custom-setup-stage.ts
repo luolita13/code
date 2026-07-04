@@ -22,10 +22,13 @@ export const stageConfig: StageConfigInput<CreationFlowContextValue> = {
 	id: 'custom-setup',
 	title: (ctx) => ctx.formatMessage(flowTypeHeadingMessages[ctx.flowType]),
 	stageContent: markRaw(CustomSetupStage),
+	// For instance flow, custom setup is replaced by the new game-version-select
+	// and loader-select stages. Skip for modpack, vanilla, import, and instance flows.
 	skip: (ctx) =>
 		ctx.setupType.value === 'modpack' ||
 		ctx.setupType.value === 'vanilla' ||
-		ctx.isImportMode.value,
+		ctx.isImportMode.value ||
+		ctx.flowType === 'instance',
 	cannotNavigateForward: isForwardBlocked,
 	leftButtonConfig: (ctx) => ({
 		label: ctx.formatMessage(commonMessages.backButton),

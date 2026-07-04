@@ -2,7 +2,7 @@
 import { PlusIcon } from '@modrinth/assets'
 import { ButtonStyled, injectNotificationManager, NavTabs } from '@modrinth/ui'
 import { inject, onUnmounted, ref, shallowRef } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import { NewInstanceImage } from '@/assets/icons'
 import { instance_listener } from '@/helpers/events.js'
@@ -10,8 +10,8 @@ import { list } from '@/helpers/instance'
 import { useBreadcrumbs } from '@/store/breadcrumbs.js'
 
 const { handleError } = injectNotificationManager()
-const showCreationModal = inject('showCreationModal')
 const route = useRoute()
+const router = useRouter()
 const breadcrumbs = useBreadcrumbs()
 
 breadcrumbs.setRootContext({ name: 'Library', link: route.path })
@@ -56,7 +56,7 @@ onUnmounted(() => {
 			</div>
 			<h3>No instances found</h3>
 			<ButtonStyled color="brand">
-				<button :disabled="offline" @click="showCreationModal?.()">
+				<button :disabled="offline" @click="router.push('/create')">
 					<PlusIcon />
 					Create new instance
 				</button>

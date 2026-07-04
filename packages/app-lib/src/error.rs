@@ -56,6 +56,9 @@ pub enum ErrorKind {
         #[from] crate::state::MinecraftAuthenticationError,
     ),
 
+    #[error("Yggdrasil (authlib-injector) authentication error: {0}")]
+    YggdrasilAuthenticationError(#[from] crate::state::yggdrasil_auth::YggdrasilError),
+
     #[error("I/O error: {0}")]
     IOError(#[from] util::io::IOError),
 

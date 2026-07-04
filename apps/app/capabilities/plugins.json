@@ -93,6 +93,8 @@
 			]
 		},
 		"auth:default",
+		"auth:allow-login-offline",
+		"auth:allow-login-yggdrasil",
 		"import:default",
 		"jre:default",
 		"logs:default",

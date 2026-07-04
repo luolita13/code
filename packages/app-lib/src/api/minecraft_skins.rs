@@ -64,7 +64,7 @@ pub use crate::state::MinecraftSkinVariant;
 use crate::{
     ErrorKind, State,
     state::{
-        MinecraftCharacterExpressionState, MinecraftProfile,
+        LoginType, MinecraftCharacterExpressionState, MinecraftProfile,
         minecraft_skins::{
             CustomMinecraftSkin, CustomMinecraftSkinInsertPosition, mojang_api,
         },
@@ -541,6 +541,27 @@ pub async fn add_and_equip_custom_skin(
     )
     .await?;
 
+    // Offline and Yggdrasil accounts cannot upload skins to Mojang.
+    // Save locally only and skip the pending skin change flush.
+    if selected_credentials.login_type != LoginType::Microsoft {
+        return Ok(Skin {
+            texture_key: local_texture_key,
+            name: None,
+            section: None,
+            variant,
+            cape_id,
+            texture: png_util::blob_to_data_url(texture_blob)
+                .or_else(|| {
+                    png_util::blob_to_data_url(include_bytes!(
+                        "minecraft_skins/assets/default/MissingNo.png"
+                    ))
+                })
+                .unwrap(),
+            source: SkinSource::Custom,
+            is_equipped: true,
+        });
+    }
+
     set_pending_skin_change(PendingSkinChange::AddAndEquipCustom {
         selected_credentials,
         texture_blob: Bytes::clone(&texture_blob),
@@ -684,6 +705,12 @@ pub async fn equip_skin(skin: Skin) -> crate::Result<()> {
     let selected_credentials = Credentials::get_default_credential(&state.pool)
         .await?
         .ok_or(ErrorKind::NoCredentialsError)?;
+
+    // Offline and Yggdrasil accounts cannot upload skins to Mojang.
+    // Only save locally.
+    if selected_credentials.login_type != LoginType::Microsoft {
+        return Ok(());
+    }
 
     set_pending_skin_change(PendingSkinChange::Equip {
         selected_credentials,
@@ -968,6 +995,11 @@ pub async fn unequip_skin() -> crate::Result<()> {
     let selected_credentials = Credentials::get_default_credential(&state.pool)
         .await?
         .ok_or(ErrorKind::NoCredentialsError)?;
+
+    // Offline and Yggdrasil accounts cannot upload skins to Mojang.
+    if selected_credentials.login_type != LoginType::Microsoft {
+        return Ok(());
+    }
 
     set_pending_skin_change(PendingSkinChange::Unequip {
         selected_credentials,

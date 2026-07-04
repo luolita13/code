@@ -65,7 +65,9 @@
 			class="w-full h-1 appearance-none border-none absolute top-0 left-0"
 		></progress>
 
-		<component :is="currentStage?.stageContent" />
+		<Transition :name="transitionName" mode="out-in">
+			<component :is="currentStage?.stageContent" :key="currentStageIndex" />
+		</Transition>
 
 		<template #actions>
 			<div
@@ -123,6 +125,8 @@ import { ButtonStyled, NewModal } from '@modrinth/ui'
 import type { Component } from 'vue'
 import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 
+type TransitionDirection = 'forward' | 'backward'
+
 export interface StageButtonConfig {
 	label?: string
 	icon?: Component | null
@@ -177,6 +181,11 @@ const props = withDefaults(
 
 const modal = useTemplateRef<InstanceType<typeof NewModal>>('modal')
 const currentStageIndex = ref<number>(0)
+const transitionDirection = ref<TransitionDirection>('forward')
+
+const transitionName = computed(() =>
+	transitionDirection.value === 'forward' ? 'stage-forward' : 'stage-backward',
+)
 
 function show() {
 	modal.value?.show()
@@ -368,7 +377,8 @@ watch([breadcrumbStages, currentStageIndex], () => nextTick(() => updateScrollSh
 	immediate: true,
 })
 
-watch(currentStageIndex, () => {
+watch(currentStageIndex, (newIndex, oldIndex) => {
+	transitionDirection.value = newIndex >= oldIndex ? 'forward' : 'backward'
 	scrollToCurrentBreadcrumb()
 })
 
@@ -415,5 +425,30 @@ progress::-moz-progress-bar {
 
 .scrollbar-hide::-webkit-scrollbar {
 	display: none;
+}
+
+.stage-forward-enter-active,
+.stage-forward-leave-active,
+.stage-backward-enter-active,
+.stage-backward-leave-active {
+	transition: all 0.25s ease-out;
+}
+
+.stage-forward-enter-from {
+	opacity: 0;
+	transform: translateX(30px);
+}
+.stage-forward-leave-to {
+	opacity: 0;
+	transform: translateX(-30px);
+}
+
+.stage-backward-enter-from {
+	opacity: 0;
+	transform: translateX(-30px);
+}
+.stage-backward-leave-to {
+	opacity: 0;
+	transform: translateX(30px);
 }
 </style>

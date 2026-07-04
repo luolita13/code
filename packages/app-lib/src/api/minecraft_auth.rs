@@ -36,6 +36,39 @@ pub async fn finish_login(
     crate::state::login_finish(code, flow, &state.pool).await
 }
 
+/// Creates an offline (cracked) Minecraft account for the given username.
+///
+/// No network requests are made; the UUID is derived from the username using the
+/// vanilla `OfflinePlayer:<name>` MD5 algorithm.
+#[tracing::instrument(skip(username))]
+pub async fn login_offline(username: &str) -> crate::Result<Credentials> {
+    let state = State::get().await?;
+
+    crate::state::login_offline(username, &state.pool).await
+}
+
+/// Performs a full Yggdrasil (authlib-injector) login flow.
+///
+/// The server URL may be either the api_root (e.g. `https://littleskin.cn/api/yggdrasil`)
+/// or the authserver endpoint (with a trailing `/authserver`). The
+/// `X-Authlib-Injector-Api-Location` header is honored if present.
+#[tracing::instrument(skip(password))]
+pub async fn login_yggdrasil(
+    server_url: &str,
+    username: &str,
+    password: &str,
+) -> crate::Result<Credentials> {
+    let state = State::get().await?;
+
+    crate::state::yggdrasil_auth::login_yggdrasil(
+        server_url,
+        username,
+        password,
+        &state.pool,
+    )
+    .await
+}
+
 #[tracing::instrument]
 pub async fn get_default_user() -> crate::Result<Option<uuid::Uuid>> {
     let state = State::get().await?;

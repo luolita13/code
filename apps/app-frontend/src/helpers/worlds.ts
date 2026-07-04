@@ -203,7 +203,7 @@ export async function start_join_server(instanceId: string, address: string): Pr
 }
 
 export async function showWorldInFolder(instanceId: string, worldPath: string) {
-	const fullPath = await get_full_path(instanceId)
+	const fullPath = (await get_full_path(instanceId)).replace(/\\/g, '/')
 	return await openPath(fullPath + '/saves/' + worldPath)
 }
 

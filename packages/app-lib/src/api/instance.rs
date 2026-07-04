@@ -16,7 +16,7 @@ pub use self::content::{
     list_content_sets, sync_content_files,
 };
 pub use self::export_mrpack::{
-    create_mrpack_json, export_mrpack, get_pack_export_candidates,
+    create_mrpack_json, export_mrpack, export_zip, get_pack_export_candidates,
 };
 pub use self::get::{get, get_many, list};
 pub use self::install::get_optimal_jre_key;

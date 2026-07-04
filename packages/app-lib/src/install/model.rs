@@ -183,6 +183,7 @@ impl InstallJobKind {
 pub enum InstallJobStatus {
     Queued,
     Running,
+    Paused,
     Succeeded,
     Failed,
     Interrupted,
@@ -194,6 +195,7 @@ impl InstallJobStatus {
         match self {
             Self::Queued => "queued",
             Self::Running => "running",
+            Self::Paused => "paused",
             Self::Succeeded => "succeeded",
             Self::Failed => "failed",
             Self::Interrupted => "interrupted",
@@ -204,6 +206,7 @@ impl InstallJobStatus {
     pub fn from_stored_str(value: &str) -> Self {
         match value {
             "running" => Self::Running,
+            "paused" => Self::Paused,
             "succeeded" => Self::Succeeded,
             "failed" => Self::Failed,
             "interrupted" => Self::Interrupted,
