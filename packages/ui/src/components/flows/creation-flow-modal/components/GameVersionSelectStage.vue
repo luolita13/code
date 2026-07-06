@@ -22,6 +22,9 @@
 			<template v-for="group in versionGroups" :key="group.id">
 				<div v-if="group.versions.length > 0" class="flex flex-col gap-2">
 					<div class="flex items-center gap-2 sticky top-0 z-10 bg-bg-raised py-1">
+						<div class="version-group-icon" :class="`version-group-icon-${group.id}`">
+							<TagLoaderMinecraftIcon class="version-group-icon-inner" />
+						</div>
 						<span class="text-sm font-semibold text-contrast">{{ group.label }}</span>
 						<span class="text-xs text-secondary">({{ group.versions.length }})</span>
 					</div>
@@ -231,4 +234,27 @@ function formatDate(dateStr: string): string {
 .version-icon-old-alpha {
 	background: linear-gradient(135deg, #9ca3af, #4b5563);
 }
+
+.version-group-icon {
+	width: 1.5rem;
+	height: 1.5rem;
+	border-radius: 0.375rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	flex-shrink: 0;
+}
+
+.version-group-icon-inner {
+	width: 1rem;
+	height: 1rem;
+	flex-shrink: 0;
+}
+
+.version-group-icon-recent { background: linear-gradient(135deg, #00b884, #008660); }
+.version-group-icon-release { background: linear-gradient(135deg, #1bd96a, #0f9c47); }
+.version-group-icon-snapshot { background: linear-gradient(135deg, #ff9a3c, #ff6b00); }
+.version-group-icon-old-beta { background: linear-gradient(135deg, #6b7280, #374151); }
+.version-group-icon-old-alpha { background: linear-gradient(135deg, #9ca3af, #4b5563); }
 </style>

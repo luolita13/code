@@ -52,62 +52,17 @@
 			</div>
 		</Card>
 
-		<!-- Quick actions -->
-		<Card>
-			<template #header>
-				<h3 class="text-lg font-semibold text-contrast m-0">
-					{{ formatMessage(messages.quickManagement) }}
-				</h3>
-			</template>
-			<div class="grid grid-cols-2 gap-3 p-2">
-				<ButtonStyled type="outlined">
-					<button class="!h-10 flex items-center justify-center gap-2" @click="resetInstance">
-						<RefreshCwIcon class="size-4" />
-						{{ formatMessage(messages.resetInstance) }}
-					</button>
-				</ButtonStyled>
-				<ButtonStyled type="outlined" color="red">
-					<button class="!h-10 flex items-center justify-center gap-2" @click="deleteInstance">
-						<TrashIcon class="size-4" />
-						{{ formatMessage(messages.deleteInstance) }}
-					</button>
-				</ButtonStyled>
-			</div>
-		</Card>
-
-		<ConfirmModalWrapper
-			ref="resetConfirmModal"
-			:title="formatMessage(messages.resetInstance)"
-			:description="formatMessage(messages.confirmReset)"
-			:proceed-label="formatMessage(messages.resetInstance)"
-			@proceed="doResetInstance"
-		/>
-		<ConfirmModalWrapper
-			ref="deleteConfirmModal"
-			:title="formatMessage(messages.deleteInstance)"
-			:description="formatMessage(messages.confirmDelete)"
-			:proceed-label="formatMessage(messages.deleteInstance)"
-			@proceed="doDeleteInstance"
-		/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { RefreshCwIcon, TrashIcon } from '@modrinth/assets'
-import { ButtonStyled, Card, defineMessages, injectNotificationManager, StyledInput, Toggle, useVIntl } from '@modrinth/ui'
-import { ref, useTemplateRef } from 'vue'
+import { Card, defineMessages, StyledInput, Toggle, useVIntl } from '@modrinth/ui'
+import { ref } from 'vue'
 
-import ConfirmModalWrapper from '@/components/ui/modal/ConfirmModalWrapper.vue'
-import { remove as removeInstance } from '@/helpers/instance'
-import { install_existing_instance } from '@/helpers/install'
 import { injectInstanceSettings } from '@/providers/instance-settings'
 
 const { formatMessage } = useVIntl()
-const { addNotification, handleError } = injectNotificationManager()
 const ctx = injectInstanceSettings()
-
-const resetConfirmModal = useTemplateRef('resetConfirmModal')
-const deleteConfirmModal = useTemplateRef('deleteConfirmModal')
 
 const messages = defineMessages({
 	windowTitle: { id: 'instance.settings.advanced.window-title', defaultMessage: 'Game window title' },
@@ -136,28 +91,6 @@ const messages = defineMessages({
 		id: 'instance.settings.advanced.proxy-placeholder',
 		defaultMessage: 'http://host:port',
 	},
-	quickManagement: {
-		id: 'instance.settings.advanced.quick-management',
-		defaultMessage: 'Quick management',
-	},
-	resetInstance: {
-		id: 'instance.settings.advanced.reset-instance',
-		defaultMessage: 'Reset instance',
-	},
-	deleteInstance: {
-		id: 'instance.settings.advanced.delete-instance',
-		defaultMessage: 'Delete instance',
-	},
-	confirmReset: {
-		id: 'instance.settings.advanced.confirm-reset',
-		defaultMessage: 'Reset this instance? Core files will be reinstalled.',
-	},
-	confirmDelete: {
-		id: 'instance.settings.advanced.confirm-delete',
-		defaultMessage: 'Delete this instance permanently? This cannot be undone.',
-	},
-	resetDone: { id: 'instance.settings.advanced.reset-done', defaultMessage: 'Instance reset' },
-	deleted: { id: 'instance.settings.advanced.deleted', defaultMessage: 'Instance deleted' },
 })
 
 // Local state (these would be persisted via edit() in a full implementation)
@@ -167,30 +100,4 @@ const disableFileVerify = ref(false)
 const useProxy = ref(false)
 const proxyUrl = ref('')
 
-function resetInstance() {
-	resetConfirmModal.value?.show()
-}
-
-async function doResetInstance() {
-	try {
-		await install_existing_instance(ctx.instance.value.id, true)
-		addNotification({ type: 'success', title: formatMessage(messages.resetDone) })
-	} catch (err) {
-		handleError(err as Error)
-	}
-}
-
-function deleteInstance() {
-	deleteConfirmModal.value?.show()
-}
-
-async function doDeleteInstance() {
-	try {
-		await removeInstance(ctx.instance.value.id)
-		addNotification({ type: 'success', title: formatMessage(messages.deleted) })
-		ctx.closeModal?.()
-	} catch (err) {
-		handleError(err as Error)
-	}
-}
 </script>

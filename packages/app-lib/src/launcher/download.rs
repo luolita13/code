@@ -94,6 +94,8 @@ impl MinecraftDownloadProgress {
         force: bool,
     ) -> crate::Result<()> {
         if total == 0 {
+            // Even when total is 0, check for cancellation
+            self.reporter.check_cancel().await?;
             return Ok(());
         }
 
@@ -104,6 +106,8 @@ impl MinecraftDownloadProgress {
             && current < total
             && current.saturating_sub(last_reported) < min_delta
         {
+            // Throttled: skip the full emit, but still check cancellation
+            self.reporter.check_cancel().await?;
             return Ok(());
         }
 

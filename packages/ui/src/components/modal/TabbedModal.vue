@@ -77,9 +77,9 @@ defineExpose({ show, hide, selectedTab, setTab })
 		<template v-if="$slots.title" #title>
 			<slot name="title" />
 		</template>
-		<div class="grid grid-cols-[auto_1fr] p-6 pb-3 pr-0">
+		<div class="grid grid-cols-[220px_1fr] p-6 pb-3 pr-0">
 			<div
-				class="flex flex-col gap-1 border-solid pr-4 border-0 border-r-[1px] border-divider min-w-[200px]"
+				class="flex flex-col gap-1 border-solid pr-4 border-0 border-r-[1px] border-divider"
 			>
 				<component
 					:is="tab.href ? 'a' : 'button'"
@@ -88,11 +88,11 @@ defineExpose({ show, hide, selectedTab, setTab })
 					:href="tab.href ?? undefined"
 					:target="tab.href ? '_blank' : undefined"
 					:rel="tab.href ? 'noopener noreferrer' : undefined"
-					:class="`flex gap-2 items-center text-left rounded-xl px-4 py-2 border-none text-nowrap font-semibold cursor-pointer active:scale-[0.97] transition-all no-underline ${!tab.href && selectedTab === index ? 'bg-button-bgSelected text-button-textSelected' : 'bg-transparent text-button-text hover:bg-button-bg hover:text-contrast'}`"
+					:class="`flex gap-2 items-center text-left rounded-xl px-4 py-2 border-none font-semibold cursor-pointer active:scale-[0.97] transition-all no-underline ${!tab.href && selectedTab === index ? 'bg-button-bgSelected text-button-textSelected' : 'bg-transparent text-button-text hover:bg-button-bg hover:text-contrast'}`"
 					@click="!tab.href && setTab(index)"
 				>
 					<component :is="tab.icon" class="w-4 h-4 flex-shrink-0" />
-					<span>{{ formatMessage(tab.name) }}</span>
+					<span class="truncate">{{ formatMessage(tab.name) }}</span>
 					<span
 						v-if="tab.badge"
 						class="rounded-full px-1.5 py-0.5 text-xs font-bold bg-brand-highlight text-brand-green"
@@ -104,7 +104,7 @@ defineExpose({ show, hide, selectedTab, setTab })
 
 				<slot name="footer" />
 			</div>
-			<div class="relative">
+			<div class="relative min-w-0">
 				<Transition
 					enter-active-class="transition-all duration-200 ease-out"
 					enter-from-class="opacity-0 max-h-0"
@@ -121,7 +121,7 @@ defineExpose({ show, hide, selectedTab, setTab })
 
 				<div
 					ref="scrollContainer"
-					class="overflow-y-auto px-6 pb-6 h-screen max-h-[min(65vh,600px)]"
+					class="overflow-y-auto overflow-x-hidden px-6 pb-6 h-screen max-h-[min(65vh,600px)]"
 					@scroll="checkScrollState"
 				>
 					<Suspense>

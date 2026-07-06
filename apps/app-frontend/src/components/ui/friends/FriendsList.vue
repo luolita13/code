@@ -174,6 +174,34 @@ const messages = defineMessages({
 		id: 'friends.action.view-friend-requests',
 		defaultMessage: '{count} friend {count, plural, one {request} other {requests}}',
 	},
+	viewFriendRequestsTitle: {
+		id: 'friends.modal.view-friend-requests',
+		defaultMessage: 'View friend requests',
+	},
+	noPendingRequests: {
+		id: 'friends.modal.no-pending-requests',
+		defaultMessage: 'You have no pending friend requests :C',
+	},
+	sentYouRequest: {
+		id: 'friends.modal.sent-you-request',
+		defaultMessage: '{username} sent you a friend request',
+	},
+	youSentRequest: {
+		id: 'friends.modal.you-sent-request',
+		defaultMessage: 'You sent {username} a friend request',
+	},
+	accept: {
+		id: 'friends.modal.accept',
+		defaultMessage: 'Accept',
+	},
+	ignore: {
+		id: 'friends.modal.ignore',
+		defaultMessage: 'Ignore',
+	},
+	cancel: {
+		id: 'friends.modal.cancel',
+		defaultMessage: 'Cancel',
+	},
 	searchFriends: {
 		id: 'friends.search-friends-placeholder',
 		defaultMessage: 'Search friends...',
@@ -215,8 +243,8 @@ const messages = defineMessages({
 </script>
 
 <template>
-	<ModalWrapper ref="friendInvitesModal" header="View friend requests">
-		<p v-if="incomingRequests.length === 0">You have no pending friend requests :C</p>
+	<ModalWrapper ref="friendInvitesModal" :header="formatMessage(messages.viewFriendRequestsTitle)">
+		<p v-if="incomingRequests.length === 0">{{ formatMessage(messages.noPendingRequests) }}</p>
 		<div v-else class="flex flex-col gap-4 min-w-[40rem]">
 			<div v-for="friend in incomingRequests" :key="friend.username" class="flex gap-2">
 				<Avatar :src="friend.avatar" class="w-12 h-12 rounded-full" size="2.25rem" circle />
@@ -224,10 +252,10 @@ const messages = defineMessages({
 					<div>
 						<p class="m-0">
 							<template v-if="friend.id === userCredentials?.user_id">
-								<span class="text-contrast">{{ friend.username }}</span> sent you a friend request
+								{{ formatMessage(messages.sentYouRequest, { username: friend.username }) }}
 							</template>
 							<template v-else>
-								You sent <span class="font-bold">{{ friend.username }}</span> a friend request
+								{{ formatMessage(messages.youSentRequest, { username: friend.username }) }}
 							</template>
 						</p>
 						<p class="m-0 text-sm text-secondary">
@@ -239,13 +267,13 @@ const messages = defineMessages({
 							<ButtonStyled color="brand">
 								<button @click="addFriend(friend)">
 									<UserPlusIcon />
-									Accept
+									{{ formatMessage(messages.accept) }}
 								</button>
 							</ButtonStyled>
 							<ButtonStyled>
 								<button @click="removeFriend(friend)">
 									<XIcon />
-									Ignore
+									{{ formatMessage(messages.ignore) }}
 								</button>
 							</ButtonStyled>
 						</template>
@@ -253,7 +281,7 @@ const messages = defineMessages({
 							<ButtonStyled>
 								<button @click="removeFriend(friend)">
 									<XIcon />
-									Cancel
+									{{ formatMessage(messages.cancel) }}
 								</button>
 							</ButtonStyled>
 						</template>

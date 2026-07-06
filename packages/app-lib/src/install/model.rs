@@ -4,6 +4,7 @@ use crate::state::{
     InstanceInstallStage, InstanceLink, InstanceMetadata, ModLoader,
 };
 use chrono::{DateTime, Utc};
+use modrinth_content_management::ResolveContentPlan;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use uuid::Uuid;
@@ -82,6 +83,29 @@ pub enum InstallRequest {
         #[serde(default)]
         post_install_edit: Option<InstallPostInstallEdit>,
     },
+    /// Install mods/resourcepacks/datapacks/shaders to an existing instance.
+    /// Goes through the InstallJob system so that progress is reported to the
+    /// ActionBar download popup (same as modpack installs).
+    InstallContent {
+        instance_id: String,
+        plan: ResolveContentPlan,
+    },
+    /// Install a single CurseForge file (mod/resourcepack/shader/datapack/world)
+    /// to an existing instance. Downloads directly from CurseForge CDN and
+    /// places the file in the appropriate folder based on content_type.
+    InstallCurseForgeFile {
+        instance_id: String,
+        mod_id: i64,
+        file_id: i64,
+        file_name: String,
+        download_url: Option<String>,
+        /// "mod" | "resourcepack" | "shader" | "datapack" | "world" | "modpack"
+        content_type: String,
+        /// Display title (project name) for the install popup
+        title: String,
+        /// Optional icon URL for the install popup
+        icon_url: Option<String>,
+    },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
@@ -111,13 +135,19 @@ impl InstallRequest {
             Self::InstallPackToExistingInstance { .. } => {
                 InstallJobKind::InstallPackToExistingInstance
             }
+            Self::InstallContent { .. } => InstallJobKind::InstallContent,
+            Self::InstallCurseForgeFile { .. } => {
+                InstallJobKind::InstallCurseForgeFile
+            }
         }
     }
 
     pub fn target(&self) -> InstallTarget {
         match self {
             Self::InstallExistingInstance { instance_id, .. }
-            | Self::InstallPackToExistingInstance { instance_id, .. } => {
+            | Self::InstallPackToExistingInstance { instance_id, .. }
+            | Self::InstallContent { instance_id, .. }
+            | Self::InstallCurseForgeFile { instance_id, .. } => {
                 InstallTarget::ExistingInstance {
                     instance_id: instance_id.clone(),
                 }
@@ -129,7 +159,9 @@ impl InstallRequest {
     pub fn cleanup(&self) -> InstallCleanup {
         match self {
             Self::InstallExistingInstance { instance_id, .. }
-            | Self::InstallPackToExistingInstance { instance_id, .. } => {
+            | Self::InstallPackToExistingInstance { instance_id, .. }
+            | Self::InstallContent { instance_id, .. }
+            | Self::InstallCurseForgeFile { instance_id, .. } => {
                 InstallCleanup::RestoreExistingInstance {
                     instance_id: instance_id.clone(),
                 }
@@ -148,6 +180,8 @@ pub enum InstallJobKind {
     DuplicateInstance,
     InstallExistingInstance,
     InstallPackToExistingInstance,
+    InstallContent,
+    InstallCurseForgeFile,
 }
 
 impl InstallJobKind {
@@ -161,6 +195,8 @@ impl InstallJobKind {
             Self::InstallPackToExistingInstance => {
                 "install_pack_to_existing_instance"
             }
+            Self::InstallContent => "install_content",
+            Self::InstallCurseForgeFile => "install_curseforge_file",
         }
     }
 
@@ -173,6 +209,8 @@ impl InstallJobKind {
             "install_pack_to_existing_instance" => {
                 Self::InstallPackToExistingInstance
             }
+            "install_content" => Self::InstallContent,
+            "install_curseforge_file" => Self::InstallCurseForgeFile,
             _ => Self::CreateInstance,
         }
     }

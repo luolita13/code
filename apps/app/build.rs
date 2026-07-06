@@ -82,6 +82,14 @@ fn main() {
                     ),
             )
             .plugin(
+                "system",
+                InlinedPlugin::new()
+                    .commands(&["get_system_info"])
+                    .default_permission(
+                        DefaultPermissionRule::AllowAllCommands,
+                    ),
+            )
+            .plugin(
                 "logs",
                 InlinedPlugin::new()
                     .commands(&[
@@ -154,6 +162,7 @@ fn main() {
                         "install_duplicate_instance",
                         "install_existing_instance",
                         "install_pack_to_existing_instance",
+                        "install_content_to_instance",
                         "install_job_list",
                         "install_job_get",
                         "install_job_retry",
@@ -203,6 +212,7 @@ fn main() {
                         "instance_update_project",
                         "instance_add_project_from_version",
                         "instance_install_project_with_dependencies",
+                        "instance_resolve_install_plan",
                         "instance_switch_project_version_with_dependencies",
                         "instance_add_project_from_path",
                         "instance_toggle_disable_project",
@@ -333,6 +343,22 @@ fn main() {
                         "get_server_status",
                         "start_join_singleplayer_world",
                         "start_join_server",
+                    ])
+                    .default_permission(
+                        DefaultPermissionRule::AllowAllCommands,
+                    ),
+            )
+            .plugin(
+                "curseforge",
+                InlinedPlugin::new()
+                    .commands(&[
+                        "cf_search",
+                        "cf_get_mod",
+                        "cf_get_mod_files",
+                        "cf_get_file",
+                        "cf_get_file_download_url",
+                        "cf_get_categories",
+                        "cf_install_file",
                     ])
                     .default_permission(
                         DefaultPermissionRule::AllowAllCommands,

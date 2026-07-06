@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import {
-	CancelIcon,
 	PauseIcon,
 	PlayIcon,
-	RefreshIcon,
+	RefreshCwIcon,
 	UpdatedIcon,
 	XIcon,
 } from '@modrinth/assets'
@@ -21,13 +20,12 @@ import { convertFileSrc } from '@tauri-apps/api/core'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { computed, onUnmounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
 
+import { install_job_listener } from '@/helpers/events'
 import {
 	install_job_cancel,
 	install_job_dismiss,
 	install_job_list,
-	install_job_listener,
 	install_job_pause,
 	install_job_resume,
 	install_job_retry,
@@ -44,10 +42,7 @@ dayjs.extend(relativeTime)
 
 const { formatMessage } = useVIntl()
 const { handleError } = injectNotificationManager()
-const route = useRoute()
 const breadcrumbs = useBreadcrumbs()
-
-breadcrumbs.setRootContext({ name: 'Downloads', link: route.path })
 
 const messages = defineMessages({
 	title: {
@@ -103,6 +98,8 @@ const messages = defineMessages({
 		defaultMessage: 'Install job',
 	},
 })
+
+breadcrumbs.setRootContext({ name: formatMessage(messages.title), link: '/downloads' })
 
 // 阶段描述的 i18n 消息映射
 const phaseMessages = defineMessages({
@@ -192,7 +189,7 @@ const statusMessages = defineMessages({
 	},
 })
 
-// 状态对应的 Badge 颜色
+// 状态对应的 Badge 颜色和类型
 const statusColorMap: Record<InstallJobStatus, string> = {
 	queued: 'yellow',
 	running: 'brand',
@@ -201,6 +198,15 @@ const statusColorMap: Record<InstallJobStatus, string> = {
 	failed: 'red',
 	interrupted: 'gray',
 	canceled: 'gray',
+}
+const statusTypeMap: Record<InstallJobStatus, string> = {
+	queued: 'queued',
+	running: 'running',
+	paused: 'paused',
+	succeeded: 'succeeded',
+	failed: 'failed',
+	interrupted: 'interrupted',
+	canceled: 'canceled',
 }
 
 const jobs = ref<InstallJobSnapshot[]>([])
@@ -239,11 +245,6 @@ function getProgressFraction(job: InstallJobSnapshot): number | null {
 	if (job.status === 'succeeded') return 1
 	if (!job.progress || !job.progress.total || job.progress.total <= 0) return null
 	return Math.max(0, Math.min(1, job.progress.current / job.progress.total))
-}
-
-function formatTimestamp(dateStr: string): string {
-	if (!dateStr) return '—'
-	return dayjs(dateStr).format('YYYY-MM-DD HH:mm')
 }
 
 function formatRelativeTime(dateStr: string): string {
@@ -304,8 +305,8 @@ async function refresh() {
 async function cancelJob(jobId: string) {
 	try {
 		await install_job_cancel(jobId)
-	} catch (err) {
-		handleError(err)
+	} catch (err: unknown) {
+		handleError(err	)
 	}
 	await refresh()
 }
@@ -313,7 +314,7 @@ async function cancelJob(jobId: string) {
 async function pauseJob(jobId: string) {
 	try {
 		await install_job_pause(jobId)
-	} catch (err) {
+	} catch (err: unknown) {
 		handleError(err)
 	}
 	await refresh()
@@ -322,7 +323,7 @@ async function pauseJob(jobId: string) {
 async function resumeJob(jobId: string) {
 	try {
 		await install_job_resume(jobId)
-	} catch (err) {
+	} catch (err: unknown) {
 		handleError(err)
 	}
 	await refresh()
@@ -331,7 +332,7 @@ async function resumeJob(jobId: string) {
 async function retryJob(jobId: string) {
 	try {
 		await install_job_retry(jobId)
-	} catch (err) {
+	} catch (err: unknown) {
 		handleError(err)
 	}
 	await refresh()
@@ -340,7 +341,7 @@ async function retryJob(jobId: string) {
 async function dismissJob(jobId: string) {
 	try {
 		await install_job_dismiss(jobId)
-	} catch (err) {
+	} catch (err: unknown) {
 		handleError(err)
 	}
 	await refresh()
@@ -377,7 +378,7 @@ await refresh()
 			</h1>
 			<ButtonStyled color="brand">
 				<button :disabled="loading" @click="refresh">
-					<RefreshIcon :class="{ 'animate-spin': loading }" />
+					<RefreshCwIcon :class="{ 'animate-spin': loading }" />
 					{{ formatMessage(messages.refresh) }}
 				</button>
 			</ButtonStyled>
@@ -399,7 +400,7 @@ await refresh()
 						</div>
 						<div class="job-title-group">
 							<span class="job-title">{{ getJobTitle(job) }}</span>
-							<Badge :color="statusColorMap[job.status]">
+							<Badge :type="statusTypeMap[job.status]" :color="statusColorMap[job.status]">
 								{{ getStatusLabel(job.status) }}
 							</Badge>
 						</div>

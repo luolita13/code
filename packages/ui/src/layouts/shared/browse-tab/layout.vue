@@ -185,7 +185,8 @@ const messages = defineMessages({
 			"
 			class="offline"
 		>
-			<p>{{ formatMessage(messages.noResults) }}</p>
+			<component :is="toValue(ctx.emptyState)" v-if="ctx.emptyState" />
+			<p v-else>{{ formatMessage(messages.noResults) }}</p>
 		</section>
 
 		<ProjectCardList v-else :layout="ctx.effectiveLayout.value">

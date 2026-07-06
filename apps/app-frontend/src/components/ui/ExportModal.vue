@@ -45,11 +45,13 @@ const messages = defineMessages({
 	},
 	exportButton: { id: 'app.export-modal.export-button', defaultMessage: 'Export' },
 	formatLabel: { id: 'app.export-modal.format-label', defaultMessage: 'Format' },
+	formatMrpack: { id: 'app.export-modal.format.mrpack', defaultMessage: 'Modrinth (.mrpack)' },
+	formatZip: { id: 'app.export-modal.format.zip', defaultMessage: 'ZIP archive (.zip)' },
 })
 
 const formatOptions = [
-	{ value: 'mrpack', label: 'Modrinth (.mrpack)' },
-	{ value: 'zip', label: 'ZIP archive (.zip)' },
+	{ value: 'mrpack', label: formatMessage(messages.formatMrpack) },
+	{ value: 'zip', label: formatMessage(messages.formatZip) },
 ]
 
 const props = defineProps({
@@ -106,7 +108,7 @@ const exportPack = async () => {
 		defaultPath: `${nameInput.value} ${versionInput.value}.${extension}`,
 		filters: [
 			{
-				name: isZip ? 'ZIP archive' : 'Modrinth Modpack',
+				name: isZip ? formatMessage(messages.formatZip) : formatMessage(messages.formatMrpack),
 				extensions: [extension],
 			},
 		],

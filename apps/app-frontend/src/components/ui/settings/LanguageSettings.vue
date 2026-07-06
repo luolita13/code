@@ -2,6 +2,7 @@
 import {
 	Admonition,
 	AutoLink,
+	defineMessages,
 	IntlFormatted,
 	LanguageSelector,
 	languageSelectorMessages,
@@ -14,6 +15,13 @@ import { get, set } from '@/helpers/settings.ts'
 import i18n from '@/i18n.config'
 
 const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+	language: {
+		id: 'app.language-settings.language',
+		defaultMessage: 'Language',
+	},
+})
 
 const platform = computed(() => formatMessage(languageSelectorMessages.platformApp))
 
@@ -43,7 +51,7 @@ async function onLocaleChange(newLocale: string) {
 </script>
 
 <template>
-	<h2 class="m-0 text-lg font-semibold text-contrast">Language</h2>
+	<h2 class="m-0 text-lg font-semibold text-contrast">{{ formatMessage(messages.language) }}</h2>
 
 	<Admonition type="warning" class="mt-2 mb-4">
 		{{ formatMessage(languageSelectorMessages.languageWarning, { platform }) }}

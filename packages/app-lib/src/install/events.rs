@@ -40,6 +40,16 @@ impl InstallProgressReporter {
         }
     }
 
+    /// Check for cancellation/pause without emitting a progress update.
+    /// Useful in throttled paths where we skip the full emit but still
+    /// want to respond promptly to a cancel signal.
+    pub async fn check_cancel(&self) -> crate::Result<()> {
+        if let Some(guard) = self.guard.lock().await.as_mut() {
+            guard.check().await?;
+        }
+        Ok(())
+    }
+
     pub async fn update(
         &self,
         phase: InstallPhaseId,
@@ -47,9 +57,7 @@ impl InstallProgressReporter {
         details: InstallPhaseDetails,
     ) -> crate::Result<()> {
         // Check for cancellation/pause on every progress update
-        if let Some(guard) = self.guard.lock().await.as_mut() {
-            guard.check().await?;
-        }
+        self.check_cancel().await?;
 
         let app_state = crate::State::get().await?;
         let mut state = self.state.lock().await;

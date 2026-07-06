@@ -78,7 +78,7 @@
 </template>
 
 <script setup>
-import { injectLoadingState } from '@modrinth/ui'
+import { defineMessages, injectLoadingState, useVIntl } from '@modrinth/ui'
 import { ref, watch } from 'vue'
 
 import ProgressBar from '@/components/ui/ProgressBar.vue'
@@ -87,6 +87,13 @@ import { loading_listener } from '@/helpers/events.js'
 const doneLoading = ref(false)
 const loadingProgress = ref(0)
 const message = ref()
+
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+	updatingDirectory: { id: 'app.splash.updating-directory', defaultMessage: 'Updating app directory...' },
+	checkingUpdates: { id: 'app.splash.checking-updates', defaultMessage: 'Checking for updates...' },
+})
 
 const MIN_DISPLAY_MS = 500
 const mountedAt = Date.now()
@@ -135,10 +142,10 @@ function fakeLoadingIncrease() {
 loading_listener(async (e) => {
 	if (e.event.type === 'directory_move') {
 		loadingProgress.value = 100 * (e.fraction ?? 1)
-		message.value = 'Updating app directory...'
+		message.value = formatMessage(messages.updatingDirectory)
 	} else if (e.event.type === 'checking_for_updates') {
 		loadingProgress.value = 100 * (e.fraction ?? 1)
-		message.value = 'Checking for updates...'
+		message.value = formatMessage(messages.checkingUpdates)
 	}
 })
 </script>

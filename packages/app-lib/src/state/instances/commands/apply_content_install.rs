@@ -199,6 +199,7 @@ pub(crate) async fn resolve_install_plan(
         .map_err(resolver_error)
 }
 
+#[allow(dead_code)]
 pub(crate) async fn install_resolved_content_plan(
     instance_id: &str,
     plan: &ResolveContentPlan,
@@ -212,6 +213,78 @@ pub(crate) async fn install_resolved_content_plan(
     )
     .await?;
     for dependency in &plan.dependencies {
+        add_resolved_content(
+            instance_id,
+            dependency,
+            DownloadReason::Dependency,
+            state,
+        )
+        .await?;
+    }
+
+    Ok(())
+}
+
+/// Install a resolved content plan with progress reporting via InstallProgressReporter.
+/// Each file download updates the reporter so the ActionBar download popup shows progress.
+pub(crate) async fn install_resolved_content_plan_with_reporter(
+    instance_id: &str,
+    plan: &ResolveContentPlan,
+    state: &State,
+    reporter: &crate::install::events::InstallProgressReporter,
+) -> crate::Result<()> {
+    use crate::install::model::{
+        InstallPhaseDetails, InstallPhaseId, InstallProgress,
+    };
+
+    let total_files = 1 + plan.dependencies.len() as u64;
+    let mut current_file: u64 = 0;
+
+    // Primary content
+    {
+        current_file += 1;
+        reporter
+            .update(
+                InstallPhaseId::DownloadingContent,
+                Some(InstallProgress {
+                    current: current_file,
+                    total: total_files,
+                    secondary: None,
+                }),
+                InstallPhaseDetails::Modpack {
+                    project_id: Some(plan.primary.project_id.clone()),
+                    version_id: Some(plan.primary.version_id.clone()),
+                    title: None,
+                },
+            )
+            .await?;
+        add_resolved_content(
+            instance_id,
+            &plan.primary,
+            DownloadReason::Standalone,
+            state,
+        )
+        .await?;
+    }
+
+    // Dependencies
+    for dependency in &plan.dependencies {
+        current_file += 1;
+        reporter
+            .update(
+                InstallPhaseId::DownloadingContent,
+                Some(InstallProgress {
+                    current: current_file,
+                    total: total_files,
+                    secondary: None,
+                }),
+                InstallPhaseDetails::Modpack {
+                    project_id: Some(dependency.project_id.clone()),
+                    version_id: Some(dependency.version_id.clone()),
+                    title: None,
+                },
+            )
+            .await?;
         add_resolved_content(
             instance_id,
             dependency,

@@ -96,7 +96,7 @@
 						</ButtonStyled>
 						<ButtonStyled size="large" circular type="transparent">
 							<OverflowMenu
-								:tooltip="`More options`"
+								:tooltip="formatMessage(messages.moreOptions)"
 								:options="[
 									{
 										id: 'open-in-browser',
@@ -113,11 +113,11 @@
 										link: `https://modrinth.com/report?item=project&itemID=${data.id}`,
 									},
 								]"
-								aria-label="More options"
+								:aria-label="formatMessage(messages.moreOptions)"
 							>
 								<MoreVerticalIcon aria-hidden="true" />
-								<template #open-in-browser> <ExternalIcon /> Open in browser </template>
-								<template #report> <ReportIcon /> Report </template>
+								<template #open-in-browser> <ExternalIcon /> {{ formatMessage(messages.openInBrowser) }} </template>
+								<template #report> <ReportIcon /> {{ formatMessage(messages.report) }} </template>
 							</OverflowMenu>
 						</ButtonStyled>
 					</template>
@@ -139,7 +139,7 @@
 						</ButtonStyled>
 						<ButtonStyled size="large" circular type="transparent">
 							<OverflowMenu
-								:tooltip="`More options`"
+								:tooltip="formatMessage(messages.moreOptions)"
 								:options="[
 									{
 										id: 'follow',
@@ -168,13 +168,13 @@
 										link: `https://modrinth.com/report?item=project&itemID=${data.id}`,
 									},
 								]"
-								aria-label="More options"
+								:aria-label="formatMessage(messages.moreOptions)"
 							>
 								<MoreVerticalIcon aria-hidden="true" />
-								<template #open-in-browser> <ExternalIcon /> Open in browser </template>
-								<template #follow> <HeartIcon /> Follow </template>
+								<template #open-in-browser> <ExternalIcon /> {{ formatMessage(messages.openInBrowser) }} </template>
+								<template #follow> <HeartIcon /> {{ formatMessage(messages.follow) }} </template>
 								<template #save> <BookmarkIcon /> Save </template>
-								<template #report> <ReportIcon /> Report </template>
+								<template #report> <ReportIcon /> {{ formatMessage(messages.report) }} </template>
 							</OverflowMenu>
 						</ButtonStyled>
 					</template>
@@ -342,6 +342,30 @@ const messages = defineMessages({
 	alreadyInstalled: {
 		id: 'app.project.install-button.already-installed',
 		defaultMessage: 'This project is already installed',
+	},
+	moreOptions: {
+		id: 'app.project.more-options',
+		defaultMessage: 'More options',
+	},
+	openInBrowser: {
+		id: 'app.project.open-in-browser',
+		defaultMessage: 'Open in browser',
+	},
+	report: {
+		id: 'app.project.report',
+		defaultMessage: 'Report',
+	},
+	follow: {
+		id: 'app.project.follow',
+		defaultMessage: 'Follow',
+	},
+	unfollow: {
+		id: 'app.project.unfollow',
+		defaultMessage: 'Unfollow',
+	},
+	share: {
+		id: 'app.project.share',
+		defaultMessage: 'Share',
 	},
 })
 

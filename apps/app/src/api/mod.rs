@@ -13,6 +13,7 @@ pub mod minecraft_skins;
 pub mod mr_auth;
 pub mod process;
 pub mod settings;
+pub mod system;
 pub mod shortcuts;
 pub mod tags;
 pub mod utils;
@@ -23,6 +24,7 @@ mod ads_occlusion_macos;
 #[cfg(windows)]
 mod ads_occlusion_windows;
 pub mod cache;
+pub mod curseforge;
 pub mod files;
 pub mod friends;
 pub mod worlds;

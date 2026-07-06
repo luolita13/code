@@ -7,9 +7,11 @@
 <script setup>
 import {
 	ConsolePageLayout,
+	defineMessages,
 	injectModrinthClient,
 	injectNotificationManager,
 	provideConsoleManager,
+	useVIntl,
 } from '@modrinth/ui'
 import { computed, onUnmounted, ref, shallowRef, triggerRef, watch, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
@@ -21,6 +23,15 @@ import { delete_logs_by_filename, get_output_by_filename } from '@/helpers/logs.
 const client = injectModrinthClient()
 const { handleError } = injectNotificationManager()
 const route = useRoute()
+
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+	liveLog: { id: 'app.instance.logs.live-log', defaultMessage: 'Live Log' },
+	unknown: { id: 'app.instance.logs.unknown', defaultMessage: 'Unknown' },
+	logN: { id: 'app.instance.logs.log-n', defaultMessage: 'Log {n}' },
+	deleteDisabled: { id: 'app.instance.logs.delete-disabled', defaultMessage: 'Cannot delete latest.log while the instance is running' },
+})
 
 const props = defineProps({
 	instance: {
@@ -70,7 +81,7 @@ await hydrate()
 
 function buildLogList(rawLogs) {
 	return [
-		{ name: 'Live Log', live: true },
+		{ name: formatMessage(messages.liveLog), live: true },
 		...rawLogs
 			.filter(
 				(log) =>
@@ -82,7 +93,7 @@ function buildLogList(rawLogs) {
 			)
 			.map((log) => ({
 				...log,
-				name: log.filename || 'Unknown',
+				name: log.filename || formatMessage(messages.unknown),
 			})),
 	]
 }
@@ -105,7 +116,7 @@ const filteredLogs = computed(() =>
 const logSources = computed(() =>
 	filteredLogs.value.map((l, i) => ({
 		id: String(i),
-		name: l?.name ?? `Log ${i}`,
+		name: l?.name ?? formatMessage(messages.logN, { n: i }),
 		live: l?.live ?? false,
 	})),
 )
@@ -165,7 +176,7 @@ provideConsoleManager({
 	},
 	onDelete: deleteSelectedLog,
 	deleteDisabled,
-	deleteDisabledTooltip: 'Cannot delete latest.log while the instance is running',
+	deleteDisabledTooltip: formatMessage(messages.deleteDisabled),
 	shareDisabled: computed(() => props.offline),
 	emptyStateType: 'instance',
 	crashAnalysis,

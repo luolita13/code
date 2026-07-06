@@ -51,11 +51,11 @@ const messages = defineMessages({
 	},
 	minimizeLauncherTitle: {
 		id: 'app.appearance-settings.minimize-launcher.title',
-		defaultMessage: 'Minimize launcher',
+		defaultMessage: 'Launcher visibility',
 	},
 	minimizeLauncherDescription: {
 		id: 'app.appearance-settings.minimize-launcher.description',
-		defaultMessage: 'Minimize the launcher when a Minecraft process starts.',
+		defaultMessage: 'Behavior of the launcher window when a Minecraft process starts.',
 	},
 	defaultLandingPageTitle: {
 		id: 'app.appearance-settings.default-landing-page.title',
@@ -182,14 +182,27 @@ watch(
 		<Toggle id="native-decorations" v-model="settings.native_decorations" />
 	</div>
 
-	<div class="mt-6 flex items-center justify-between">
+	<div class="mt-6 flex items-center justify-between gap-4">
 		<div>
 			<h2 class="m-0 text-lg font-semibold text-contrast">
 				{{ formatMessage(messages.minimizeLauncherTitle) }}
 			</h2>
 			<p class="m-0 mt-1">{{ formatMessage(messages.minimizeLauncherDescription) }}</p>
 		</div>
-		<Toggle id="minimize-launcher" v-model="settings.hide_on_process_start" />
+		<Combobox
+			id="launcher-visibility"
+			:model-value="String(settings.launcher_visibility)"
+			@update:model-value="(v: string) => settings.launcher_visibility = Number(v)"
+			name="Launcher visibility dropdown"
+			class="max-w-56"
+			:options="[
+				{ value: '5', label: 'Keep open' },
+				{ value: '4', label: 'Minimize' },
+				{ value: '3', label: 'Hide, reopen on exit' },
+				{ value: '2', label: 'Hide, exit on game exit' },
+				{ value: '0', label: 'Exit immediately' },
+			]"
+		/>
 	</div>
 
 	<div class="mt-6 flex items-center justify-between">

@@ -32,7 +32,7 @@
 					<span class="truncate w-full text-left">{{
 						selectedAccount ? selectedAccount.profile.name : formatMessage(messages.selectAccount)
 					}}</span>
-					<span class="text-secondary text-xs">{{ formatMessage(messages.minecraftAccount) }}</span>
+					<span class="text-secondary text-xs">{{ selectedAccount ? getAccountTypeLabel(selectedAccount) : formatMessage(messages.minecraftAccount) }}</span>
 				</div>
 			</div>
 		</template>
@@ -237,6 +237,18 @@ function getAccountBadgeText(account: MinecraftCredential): string {
 	}
 }
 
+function getAccountTypeLabel(account: MinecraftCredential): string {
+	switch (account.login_type) {
+		case 'offline':
+			return formatMessage(messages.offlineAccount)
+		case 'yggdrasil':
+			return formatMessage(messages.yggdrasilAccount)
+		case 'microsoft':
+		default:
+			return formatMessage(messages.microsoftAccount)
+	}
+}
+
 async function setAccount(account: MinecraftCredential) {
 	defaultUser.value = account.profile.id
 	await set_default_user(account.profile.id).catch(handleError)
@@ -293,6 +305,18 @@ const messages = defineMessages({
 	minecraftAccount: {
 		id: 'minecraft-account.label',
 		defaultMessage: 'Minecraft account',
+	},
+	microsoftAccount: {
+		id: 'minecraft-account.type.microsoft',
+		defaultMessage: 'Microsoft account',
+	},
+	offlineAccount: {
+		id: 'minecraft-account.type.offline',
+		defaultMessage: 'Offline account',
+	},
+	yggdrasilAccount: {
+		id: 'minecraft-account.type.yggdrasil',
+		defaultMessage: 'Yggdrasil account',
 	},
 	signInToMinecraft: {
 		id: 'minecraft-account.sign-in',

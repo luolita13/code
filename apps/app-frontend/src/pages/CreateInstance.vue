@@ -137,6 +137,10 @@ const messages = defineMessages({
 		id: 'app.create-instance.name.placeholder',
 		defaultMessage: 'Enter instance name',
 	},
+	imageFilter: {
+		id: 'app.create-instance.image-filter',
+		defaultMessage: 'Images',
+	},
 	selectIcon: {
 		id: 'app.create-instance.icon.select',
 		defaultMessage: 'Select icon',
@@ -153,6 +157,12 @@ const messages = defineMessages({
 		id: 'app.create-instance.creating',
 		defaultMessage: 'Creating...',
 	},
+	instanceCreated: { id: 'app.create-instance.instance-created', defaultMessage: 'Instance created' },
+	versions: { id: 'app.create-instance.versions', defaultMessage: 'versions' },
+	stable: { id: 'app.create-instance.stable', defaultMessage: 'Stable' },
+	gameVersion: { id: 'app.create-instance.game-version', defaultMessage: 'Game version' },
+	loader: { id: 'app.create-instance.loader', defaultMessage: 'Loader' },
+	loaderVersion: { id: 'app.create-instance.loader-version', defaultMessage: 'Loader version' },
 })
 
 // Steps
@@ -441,7 +451,7 @@ async function selectIcon() {
 		const result = await open({
 			multiple: false,
 			directory: false,
-			filters: [{ name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'webp', 'gif'] }],
+			filters: [{ name: formatMessage(messages.imageFilter), extensions: ['png', 'jpg', 'jpeg', 'webp', 'gif'] }],
 		})
 		if (result && typeof result === 'string') {
 			instanceIconPath.value = result
@@ -473,7 +483,7 @@ async function createInstance() {
 			loaderVersion,
 			iconPath: instanceIconPath.value,
 		})
-		addNotification({ type: 'success', title: 'Instance created' })
+		addNotification({ type: 'success', title: formatMessage(messages.instanceCreated) })
 		router.push('/library')
 	} catch (err) {
 		handleError(err as Error)
@@ -578,7 +588,7 @@ function versionGroupClass(id: string): string {
 								</div>
 								<div class="flex flex-col">
 									<span class="font-semibold text-contrast">{{ group.label }}</span>
-									<span class="text-xs text-secondary">{{ group.versions.length }} versions</span>
+									<span class="text-xs text-secondary">{{ group.versions.length }} {{ formatMessage(messages.versions) }}</span>
 								</div>
 							</div>
 							<ChevronDownIcon v-if="!group.pinned" class="size-5 text-secondary transition-transform" :class="{ 'rotate-180': expandedGroups[group.id] }" />
@@ -688,7 +698,7 @@ function versionGroupClass(id: string): string {
 								>
 									<div class="flex items-center gap-2 flex-1 min-w-0">
 										<span class="font-semibold text-contrast truncate">{{ v.id }}</span>
-										<span v-if="v.stable" class="text-xs px-1.5 py-0.5 rounded bg-green-highlight text-green">Stable</span>
+										<span v-if="v.stable" class="text-xs px-1.5 py-0.5 rounded bg-green-highlight text-green">{{ formatMessage(messages.stable) }}</span>
 									</div>
 									<CheckIcon v-if="selectedLoader === opt.id && selectedLoaderVersion === v.id" class="size-4 text-brand" />
 								</div>
@@ -739,15 +749,15 @@ function versionGroupClass(id: string): string {
 
 					<div class="rounded-lg bg-surface-2 border border-surface-5 p-4 flex flex-col gap-2">
 						<div class="flex justify-between">
-							<span class="text-sm text-secondary">Game version</span>
+							<span class="text-sm text-secondary">{{ formatMessage(messages.gameVersion) }}</span>
 							<span class="font-semibold text-contrast">{{ selectedGameVersion }}</span>
 						</div>
 						<div class="flex justify-between">
-							<span class="text-sm text-secondary">Loader</span>
+							<span class="text-sm text-secondary">{{ formatMessage(messages.loader) }}</span>
 							<span class="font-semibold text-contrast">{{ loaderInfoMap[selectedLoader]?.label ?? selectedLoader }}</span>
 						</div>
 						<div v-if="selectedLoaderVersion" class="flex justify-between">
-							<span class="text-sm text-secondary">Loader version</span>
+							<span class="text-sm text-secondary">{{ formatMessage(messages.loaderVersion) }}</span>
 							<span class="font-semibold text-contrast">{{ selectedLoaderVersion }}</span>
 						</div>
 					</div>

@@ -1,0 +1,659 @@
+app.update.complete-toast.title	Version {version} was successfully installed!	App.vue
+app.update.complete-toast.text	Click here to view the changelog.	App.vue
+app.auth-servers.unreachable.header	Cannot reach authentication servers	App.vue
+app.auth-servers.unreachable.body	Minecraft authentication servers may be down right now. Check your internet connection and try again later.	App.vue
+app.nav.home	Home	App.vue
+app.nav.worlds	Worlds	App.vue
+app.nav.discover	Discover content	App.vue
+app.nav.skins	Skin selector	App.vue
+app.nav.library	Library	App.vue
+app.nav.hosting	Modrinth Hosting	App.vue
+app.nav.downloads	Downloads	App.vue
+app.nav.create-instance	Create new instance	App.vue
+app.sidebar.playing-as	Playing as	App.vue
+app.restarting	Restarting...	App.vue
+app.signed-in-as	Signed in as	App.vue
+app.sign-out	Sign out	App.vue
+app.sign-in-modrinth	Sign in to a Modrinth account	App.vue
+app.settings.title	Settings	App.vue
+app.news.title	News	App.vue
+app.news.view-all	View all news	App.vue
+app.update-popup.title	Update available	App.vue
+app.update-popup.download-complete	Download complete	App.vue
+app.update-popup.body.metered	Modrinth App v{version} is available. Use your package manager to update for the latest features and fixes!	App.vue
+app.update-popup.reload	Reload to update	App.vue
+app.update-popup.download	Download ({size})	App.vue
+app.update-popup.changelog	Changelog	App.vue
+app.grid-display.search-placeholder	Search	components\GridDisplay.vue
+app.grid-display.sort-by	Sort by: 	components\GridDisplay.vue
+app.grid-display.group-by	Group by: 	components\GridDisplay.vue
+app.grid-display.select-placeholder	Select...	components\GridDisplay.vue
+app.grid-display.label	Instances	components\GridDisplay.vue
+app.grid-display.name	Name	components\GridDisplay.vue
+app.grid-display.last-played	Last played	components\GridDisplay.vue
+app.grid-display.date-created	Date created	components\GridDisplay.vue
+app.grid-display.date-modified	Date modified	components\GridDisplay.vue
+app.grid-display.game-version	Game version	components\GridDisplay.vue
+app.grid-display.group	Group	components\GridDisplay.vue
+app.grid-display.loader	Loader	components\GridDisplay.vue
+app.grid-display.none	None	components\GridDisplay.vue
+app.grid-display.play	Play	components\GridDisplay.vue
+app.grid-display.stop	Stop	components\GridDisplay.vue
+app.grid-display.add-content	Add content	components\GridDisplay.vue
+app.grid-display.view-instance	View instance	components\GridDisplay.vue
+app.grid-display.duplicate-instance	Duplicate instance	components\GridDisplay.vue
+app.grid-display.delete	Delete	components\GridDisplay.vue
+app.grid-display.open-folder	Open folder	components\GridDisplay.vue
+app.grid-display.copy-path	Copy path	components\GridDisplay.vue
+app.action-bar.offline	Offline	components\ui\AppActionBar.vue
+app.action-bar.view-instance	View instance	components\ui\AppActionBar.vue
+app.action-bar.show-more-running-instances	Show more running instances	components\ui\AppActionBar.vue
+app.action-bar.hide-more-running-instances	Hide more running instances	components\ui\AppActionBar.vue
+app.action-bar.primary-instance	Primary instance	components\ui\AppActionBar.vue
+app.action-bar.make-primary-instance	Make primary instance	components\ui\AppActionBar.vue
+app.action-bar.stop-instance	Stop instance	components\ui\AppActionBar.vue
+app.action-bar.view-logs	View logs	components\ui\AppActionBar.vue
+app.action-bar.no-instances-running	No instances running	components\ui\AppActionBar.vue
+app.action-bar.downloading-java	Downloading Java {version}	components\ui\AppActionBar.vue
+app.action-bar.downloads	Downloads	components\ui\AppActionBar.vue
+app.action-bar.view-active-downloads	View active downloads	components\ui\AppActionBar.vue
+app.action-bar.update	Update	components\ui\AppActionBar.vue
+app.action-bar.downloading-update	Downloading update	components\ui\AppActionBar.vue
+app.action-bar.reload-to-update	Reload to update	components\ui\AppActionBar.vue
+app.error-modal.title.error	An error occurred	components\ui\ErrorModal.vue
+app.error-modal.title.minecraft-auth	Unable to sign in to Minecraft	components\ui\ErrorModal.vue
+app.error-modal.title.minecraft-sign-in	Sign in to Minecraft	components\ui\ErrorModal.vue
+app.error-modal.title.directory-move	Could not change app directory	components\ui\ErrorModal.vue
+app.error-modal.title.no-loader	No loader selected	components\ui\ErrorModal.vue
+app.error-modal.title.state-init	Error initializing Modrinth App	components\ui\ErrorModal.vue
+app.error-modal.network-issues	Network issues	components\ui\ErrorModal.vue
+app.error-modal.network-issues.description	It looks like there were issues with the Modrinth App connecting to Microsoft's servers. This is often the result of a poor connection, so we recommend trying again to see if it works. If issues continue to persist, follow the steps in	components\ui\ErrorModal.vue
+app.error-modal.network-issues.description-suffix	to troubleshoot.	components\ui\ErrorModal.vue
+app.error-modal.hosts-file.description	The Modrinth App tried to connect to Microsoft / Xbox / Minecraft services, but the remote server rejected the connection. This may indicate that these services are blocked by the hosts file. Please visit	components\ui\ErrorModal.vue
+app.error-modal.hosts-file.description-suffix	for steps on how to fix the issue.	components\ui\ErrorModal.vue
+app.error-modal.our-support-article	our support article	components\ui\ErrorModal.vue
+app.error-modal.try-another-account	Try another Microsoft account	components\ui\ErrorModal.vue
+app.error-modal.try-another-account.description	Double check you've signed in with the right account. You may own Minecraft on a different Microsoft account.	components\ui\ErrorModal.vue
+app.error-modal.try-another-account.button	Try another account	components\ui\ErrorModal.vue
+app.error-modal.game-pass.title	Using PC Game Pass, coming from Bedrock, or just bought the game?	components\ui\ErrorModal.vue
+app.error-modal.game-pass.description	Try signing in with the official Minecraft Launcher first. Once you're done, come back here and sign in!	components\ui\ErrorModal.vue
+app.error-modal.try-signing-in-again	Try signing in again	components\ui\ErrorModal.vue
+app.error-modal.change-directory-permissions	Change directory permissions	components\ui\ErrorModal.vue
+app.error-modal.change-directory-permissions.description	It looks like the Modrinth App is unable to write to the directory you selected. Please adjust the permissions of the directory and try again or cancel the directory change.	components\ui\ErrorModal.vue
+app.error-modal.not-enough-space	Not enough space	components\ui\ErrorModal.vue
+app.error-modal.not-enough-space.description	It looks like there is not enough space on the disk containing the directory you selected. Please free up some space and try again or cancel the directory change.	components\ui\ErrorModal.vue
+app.error-modal.migrate-failed.description	The Modrinth App is unable to migrate to the new directory you selected. Please contact support for help or cancel the directory change.	components\ui\ErrorModal.vue
+app.error-modal.retry-directory-change	Retry directory change	components\ui\ErrorModal.vue
+app.error-modal.cancel-directory-change	Cancel directory change	components\ui\ErrorModal.vue
+app.error-modal.sign-in-to-play.description	To play this instance, you must sign in through Microsoft below. If you don't have a Minecraft account, you can purchase the game on the Minecraft website.	components\ui\ErrorModal.vue
+app.error-modal.sign-in-to-minecraft	Sign in to Minecraft	components\ui\ErrorModal.vue
+app.error-modal.state-init.description	Modrinth App failed to load correctly. This may be because of a corrupted file, or because the app is missing crucial files.	components\ui\ErrorModal.vue
+app.error-modal.state-init.fix	You may be able to fix it through one of the following ways:	components\ui\ErrorModal.vue
+app.error-modal.state-init.fix-1	Ensuring you are connected to the internet, then try restarting the app.	components\ui\ErrorModal.vue
+app.error-modal.state-init.fix-2	Redownloading the app.	components\ui\ErrorModal.vue
+app.error-modal.no-loader.description	The Modrinth App failed to find the loader version for this instance.	components\ui\ErrorModal.vue
+app.error-modal.no-loader.fix	To resolve this, you need to repair the instance. Click the button below to do so.	components\ui\ErrorModal.vue
+app.error-modal.repair-instance	Repair instance	components\ui\ErrorModal.vue
+app.error-modal.support.description	If nothing is working and you need help, visit our support page and start a chat using the widget in the bottom right and we will be more than happy to assist! Make sure to provide the following debug information to the agent:	components\ui\ErrorModal.vue
+app.error-modal.get-support	Get support	components\ui\ErrorModal.vue
+app.error-modal.close	Close	components\ui\ErrorModal.vue
+app.error-modal.debug-info	Debug information	components\ui\ErrorModal.vue
+app.error-modal.copy-debug-info	Copy debug info	components\ui\ErrorModal.vue
+app.error-modal.no-error-message	No error message.	components\ui\ErrorModal.vue
+app.export-modal.header	Export modpack	components\ui\ExportModal.vue
+app.export-modal.modpack-name-label	Modpack name	components\ui\ExportModal.vue
+app.export-modal.modpack-name-placeholder	Modpack name	components\ui\ExportModal.vue
+app.export-modal.version-number-label	Version number	components\ui\ExportModal.vue
+app.export-modal.version-number-placeholder	1.0.0	components\ui\ExportModal.vue
+app.export-modal.description-placeholder	Enter modpack description...	components\ui\ExportModal.vue
+app.export-modal.export-button	Export	components\ui\ExportModal.vue
+app.export-modal.format-label	Format	components\ui\ExportModal.vue
+app.export-modal.format.mrpack	Modrinth (.mrpack)	components\ui\ExportModal.vue
+app.export-modal.format.zip	ZIP archive (.zip)	components\ui\ExportModal.vue
+app.home.random-mods.title	Random mod spotlight	components\ui\home\HomeRandomMods.vue
+app.home.random-mods.reroll	Reroll	components\ui\home\HomeRandomMods.vue
+app.home.recent-screenshots.title	Recent screenshots	components\ui\home\HomeRecentScreenshots.vue
+app.home.system-status.title	System & quick actions	components\ui\home\HomeSystemStatus.vue
+app.home.system-status.java-versions	Java versions	components\ui\home\HomeSystemStatus.vue
+app.home.system-status.system-memory	System memory	components\ui\home\HomeSystemStatus.vue
+app.home.system-status.instances	Instances	components\ui\home\HomeSystemStatus.vue
+app.home.system-status.new-instance	New instance	components\ui\home\HomeSystemStatus.vue
+app.home.system-status.browse-modpacks	Browse modpacks	components\ui\home\HomeSystemStatus.vue
+app.home.update-reminders.title	Updates available	components\ui\home\HomeUpdateReminders.vue
+app.home.update-reminders.new-version	New version	components\ui\home\HomeUpdateReminders.vue
+app.home.update-reminders.update	Update	components\ui\home\HomeUpdateReminders.vue
+app.add-server-modal.header	Add server to instance	components\ui\install_flow\AddServerToInstanceModal.vue
+app.add-server-modal.warning	This server may not be compatible with all instances.	components\ui\install_flow\AddServerToInstanceModal.vue
+app.add-server-modal.search-placeholder	Search for an instance	components\ui\install_flow\AddServerToInstanceModal.vue
+app.add-server-modal.adding	Adding...	components\ui\install_flow\AddServerToInstanceModal.vue
+app.add-server-modal.added	Added	components\ui\install_flow\AddServerToInstanceModal.vue
+app.add-server-modal.add	Add	components\ui\install_flow\AddServerToInstanceModal.vue
+app.add-server-modal.cancel	Cancel	components\ui\install_flow\AddServerToInstanceModal.vue
+app.instance-card.stop	Stop	components\ui\Instance.vue
+app.instance-card.play	Play	components\ui\Instance.vue
+app.instance-card.loading	Instance is loading...	components\ui\Instance.vue
+app.instance-card.installing	Installing...	components\ui\Instance.vue
+app.instance-card.repair	Repair	components\ui\Instance.vue
+app.instance-card.never-played	Never played	components\ui\Instance.vue
+app.instance-card.played	Played {time}	components\ui\Instance.vue
+app.instance-settings.icon	Icon	components\ui\instance_settings\GeneralSettings.vue
+app.java-detection.header	Select java version	components\ui\JavaDetectionModal.vue
+app.java-detection.selected	Selected	components\ui\JavaDetectionModal.vue
+app.java-detection.select	Select	components\ui\JavaDetectionModal.vue
+app.java-detection.not-found	No java installations found!	components\ui\JavaDetectionModal.vue
+app.java-detection.cancel	Cancel	components\ui\JavaDetectionModal.vue
+app.java-detection.column.version	Version	components\ui\JavaDetectionModal.vue
+app.java-detection.column.path	Path	components\ui\JavaDetectionModal.vue
+app.java-detection.column.actions	Actions	components\ui\JavaDetectionModal.vue
+app.minecraft-auth.header	Sign in Failed	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.warning	We couldn't sign you into your Microsoft account. This may be due to account restrictions or regional limitations.	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.what-happened	What we think happened	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.how-to-fix	How to fix it	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.unknown-error	Unknown error	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.unknown-error.desc	We don't recognize this error and can't recommend specific steps to resolve it.	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.unknown-error.try	Try visiting	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.minecraft-login	Minecraft Login	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.unknown-error.support	and signing in, as it may prompt you with the necessary steps. You can also contact support and we can look into it further.	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.contact-support	Contact support	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.sign-in-again	Sign in again	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.debug-info	Debug information	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.copy-debug-info	Copy debug info	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.minecraft-auth.no-error-message	No error message.	components\ui\minecraft-auth-error-modal\MinecraftAuthErrorModal.vue
+app.settings.developer-mode-enabled	Developer mode enabled.	components\ui\modal\AppSettingsModal.vue
+app.settings.title	Settings	components\ui\modal\AppSettingsModal.vue
+app.settings.tabs.appearance	Appearance	components\ui\modal\AppSettingsModal.vue
+app.settings.tabs.home	Home page	components\ui\modal\AppSettingsModal.vue
+app.settings.tabs.language	Language	components\ui\modal\AppSettingsModal.vue
+app.settings.tabs.privacy	Privacy	components\ui\modal\AppSettingsModal.vue
+app.settings.tabs.java-installations	Java installations	components\ui\modal\AppSettingsModal.vue
+app.settings.tabs.default-instance-options	Default instance options	components\ui\modal\AppSettingsModal.vue
+app.settings.tabs.resource-management	Resource management	components\ui\modal\AppSettingsModal.vue
+app.settings.downloading	Downloading v{version}	components\ui\modal\AppSettingsModal.vue
+app.instance.confirm-delete.header	Delete instance	components\ui\modal\ConfirmDeleteInstanceModal.vue
+app.instance.confirm-delete.admonition-header	This action cannot be undone	components\ui\modal\ConfirmDeleteInstanceModal.vue
+app.instance.confirm-delete.admonition-body	All data for your instance will be permanently deleted, including your worlds, configs, and all installed content.	components\ui\modal\ConfirmDeleteInstanceModal.vue
+app.instance.confirm-delete.delete-button	Delete instance	components\ui\modal\ConfirmDeleteInstanceModal.vue
+app.modal.install-to-play.header	Install to play	components\ui\modal\InstallToPlayModal.vue
+app.modal.install-to-play.shared-server-instance	Shared server instance	components\ui\modal\InstallToPlayModal.vue
+app.modal.install-to-play.content-required	Content required	components\ui\modal\InstallToPlayModal.vue
+app.modal.install-to-play.server-requires-mods	This server requires mods to play. Click Install to set up the required files from Modrinth, then launch directly into the server.	components\ui\modal\InstallToPlayModal.vue
+app.modal.install-to-play.required-modpack	Required modpack	components\ui\modal\InstallToPlayModal.vue
+app.modal.install-to-play.shared-instance	Shared instance	components\ui\modal\InstallToPlayModal.vue
+app.modal.install-to-play.mod-count	{count, plural, one {# mod} other {# mods}}	components\ui\modal\InstallToPlayModal.vue
+app.modal.install-to-play.install-button	Install	components\ui\modal\InstallToPlayModal.vue
+app.modal.install-to-play.view-contents	View contents	components\ui\modal\InstallToPlayModal.vue
+app.instance.modpack-already-installed.header	Modpack already installed	components\ui\modal\ModpackAlreadyInstalledModal.vue
+app.instance.modpack-already-installed.body	This modpack is already installed in the <bold>{instanceName}</bold> instance. Are you sure you want to duplicate it?	components\ui\modal\ModpackAlreadyInstalledModal.vue
+app.instance.modpack-already-installed.instance	Instance	components\ui\modal\ModpackAlreadyInstalledModal.vue
+app.instance.modpack-already-installed.create	Create	components\ui\modal\ModpackAlreadyInstalledModal.vue
+app.modal.update-to-play.header	Update to play	components\ui\modal\UpdateToPlayModal.vue
+app.modal.update-to-play.update-required	Update required	components\ui\modal\UpdateToPlayModal.vue
+app.modal.update-to-play.update-required-description	An update is required to play {name}. Please update to the latest version to launch the game.	components\ui\modal\UpdateToPlayModal.vue
+app.modpack-version.header	Change modpack version	components\ui\ModpackVersionModal.vue
+app.modpack-version.name	Name	components\ui\ModpackVersionModal.vue
+app.modpack-version.supports	Supports	components\ui\ModpackVersionModal.vue
+app.pride-fundraiser.title	Open Pride fundraiser	components\ui\PrideFundraiserBanner.vue
+app.pride-fundraiser.dismiss	Dismiss Pride fundraiser	components\ui\PrideFundraiserBanner.vue
+app.pride-fundraiser.of	of	components\ui\PrideFundraiserBanner.vue
+app.pride-fundraiser.supporter	supporter	components\ui\PrideFundraiserBanner.vue
+app.pride-fundraiser.supporters	supporters	components\ui\PrideFundraiserBanner.vue
+app.pride-fundraiser.day-left	day left	components\ui\PrideFundraiserBanner.vue
+app.pride-fundraiser.days-left	days left	components\ui\PrideFundraiserBanner.vue
+app.instance.resource-pack.search-placeholder	Search {count} packs...	components\ui\ResourcePackManager.vue
+app.instance.resource-pack.open-folder	Open folder	components\ui\ResourcePackManager.vue
+app.instance.resource-pack.add-from-file	Add from file	components\ui\ResourcePackManager.vue
+app.instance.resource-pack.delete	Delete	components\ui\ResourcePackManager.vue
+app.instance.resource-pack.empty-heading	No packs installed	components\ui\ResourcePackManager.vue
+app.instance.resource-pack.empty-description	Add a pack file to get started	components\ui\ResourcePackManager.vue
+app.instance.resource-pack.added	Pack added	components\ui\ResourcePackManager.vue
+app.instance.resource-pack.deleted	Pack deleted	components\ui\ResourcePackManager.vue
+app.instance.resource-pack.confirm-delete	Are you sure you want to delete "{name}"?	components\ui\ResourcePackManager.vue
+app.appearance-settings.color-theme.title	Color theme	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.color-theme.description	Select your preferred color theme for Modrinth App.	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.advanced-rendering.title	Advanced rendering	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.advanced-rendering.description	Enables advanced rendering such as blur effects that may cause performance issues without hardware-accelerated rendering.	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.hide-nametag.title	Hide nametag	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.hide-nametag.description	Disables the nametag above your player on the skins page.	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.native-decorations.title	Native decorations	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.native-decorations.description	Use system window frame (app restart required).	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.minimize-launcher.title	Launcher visibility	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.minimize-launcher.description	Behavior of the launcher window when a Minecraft process starts.	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.default-landing-page.title	Default landing page	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.default-landing-page.description	Change the page to which the launcher opens on.	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.default-landing-page.home	Home	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.default-landing-page.library	Library	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.select-option	Select an option	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.jump-back-into-worlds.title	Jump back into worlds	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.jump-back-into-worlds.description	Includes recent worlds in the "Jump back in" section on the Home page.	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.toggle-sidebar.title	Toggle sidebar	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.toggle-sidebar.description	Enables the ability to toggle the sidebar.	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.unknown-pack-warning.title	Warn me before installing unknown modpacks	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.unknown-pack-warning.description	If you attempt to install a Modrinth Pack file (.mrpack) that isn't hosted on Modrinth, we'll make sure you understand the risks before installing it.	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.skip-non-essential-warnings.title	Skip non-essential warnings	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.skip-non-essential-warnings.description	Automatically skips low-risk confirmations like duplicate modpack installs, normal content deletion, bulk updates, unlinking modpacks, and repair prompts. Dangerous warnings will still be shown.	components\ui\settings\AppearanceSettings.vue
+app.appearance-settings.show-play-time.title	Show play time	components\ui\settings\AppearanceSettings.vue
+app.default-instance.fullscreen.title	Fullscreen	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.fullscreen.description	Overwrites the options.txt file to start in full screen when launched.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.width.title	Width	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.width.description	The width of the game window when launched.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.width.placeholder	Enter width...	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.height.title	Height	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.height.description	The height of the game window when launched.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.height.placeholder	Enter height...	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.memory-allocation.title	Memory allocation	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.memory-allocation.description	Choose how memory is allocated to instances.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.memory-mode.auto	Auto	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.memory-mode.custom	Custom	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.memory-allocated	Memory allocated	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.memory-warning	You are allocating more than 75% of your system memory to Minecraft. This may cause instability. Consider using "Auto" mode.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.memory-auto-hint	Memory will be automatically calculated based on system RAM, instance type, and mod count.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.launch-options.title	Launch options	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.process-priority.title	Process priority	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.process-priority.description	Set the CPU priority of the game process.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.priority.normal	Normal	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.priority.above-normal	Above normal	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.priority.high	High	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.priority.below-normal	Below normal	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.priority.realtime	Realtime	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.ip-protocol.title	IP protocol preference	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.ip-protocol.description	Preferred IP stack for Java networking.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.ip.default	Default	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.ip.prefer-v4	Prefer IPv4	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.ip.prefer-v6	Prefer IPv6	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.window-title.title	Game window title	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.window-title.placeholder	e.g. {name} | Player: {user}	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.window-title.hint	Supports: {user} (username), {name} (instance name), {version} (game version)	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.custom-info.title	Custom info	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.custom-info.placeholder	e.g. MyLauncher	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.custom-info.hint	Displayed in the game's bottom-left corner and F3 debug screen.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.java-arguments.title	Java arguments	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.reset-to-default	Reset to default	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.java-arguments.placeholder	Enter java arguments...	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.env-variables.title	Environmental variables	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.env-variables.placeholder	Enter environmental variables...	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.hooks.title	Hooks	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.pre-launch-hook.title	Pre-launch hook	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.pre-launch-hook.placeholder	Enter pre-launch command...	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.pre-launch-hook.description	Ran before the instance is launched.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.pre-launch-wait	Wait for command to finish before launching	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.wrapper-hook.title	Wrapper hook	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.wrapper-hook.placeholder	Enter wrapper command...	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.wrapper-hook.description	Wrapper command for launching Minecraft.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.post-exit-hook.title	Post-exit hook	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.post-exit-hook.placeholder	Enter post-exit command...	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.post-exit-hook.description	Ran after the game closes.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.advanced-launch-options.title	Advanced launch options	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.renderer.title	Renderer	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.renderer.description	Override the OpenGL renderer. May cause instability.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.renderer.default	Default	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.renderer.llvmpipe	llvmpipe (software)	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.renderer.d3d12	Vulkan (Zink)	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.extra-game-args.title	Extra game arguments	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.extra-game-args.placeholder	e.g. --demo	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.extra-game-args.hint	Appended to the end of the Minecraft launch arguments.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.high-perf-gpu.title	High-performance GPU	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.high-perf-gpu.description	Request the high-performance GPU for the game process.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.use-java-exe.title	Use java.exe	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.use-java-exe.description	Use java.exe instead of javaw.exe. Provides a console window for debugging.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.compatibility.title	Compatibility	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.disable-jlw.title	Disable Java Launch Wrapper	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.disable-jlw.description	Disable the theseus.jar launch wrapper. May break some features.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.disable-lf.title	Disable LegacyFix	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.disable-lf.description	Disable compatibility fixes for old Minecraft versions.	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.disable-lwjgl.title	Disable LWJGL Unsafe Agent	components\ui\settings\DefaultInstanceSettings.vue
+app.default-instance.disable-lwjgl.description	Disable the LWJGL unsafe agent that patches FFM API performance issues.	components\ui\settings\DefaultInstanceSettings.vue
+app.home-settings.title	Home page customization	components\ui\settings\HomeSettings.vue
+app.home-settings.description	Toggle which sections appear on the Home page.	components\ui\settings\HomeSettings.vue
+app.home-settings.jump-back-in.title	Jump back in	components\ui\settings\HomeSettings.vue
+app.home-settings.jump-back-in.description	Shows recently played worlds and instances.	components\ui\settings\HomeSettings.vue
+app.home-settings.discover-modpacks.title	Discover a modpack	components\ui\settings\HomeSettings.vue
+app.home-settings.discover-modpacks.description	Shows popular modpacks from Modrinth.	components\ui\settings\HomeSettings.vue
+app.home-settings.discover-mods.title	Discover mods	components\ui\settings\HomeSettings.vue
+app.home-settings.discover-mods.description	Shows popular mods from Modrinth.	components\ui\settings\HomeSettings.vue
+app.home-settings.update-reminders.title	Game update reminders	components\ui\settings\HomeSettings.vue
+app.home-settings.update-reminders.description	Shows instances with available modpack or mod updates.	components\ui\settings\HomeSettings.vue
+app.home-settings.system-status.title	System status & quick actions	components\ui\settings\HomeSettings.vue
+app.home-settings.system-status.description	Shows Java installations, system memory, and quick launch actions.	components\ui\settings\HomeSettings.vue
+app.home-settings.recent-screenshots.title	Recent screenshots	components\ui\settings\HomeSettings.vue
+app.home-settings.recent-screenshots.description	Shows recent screenshots from all instances.	components\ui\settings\HomeSettings.vue
+app.home-settings.random-mods.title	Random mod spotlight	components\ui\settings\HomeSettings.vue
+app.home-settings.random-mods.description	Shows a random mod recommendation each time you open Home.	components\ui\settings\HomeSettings.vue
+app.java-settings.java-location	Java {version} location	components\ui\settings\JavaSettings.vue
+app.language-settings.language	Language	components\ui\settings\LanguageSettings.vue
+app.privacy-settings.personalized-ads	Personalized ads	components\ui\settings\PrivacySettings.vue
+app.privacy-settings.personalized-ads.desc	Modrinth's ad provider, Aditude, shows ads based on your preferences. By disabling this option, you opt out and ads will no longer be shown based on your interests.	components\ui\settings\PrivacySettings.vue
+app.privacy-settings.telemetry	Telemetry	components\ui\settings\PrivacySettings.vue
+app.privacy-settings.telemetry.desc	Modrinth collects anonymized analytics and usage data to improve our user experience and customize your experience. By disabling this option, you opt out and your data will no longer be collected.	components\ui\settings\PrivacySettings.vue
+app.privacy-settings.discord-rpc	Discord RPC	components\ui\settings\PrivacySettings.vue
+app.privacy-settings.discord-rpc.desc	Manages the Discord Rich Presence integration. Disabling this will cause 'Modrinth' to no longer show up as a game or app you are using on your Discord profile.	components\ui\settings\PrivacySettings.vue
+app.privacy-settings.discord-rpc.note	Note: This will not prevent any instance-specific Discord Rich Presence integrations, such as those added by mods. (app restart required to take effect)	components\ui\settings\PrivacySettings.vue
+app.privacy-settings.disabled-in-build	Disabled in this build	components\ui\settings\PrivacySettings.vue
+app.resource-management.app-directory.title	App directory	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.app-directory.description	The directory where the launcher stores all of its files. Changes will be applied after restarting the launcher.	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.purge-cache.confirm-title	Are you sure you want to purge the cache?	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.purge-cache.confirm-description	If you proceed, your entire cache will be purged. This may slow down the app temporarily.	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.purge-cache.button	Purge cache	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.app-cache.title	App cache	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.app-cache.description	The Modrinth app stores a cache of data to speed up loading. This can be purged to force the app to reload data. This may slow down the app temporarily.	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.game-file-source.title	Game file download source	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.game-file-source.description	Source for Minecraft game files (client JAR, libraries, assets). Auto: tries Mojang official first, falls back to BMCLAPI on failure. BMCLAPI First: tries mirror first, falls back to official.	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.game-file-source.bmclapi-first	BMCLAPI First	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.game-file-source.auto	Auto (Recommended)	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.game-file-source.mojang-only	Mojang Official Only	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.community-source.title	Community resource download source	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.community-source.description	Source for Modrinth mod file downloads. Auto: tries Modrinth official first, falls back to MCIMirror on failure. MCIMirror First: tries mirror first, falls back to official. Content browsing always uses Modrinth API.	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.community-source.mcimirror-first	MCIMirror First	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.community-source.auto	Auto (Recommended)	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.community-source.modrinth-only	Modrinth Official Only	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.max-concurrent-downloads.title	Maximum concurrent downloads	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.max-concurrent-downloads.description	The maximum amount of files the launcher can download at the same time. Set this to a lower value if you have a poor internet connection. (app restart required to take effect)	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.max-concurrent-writes.title	Maximum concurrent writes	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.max-concurrent-writes.description	The maximum amount of files the launcher can write to the disk at once. Set this to a lower value if you are frequently getting I/O errors. (app restart required to take effect)	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.db-backups.title	App database backups	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.db-backups.button	Open backups folder	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.db-backups.description	Backups of important app data are stored here in case you need to recover them later.	components\ui\settings\ResourceManagementSettings.vue
+app.resource-management.select-app-directory	Select a new app directory	components\ui\settings\ResourceManagementSettings.vue
+app.skins.modal.edit-title	Editing skin	components\ui\skin\EditSkinModal.vue
+app.skins.modal.add-title	Adding a skin	components\ui\skin\EditSkinModal.vue
+app.skins.modal.texture-section	Texture	components\ui\skin\EditSkinModal.vue
+app.skins.modal.replace-texture-button	Replace texture	components\ui\skin\EditSkinModal.vue
+app.skins.modal.arm-style-section	Arm style	components\ui\skin\EditSkinModal.vue
+app.skins.modal.arm-style-wide	Wide	components\ui\skin\EditSkinModal.vue
+app.skins.modal.arm-style-slim	Slim	components\ui\skin\EditSkinModal.vue
+app.skins.modal.cape-section	Cape	components\ui\skin\EditSkinModal.vue
+app.skins.modal.no-cape-tooltip	No cape	components\ui\skin\EditSkinModal.vue
+app.skins.modal.none-cape-option	None	components\ui\skin\EditSkinModal.vue
+app.skins.modal.cape-fallback-name	Cape	components\ui\skin\EditSkinModal.vue
+app.skins.modal.saving-tooltip	Saving...	components\ui\skin\EditSkinModal.vue
+app.skins.modal.upload-skin-first-tooltip	Upload a skin first!	components\ui\skin\EditSkinModal.vue
+app.skins.modal.make-edit-first-tooltip	Make an edit to the skin first!	components\ui\skin\EditSkinModal.vue
+app.skins.modal.add-skin-button	Add skin	components\ui\skin\EditSkinModal.vue
+app.skins.modal.save-skin-button	Save skin	components\ui\skin\EditSkinModal.vue
+app.skins.section.saved-skins	Saved skins	components\ui\skin\VirtualSkinSectionList.vue
+app.skins.add-button	Add skin	components\ui\skin\VirtualSkinSectionList.vue
+app.skins.add-button.drag-and-drop	Drag and drop	components\ui\skin\VirtualSkinSectionList.vue
+app.skins.edit-button	Edit skin	components\ui\skin\VirtualSkinSectionList.vue
+app.skins.delete-button	Delete skin	components\ui\skin\VirtualSkinSectionList.vue
+app.splash.updating-directory	Updating app directory...	components\ui\SplashScreen.vue
+app.splash.checking-updates	Checking for updates...	components\ui\SplashScreen.vue
+app.url-confirm.install-name	Install {name}	components\ui\URLConfirmModal.vue
+app.url-confirm.installing-from	Installing {version} from Modrinth	components\ui\URLConfirmModal.vue
+app.url-confirm.install	Install	components\ui\URLConfirmModal.vue
+app.instance.worlds.remove-server-modal.title	Remove server	components\ui\world\modal\ConfirmRemoveWorldModal.vue
+app.instance.worlds.delete-world-modal.title	Delete world	components\ui\world\modal\ConfirmRemoveWorldModal.vue
+app.instance.worlds.remove-server-modal.warning-header	Removing {name}	components\ui\world\modal\ConfirmRemoveWorldModal.vue
+app.instance.worlds.delete-world-modal.warning-header	Deleting {name}	components\ui\world\modal\ConfirmRemoveWorldModal.vue
+app.instance.worlds.remove-server-modal.warning-body	This server will be removed from your server list and from the in-game server list. You can add it again later if you know the address.	components\ui\world\modal\ConfirmRemoveWorldModal.vue
+app.instance.worlds.delete-world-modal.warning-body	This world will be permanently deleted from this instance. This action cannot be undone.	components\ui\world\modal\ConfirmRemoveWorldModal.vue
+app.instance.worlds.remove-server-modal.remove-button	Remove server	components\ui\world\modal\ConfirmRemoveWorldModal.vue
+app.instance.worlds.delete-world-modal.delete-button	Delete world	components\ui\world\modal\ConfirmRemoveWorldModal.vue
+app.world.server-modal.placeholder-address	example.modrinth.gg	components\ui\world\modal\ServerModalBody.vue
+app.world.server-modal.select-an-option	Select an option	components\ui\world\modal\ServerModalBody.vue
+app.world.world-item.incompatible-version	Incompatible version {version}	components\ui\world\WorldItem.vue
+app.world.world-item.players-online	{count} online	components\ui\world\WorldItem.vue
+app.world.world-item.offline	Offline	components\ui\world\WorldItem.vue
+app.world.world-item.not-played-yet	Not played yet	components\ui\world\WorldItem.vue
+app.action-bar.installs	Installs	composables\browse\install-job-notifications.ts
+app.action-bar.install.retry	Retry	composables\browse\install-job-notifications.ts
+app.action-bar.install.dismiss	Dismiss	composables\browse\install-job-notifications.ts
+app.action-bar.install.open-instance	Open instance	composables\browse\install-job-notifications.ts
+app.action-bar.install.failed	Install failed	composables\browse\install-job-notifications.ts
+app.action-bar.install.failed-app-closed	Installation failed due to app closing.	composables\browse\install-job-notifications.ts
+app.action-bar.install.failed-network	Installation failed due to a network error.	composables\browse\install-job-notifications.ts
+app.action-bar.install.failed-unknown	Installation failed due to an unknown error.	composables\browse\install-job-notifications.ts
+app.action-bar.install.unknown-instance	Unknown instance	composables\browse\install-job-notifications.ts
+app.install.phase.preparing_instance	Preparing instance	composables\browse\install-job-notifications.ts
+app.install.phase.resolving_pack	Resolving content	composables\browse\install-job-notifications.ts
+app.install.phase.downloading_pack_file	Downloading pack file	composables\browse\install-job-notifications.ts
+app.install.phase.reading_pack_manifest	Reading pack manifest	composables\browse\install-job-notifications.ts
+app.install.phase.downloading_content	Downloading content	composables\browse\install-job-notifications.ts
+app.install.phase.extracting_overrides	Extracting overrides	composables\browse\install-job-notifications.ts
+app.install.phase.resolving_minecraft	Resolving Minecraft	composables\browse\install-job-notifications.ts
+app.install.phase.resolving_loader	Resolving loader	composables\browse\install-job-notifications.ts
+app.install.phase.preparing_java	Preparing Java	composables\browse\install-job-notifications.ts
+app.install.phase.downloading_minecraft	Downloading Minecraft	composables\browse\install-job-notifications.ts
+app.install.phase.running_loader_processors	Running loader processors	composables\browse\install-job-notifications.ts
+app.install.phase.finalizing	Finalizing	composables\browse\install-job-notifications.ts
+app.install.phase.rolling_back	Rolling back	composables\browse\install-job-notifications.ts
+app.install.phase.preparing_java.resolving	Preparing Java {version}	composables\browse\install-job-notifications.ts
+app.install.phase.preparing_java.fetching-metadata	Fetching Java {version}	composables\browse\install-job-notifications.ts
+app.install.phase.preparing_java.downloading	Downloading Java {version}	composables\browse\install-job-notifications.ts
+app.install.phase.preparing_java.extracting	Extracting Java {version}	composables\browse\install-job-notifications.ts
+app.install.phase.preparing_java.validating	Validating Java {version}	composables\browse\install-job-notifications.ts
+app.browse.add-to-instance	Add to instance	composables\browse\use-app-server-browse.ts
+app.browse.add-to-instance-name	Add to {instanceName}	composables\browse\use-app-server-browse.ts
+app.browse.added	Added	composables\browse\use-app-server-browse.ts
+app.browse.already-added	Already added	composables\browse\use-app-server-browse.ts
+app.browse.add-servers-to-instance	Adding server to instance	pages\Browse.vue
+app.browse.add-to-an-instance	Add to an instance	pages\Browse.vue
+app.browse.discover-content	Discover content	pages\Browse.vue
+app.browse.discover-servers	Discover servers	pages\Browse.vue
+app.browse.hide-added-servers	Hide already added servers	pages\Browse.vue
+app.browse.server.installing	Installing	pages\Browse.vue
+app.browse.back-to-instance	Back to instance	pages\Browse.vue
+app.browse.server-instance-content-warning	Adding content can break compatibility when joining the server. Any added content will also be lost when you update the server instance content.	pages\Browse.vue
+app.browse.project-type.modpacks	Modpacks	pages\Browse.vue
+app.browse.project-type.servers	Servers	pages\Browse.vue
+app.browse.project-type.modpacks	Modpacks	pages\Browse.vue
+app.browse.project-type.mods	Mods	pages\Browse.vue
+app.browse.project-type.resource-packs	Resource Packs	pages\Browse.vue
+app.browse.project-type.data-packs	Data Packs	pages\Browse.vue
+app.browse.project-type.shaders	Shaders	pages\Browse.vue
+app.browse.project-type.worlds	Worlds	pages\Browse.vue
+app.browse.source.modrinth	Modrinth	pages\Browse.vue
+app.browse.source.curseforge	CurseForge	pages\Browse.vue
+app.browse.worlds-modrinth-empty	Modrinth does not host worlds. Switch to CurseForge to browse world saves.	pages\Browse.vue
+app.create-instance.title	Create new instance	pages\CreateInstance.vue
+app.create-instance.step.version	Game version	pages\CreateInstance.vue
+app.create-instance.step.loader	Loader	pages\CreateInstance.vue
+app.create-instance.step.config	Final config	pages\CreateInstance.vue
+app.create-instance.search-placeholder	Search versions...	pages\CreateInstance.vue
+app.create-instance.show-all	Show snapshots and old versions	pages\CreateInstance.vue
+app.create-instance.group.latest	Latest versions	pages\CreateInstance.vue
+app.create-instance.group.releases	Releases	pages\CreateInstance.vue
+app.create-instance.group.snapshots	Snapshots	pages\CreateInstance.vue
+app.create-instance.group.old-beta	Old Beta	pages\CreateInstance.vue
+app.create-instance.group.old-alpha	Old Alpha	pages\CreateInstance.vue
+app.create-instance.no-versions	No versions found	pages\CreateInstance.vue
+app.create-instance.select-version-hint	Select a Minecraft version to continue	pages\CreateInstance.vue
+app.create-instance.selected-game-version	Selected Minecraft version	pages\CreateInstance.vue
+app.create-instance.change-version	Change	pages\CreateInstance.vue
+app.create-instance.select-loader-hint	Expand a loader card to choose a version, or select Vanilla	pages\CreateInstance.vue
+app.create-instance.loader.vanilla	Vanilla	pages\CreateInstance.vue
+app.create-instance.loader.vanilla.desc	No mod loader	pages\CreateInstance.vue
+app.create-instance.loader.versions-available	{count} versions available	pages\CreateInstance.vue
+app.create-instance.loader.no-versions	No compatible versions	pages\CreateInstance.vue
+app.create-instance.loader.incompatible	Incompatible with {version}	pages\CreateInstance.vue
+app.create-instance.loader.not-supported	Not supported yet	pages\CreateInstance.vue
+app.create-instance.loader.selected	Selected: {version}	pages\CreateInstance.vue
+app.create-instance.loader-version.label	Loader version	pages\CreateInstance.vue
+app.create-instance.name.label	Instance name	pages\CreateInstance.vue
+app.create-instance.name.placeholder	Enter instance name	pages\CreateInstance.vue
+app.create-instance.image-filter	Images	pages\CreateInstance.vue
+app.create-instance.icon.select	Select icon	pages\CreateInstance.vue
+app.create-instance.icon.remove	Remove icon	pages\CreateInstance.vue
+app.create-instance.create	Create instance	pages\CreateInstance.vue
+app.create-instance.creating	Creating...	pages\CreateInstance.vue
+app.create-instance.instance-created	Instance created	pages\CreateInstance.vue
+app.create-instance.versions	versions	pages\CreateInstance.vue
+app.create-instance.stable	Stable	pages\CreateInstance.vue
+app.create-instance.game-version	Game version	pages\CreateInstance.vue
+app.create-instance.loader	Loader	pages\CreateInstance.vue
+app.create-instance.loader-version	Loader version	pages\CreateInstance.vue
+app.downloads.title	Downloads	pages\Downloads.vue
+app.downloads.no-downloads	No downloads	pages\Downloads.vue
+app.downloads.no-downloads-description	There are no active or recent downloads.	pages\Downloads.vue
+app.downloads.refresh	Refresh	pages\Downloads.vue
+app.downloads.cancel	Cancel	pages\Downloads.vue
+app.downloads.pause	Pause	pages\Downloads.vue
+app.downloads.resume	Resume	pages\Downloads.vue
+app.downloads.retry	Retry	pages\Downloads.vue
+app.downloads.dismiss	Dismiss	pages\Downloads.vue
+app.downloads.created	Created	pages\Downloads.vue
+app.downloads.updated	Updated	pages\Downloads.vue
+app.downloads.error	Error	pages\Downloads.vue
+app.downloads.unknown-job	Install job	pages\Downloads.vue
+app.install.phase.preparing_instance	Preparing instance	pages\Downloads.vue
+app.install.phase.resolving_pack	Resolving pack	pages\Downloads.vue
+app.install.phase.downloading_pack_file	Downloading pack	pages\Downloads.vue
+app.install.phase.reading_pack_manifest	Reading manifest	pages\Downloads.vue
+app.install.phase.downloading_content	Downloading content	pages\Downloads.vue
+app.install.phase.extracting_overrides	Extracting files	pages\Downloads.vue
+app.install.phase.resolving_minecraft	Resolving Minecraft	pages\Downloads.vue
+app.install.phase.resolving_loader	Resolving loader	pages\Downloads.vue
+app.install.phase.preparing_java	Preparing Java	pages\Downloads.vue
+app.install.phase.downloading_minecraft	Downloading Minecraft	pages\Downloads.vue
+app.install.phase.running_loader_processors	Running processors	pages\Downloads.vue
+app.install.phase.finalizing	Finalizing	pages\Downloads.vue
+app.install.phase.rolling_back	Rolling back	pages\Downloads.vue
+app.downloads.status.queued	Queued	pages\Downloads.vue
+app.downloads.status.running	Running	pages\Downloads.vue
+app.downloads.status.paused	Paused	pages\Downloads.vue
+app.downloads.status.succeeded	Succeeded	pages\Downloads.vue
+app.downloads.status.failed	Failed	pages\Downloads.vue
+app.downloads.status.interrupted	Interrupted	pages\Downloads.vue
+app.downloads.status.canceled	Canceled	pages\Downloads.vue
+app.home.title	Home	pages\Index.vue
+app.home.welcome-back	Welcome back!	pages\Index.vue
+app.home.welcome-to	Welcome to Modrinth App!	pages\Index.vue
+app.home.discover-modpack	Discover a modpack	pages\Index.vue
+app.home.discover-mods	Discover mods	pages\Index.vue
+app.instance.tab.overview	Overview	pages\instance\Index.vue
+app.instance.tab.content	Content	pages\instance\Index.vue
+app.instance.tab.files	Files	pages\instance\Index.vue
+app.instance.tab.worlds	Worlds	pages\instance\Index.vue
+app.instance.tab.screenshots	Screenshots	pages\instance\Index.vue
+app.instance.tab.resource-packs	Resource packs	pages\instance\Index.vue
+app.instance.tab.shader-packs	Shader packs	pages\instance\Index.vue
+app.instance.tab.logs	Logs	pages\instance\Index.vue
+app.instance.never-played	Never played	pages\instance\Index.vue
+app.instance.linked-to	Linked to	pages\instance\Index.vue
+app.instance.installing	Installing...	pages\instance\Index.vue
+app.instance.repair	Repair	pages\instance\Index.vue
+app.instance.stopping	Stopping...	pages\instance\Index.vue
+app.instance.stop	Stop	pages\instance\Index.vue
+app.instance.play	Play	pages\instance\Index.vue
+app.instance.join-server	Join server	pages\instance\Index.vue
+app.instance.launch-instance	Launch instance	pages\instance\Index.vue
+app.instance.starting	Starting...	pages\instance\Index.vue
+app.instance.instance-settings	Instance settings	pages\instance\Index.vue
+app.instance.share-instance	Share instance	pages\instance\Index.vue
+app.instance.create-server	Create a server	pages\instance\Index.vue
+app.instance.open-folder	Open folder	pages\instance\Index.vue
+app.instance.export-modpack	Export modpack	pages\instance\Index.vue
+app.instance.create-shortcut	Create shortcut	pages\instance\Index.vue
+app.instance.add-content	Add content	pages\instance\Index.vue
+app.instance.edit	Edit	pages\instance\Index.vue
+app.instance.copy-path	Copy path	pages\instance\Index.vue
+app.instance.copy-link	Copy link	pages\instance\Index.vue
+app.instance.open-in-modrinth	Open in Modrinth	pages\instance\Index.vue
+app.instance.copy-names	Copy names	pages\instance\Index.vue
+app.instance.copy-slugs	Copy slugs	pages\instance\Index.vue
+app.instance.copy-links	Copy links	pages\instance\Index.vue
+app.instance.toggle-selected	Toggle selected	pages\instance\Index.vue
+app.instance.disable-selected	Disable selected	pages\instance\Index.vue
+app.instance.enable-selected	Enable selected	pages\instance\Index.vue
+app.instance.show-hide-unselected	Show/Hide unselected	pages\instance\Index.vue
+app.instance.update-selected	Update selected	pages\instance\Index.vue
+app.instance.update-all	Update all	pages\instance\Index.vue
+app.instance.select-updatable	Select Updatable	pages\instance\Index.vue
+app.instance.shortcut-created	Shortcut created	pages\instance\Index.vue
+app.instance.shortcut-error	Error creating shortcut	pages\instance\Index.vue
+app.instance.breadcrumb	Instance	pages\instance\Index.vue
+app.instance.logs.live-log	Live Log	pages\instance\Logs.vue
+app.instance.logs.unknown	Unknown	pages\instance\Logs.vue
+app.instance.logs.log-n	Log {n}	pages\instance\Logs.vue
+app.instance.logs.delete-disabled	Cannot delete latest.log while the instance is running	pages\instance\Logs.vue
+app.instance.mods.share-title	Sharing modpack content	pages\instance\Mods.vue
+app.instance.mods.share-text	Check out the projects I'm using in my modpack!	pages\instance\Mods.vue
+app.instance.mods.successfully-uploaded	Successfully uploaded	pages\instance\Mods.vue
+app.instance.mods.project-was-added	"{name}" was added	pages\instance\Mods.vue
+app.instance.mods.projects-were-added	{count} projects were added	pages\instance\Mods.vue
+app.instance.mods.content-type-project	project	pages\instance\Mods.vue
+app.instance.mods.bulk-update.resolving-versions	Resolving versions...	pages\instance\Mods.vue
+app.instance.mods.bulk-update.downloading-projects	Downloading {current, number}/{total, number} projects...	pages\instance\Mods.vue
+app.instance.mods.bulk-update.finishing	Finishing update...	pages\instance\Mods.vue
+app.instance.overview.information	Information	pages\instance\Overview.vue
+app.instance.overview.game-version	Game version	pages\instance\Overview.vue
+app.instance.overview.loader	Loader	pages\instance\Overview.vue
+app.instance.overview.loader-version	Loader version	pages\instance\Overview.vue
+app.instance.overview.install-stage	Status	pages\instance\Overview.vue
+app.instance.overview.created	Created	pages\instance\Overview.vue
+app.instance.overview.last-played	Last played	pages\instance\Overview.vue
+app.instance.overview.play-time	Play time	pages\instance\Overview.vue
+app.instance.overview.link-type	Source	pages\instance\Overview.vue
+app.instance.overview.update-channel	Update channel	pages\instance\Overview.vue
+app.instance.overview.status.installed	Installed	pages\instance\Overview.vue
+app.instance.overview.status.not-installed	Not installed	pages\instance\Overview.vue
+app.instance.overview.status.installing	Installing	pages\instance\Overview.vue
+app.instance.overview.status.pack-installed	Modpack installed	pages\instance\Overview.vue
+app.instance.overview.status.pack-installing	Modpack installing	pages\instance\Overview.vue
+app.instance.overview.status.minecraft-installing	Minecraft installing	pages\instance\Overview.vue
+app.instance.overview.never-played	Never played	pages\instance\Overview.vue
+app.instance.overview.link-type.modrinth-modpack	Modrinth modpack	pages\instance\Overview.vue
+app.instance.overview.link-type.server-project	Server project	pages\instance\Overview.vue
+app.instance.overview.link-type.server-modpack	Server modpack	pages\instance\Overview.vue
+app.instance.overview.link-type.imported-modpack	Imported modpack	pages\instance\Overview.vue
+app.instance.overview.link-type.hosting	Hosting	pages\instance\Overview.vue
+app.instance.overview.link-type.shared-instance	Shared instance	pages\instance\Overview.vue
+app.instance.screenshots.search-placeholder	Search {count} screenshots...	pages\instance\Screenshots.vue
+app.instance.screenshots.open-folder	Open folder	pages\instance\Screenshots.vue
+app.instance.screenshots.none-heading	No screenshots yet	pages\instance\Screenshots.vue
+app.instance.screenshots.none-description	Screenshots taken in-game will appear here	pages\instance\Screenshots.vue
+app.instance.screenshots.open	Open	pages\instance\Screenshots.vue
+app.instance.screenshots.copy	Copy to clipboard	pages\instance\Screenshots.vue
+app.instance.screenshots.delete	Delete	pages\instance\Screenshots.vue
+app.instance.screenshots.confirm-delete	Are you sure you want to delete "{name}"?	pages\instance\Screenshots.vue
+app.instance.screenshots.deleted	Screenshot deleted	pages\instance\Screenshots.vue
+app.instance.screenshots.copied	Path copied to clipboard	pages\instance\Screenshots.vue
+app.instance.worlds.search-worlds-placeholder	Search {count} worlds...	pages\instance\Worlds.vue
+app.instance.worlds.add-server	Add server	pages\instance\Worlds.vue
+app.instance.worlds.browse-servers	Browse servers	pages\instance\Worlds.vue
+app.instance.worlds.no-worlds-heading	No servers or worlds added	pages\instance\Worlds.vue
+app.instance.worlds.no-worlds-description	Add a server or browse to get started	pages\instance\Worlds.vue
+app.instance.worlds.filter-vanilla	Vanilla	pages\instance\Worlds.vue
+app.instance.worlds.filter-modded	Modded	pages\instance\Worlds.vue
+app.instance.worlds.filter-online	Online	pages\instance\Worlds.vue
+app.instance.worlds.filter-offline	Offline	pages\instance\Worlds.vue
+app.library.title	Library	pages\library\Index.vue
+app.library.all-instances	All instances	pages\library\Index.vue
+app.library.modpacks	Modpacks	pages\library\Index.vue
+app.library.servers	Servers	pages\library\Index.vue
+app.library.custom	Custom	pages\library\Index.vue
+app.library.shared-with-me	Shared with me	pages\library\Index.vue
+app.library.saved	Saved	pages\library\Index.vue
+app.library.no-instances	No instances found	pages\library\Index.vue
+app.library.create-new-instance	Create new instance	pages\library\Index.vue
+app.project.install-context.back-to-browse	Back to discover	pages\project\Index.vue
+app.project.install-context.install-content-to-instance	Install content to instance	pages\project\Index.vue
+app.project.install-button.already-installed	This project is already installed	pages\project\Index.vue
+app.skins.title	Skin selector	pages\Skins.vue
+app.skins.section.modrinth-pride	Modrinth Pride	pages\Skins.vue
+app.skins.section.modrinth-pride.tooltip	You received these skins for donating to a Modrinth Pride fundraiser during Pride Month.	pages\Skins.vue
+app.skins.section.modrinth	Modrinth	pages\Skins.vue
+app.skins.section.default-skins	Default skins	pages\Skins.vue
+app.skins.section.minecon-earth-2017	Builders & Biomes	pages\Skins.vue
+app.skins.section.striding-hero	Striding Hero	pages\Skins.vue
+app.skins.section.the-garden-awakens	The Garden Awakens	pages\Skins.vue
+app.skins.section.chase-the-skies	Chase the Skies	pages\Skins.vue
+app.skins.section.the-copper-age	The Copper Age	pages\Skins.vue
+app.skins.section.mounts-of-mayhem	Mounts of Mayhem	pages\Skins.vue
+app.skins.section.tiny-takeover	Tiny Takeover	pages\Skins.vue
+app.skins.section.chaos-cubed	Chaos Cubed	pages\Skins.vue
+app.skins.rate-limit.title	Slow down!	pages\Skins.vue
+app.skins.rate-limit.text	You're changing your skin too frequently. Mojang's servers have temporarily blocked further requests. Please wait a moment before trying again.	pages\Skins.vue
+app.skins.dropped-file-error.title	Error processing file	pages\Skins.vue
+app.skins.dropped-file-error.text	Failed to read the dropped file.	pages\Skins.vue
+app.skins.reorder-error.title	Failed to reorder skins	pages\Skins.vue
+app.skins.reorder-error.text	Your skin order could not be saved.	pages\Skins.vue
+app.skins.delete-modal.title	Are you sure you want to delete this skin?	pages\Skins.vue
+app.skins.delete-modal.description	This will permanently delete the selected skin. This action cannot be undone.	pages\Skins.vue
+app.skins.previewing-badge	Previewing	pages\Skins.vue
+app.skins.apply-button	Apply	pages\Skins.vue
+app.skins.preview.edit-button	Edit skin	pages\Skins.vue
+app.skins.sign-in.rinthbot-alt	Excited Modrinth Bot	pages\Skins.vue
+app.skins.sign-in.title	Please sign in	pages\Skins.vue
+app.skins.sign-in.description	Please sign into your Minecraft account to use the skin management features of the Modrinth app.	pages\Skins.vue
+app.skins.sign-in.button	Sign In	pages\Skins.vue
+app.worlds.title	Worlds	pages\Worlds.vue
+app.content-install.no-compatible-versions	No available versions match {compatibilityLabel}. Select a version to install anyway. Dependencies will not be installed automatically.	providers\content-install.ts

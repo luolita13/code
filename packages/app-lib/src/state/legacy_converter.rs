@@ -70,7 +70,11 @@ where
         settings.force_fullscreen = legacy_settings.force_fullscreen;
         settings.game_resolution.0 = legacy_settings.game_resolution.0;
         settings.game_resolution.1 = legacy_settings.game_resolution.1;
-        settings.hide_on_process_start = legacy_settings.hide_on_process;
+        settings.launcher_visibility = if legacy_settings.hide_on_process {
+            crate::state::LauncherVisibility::MinimizeAndReopen
+        } else {
+            crate::state::LauncherVisibility::DoNothing
+        };
         settings.hooks.pre_launch = legacy_settings.hooks.pre_launch;
         settings.hooks.wrapper = legacy_settings.hooks.wrapper;
         settings.hooks.post_exit = legacy_settings.hooks.post_exit;

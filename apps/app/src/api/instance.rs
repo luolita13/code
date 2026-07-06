@@ -39,6 +39,7 @@ pub fn init<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
             instance_update_project,
             instance_add_project_from_version,
             instance_install_project_with_dependencies,
+            instance_resolve_install_plan,
             instance_switch_project_version_with_dependencies,
             instance_add_project_from_path,
             instance_toggle_disable_project,
@@ -600,6 +601,18 @@ pub async fn instance_install_project_with_dependencies(
     request: InstallProjectWithDependenciesRequest,
 ) -> Result<ResolveContentPlan> {
     Ok(theseus::instance::install_project_with_dependencies(
+        instance_id,
+        request,
+    )
+    .await?)
+}
+
+#[tauri::command]
+pub async fn instance_resolve_install_plan(
+    instance_id: &str,
+    request: InstallProjectWithDependenciesRequest,
+) -> Result<ResolveContentPlan> {
+    Ok(theseus::instance::resolve_install_plan_only(
         instance_id,
         request,
     )

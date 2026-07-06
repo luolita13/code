@@ -111,6 +111,7 @@ impl ProcessManager {
         xml_logging: bool,
         main_class_keep_alive: TempDir,
         rpc_server: RpcServer,
+        launcher_visibility: crate::state::LauncherVisibility,
         post_process_init: impl AsyncFnOnce(
             &ProcessMetadata,
             &RpcServer,
@@ -218,6 +219,7 @@ impl ProcessManager {
             instance_path.to_string(),
             post_exit_command,
             metadata.uuid,
+            launcher_visibility,
         ));
 
         self.processes.insert(process.metadata.uuid, process);
@@ -751,6 +753,7 @@ impl Process {
         instance_path: String,
         post_exit_command: Option<String>,
         uuid: Uuid,
+        launcher_visibility: crate::state::LauncherVisibility,
     ) -> crate::Result<()> {
         async fn update_playtime(
             last_updated_playtime: &mut Instant,
@@ -861,13 +864,31 @@ impl Process {
 
         let _ = state.friends_socket.update_status(None).await;
 
-        // If in tauri, window should show itself again after process exists if it was hidden
+        // If in tauri, restore window behavior based on launcher_visibility setting
         #[cfg(feature = "tauri")]
         {
+            use crate::state::LauncherVisibility;
             let window = crate::EventState::get_main_window().await?;
             if let Some(window) = window {
-                window.unminimize()?;
-                window.set_focus()?;
+                match launcher_visibility {
+                    LauncherVisibility::HideAndReopen => {
+                        // Window was hidden when game started; show it again
+                        let _ = window.show();
+                        let _ = window.set_focus();
+                    }
+                    LauncherVisibility::MinimizeAndReopen => {
+                        // Window was minimized when game started; restore it
+                        let _ = window.unminimize();
+                        let _ = window.set_focus();
+                    }
+                    LauncherVisibility::HideAndExit => {
+                        // Window was hidden; exit the entire app now that game has exited
+                        let _ = window.close();
+                    }
+                    // ExitImmediately: app already closed when game started; nothing to do here
+                    // DoNothing: window remained visible; nothing to do
+                    _ => {}
+                }
             }
         }
 

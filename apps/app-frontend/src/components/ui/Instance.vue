@@ -7,7 +7,7 @@ import {
 	StopCircleIcon,
 	TimerIcon,
 } from '@modrinth/assets'
-import { Avatar, ButtonStyled, injectNotificationManager, useRelativeTime } from '@modrinth/ui'
+import { Avatar, ButtonStyled, defineMessages, injectNotificationManager, useRelativeTime, useVIntl } from '@modrinth/ui'
 import { convertFileSrc } from '@tauri-apps/api/core'
 import dayjs from 'dayjs'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
@@ -23,6 +23,17 @@ import { handleSevereError } from '@/store/error.js'
 
 const { handleError } = injectNotificationManager()
 const formatRelativeTime = useRelativeTime()
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+	stopTooltip: { id: 'app.instance-card.stop', defaultMessage: 'Stop' },
+	playTooltip: { id: 'app.instance-card.play', defaultMessage: 'Play' },
+	loadingTooltip: { id: 'app.instance-card.loading', defaultMessage: 'Instance is loading...' },
+	installingTooltip: { id: 'app.instance-card.installing', defaultMessage: 'Installing...' },
+	repairTooltip: { id: 'app.instance-card.repair', defaultMessage: 'Repair' },
+	neverPlayed: { id: 'app.instance-card.never-played', defaultMessage: 'Never played' },
+	played: { id: 'app.instance-card.played', defaultMessage: 'Played {time}' },
+})
 
 const props = defineProps({
 	instance: {
@@ -164,18 +175,18 @@ onUnmounted(() => unlisten())
 			</div>
 			<div class="flex items-center">
 				<ButtonStyled v-if="playing" color="red" circular @mousehover="checkProcess">
-					<button v-tooltip="'Stop'" @click="(e) => stop(e, 'InstanceCard')">
+					<button v-tooltip="formatMessage(messages.stopTooltip)" @click="(e) => stop(e, 'InstanceCard')">
 						<StopCircleIcon />
 					</button>
 				</ButtonStyled>
 				<ButtonStyled v-else-if="modLoading" color="standard" circular>
-					<button v-tooltip="'Instance is loading...'" disabled>
+					<button v-tooltip="formatMessage(messages.loadingTooltip)" disabled>
 						<SpinnerIcon class="animate-spin" />
 					</button>
 				</ButtonStyled>
 				<ButtonStyled v-else :color="first ? 'brand' : 'standard'" circular>
 					<button
-						v-tooltip="'Play'"
+						v-tooltip="formatMessage(messages.playTooltip)"
 						@click="(e) => play(e, 'InstanceCard')"
 						@mousehover="checkProcess"
 					>
@@ -188,9 +199,9 @@ onUnmounted(() => unlisten())
 				<TimerIcon />
 				<span class="text-sm">
 					<template v-if="instance.last_played">
-						Played {{ formatRelativeTime(dayjs(instance.last_played).toISOString()) }}
+						{{ formatMessage(messages.played, { time: formatRelativeTime(dayjs(instance.last_played).toISOString()) }) }}
 					</template>
-					<template v-else> Never played </template>
+					<template v-else> {{ formatMessage(messages.neverPlayed) }} </template>
 				</span>
 			</div>
 		</div>
@@ -212,7 +223,7 @@ onUnmounted(() => unlisten())
 				<div class="absolute inset-0 flex items-center justify-center">
 					<ButtonStyled v-if="playing" size="large" color="red" circular>
 						<button
-							v-tooltip="'Stop'"
+							v-tooltip="formatMessage(messages.stopTooltip)"
 							:class="{ 'scale-100 opacity-100': playing }"
 							class="transition-all scale-75 origin-bottom opacity-0 card-shadow"
 							@click="(e) => stop(e, 'InstanceCard')"
@@ -223,13 +234,13 @@ onUnmounted(() => unlisten())
 					</ButtonStyled>
 					<SpinnerIcon
 						v-else-if="modLoading || installing"
-						v-tooltip="modLoading ? 'Instance is loading...' : 'Installing...'"
+						v-tooltip="modLoading ? formatMessage(messages.loadingTooltip) : formatMessage(messages.installingTooltip)"
 						class="animate-spin w-8 h-8"
 						tabindex="-1"
 					/>
 					<ButtonStyled v-else-if="!installed" size="large" color="brand" circular>
 						<button
-							v-tooltip="'Repair'"
+							v-tooltip="formatMessage(messages.repairTooltip)"
 							class="transition-all scale-75 group-hover:scale-100 group-focus-within:scale-100 origin-bottom opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 card-shadow"
 							@click="(e) => repair(e)"
 						>
@@ -238,7 +249,7 @@ onUnmounted(() => unlisten())
 					</ButtonStyled>
 					<ButtonStyled v-else size="large" color="brand" circular>
 						<button
-							v-tooltip="'Play'"
+							v-tooltip="formatMessage(messages.playTooltip)"
 							class="transition-all scale-75 group-hover:scale-100 group-focus-within:scale-100 origin-bottom opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 card-shadow"
 							@click="(e) => play(e, 'InstanceCard')"
 							@mousehover="checkProcess"

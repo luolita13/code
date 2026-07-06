@@ -1,7 +1,8 @@
 use super::content::get_projects;
 use crate::server_address::ServerAddress;
 use crate::state::{
-    Credentials, InstanceLink, ProcessMetadata, Settings, State,
+    Credentials, InstanceLink, MemoryAllocationMode, MemorySettings,
+    ProcessMetadata, Settings, State,
 };
 use crate::util::fetch;
 use crate::util::io::IOError;
@@ -74,21 +75,32 @@ async fn run_credentials(
                     .instances_dir()
                     .join(&context.instance.path),
             )?;
-            let result = Command::new(command)
-                .args(cmd)
-                .current_dir(&full_path)
-                .spawn()
-                .map_err(|e| IOError::with_path(e, &full_path))?
-                .wait()
-                .await
-                .map_err(IOError::from)?;
 
-            if !result.success() {
-                return Err(crate::ErrorKind::LauncherError(format!(
-                    "Non-zero exit code for pre-launch hook: {}",
-                    result.code().unwrap_or(-1)
-                ))
-                .as_error());
+            if settings.pre_launch_wait {
+                // Wait for the pre-launch command to complete
+                let result = Command::new(command)
+                    .args(cmd)
+                    .current_dir(&full_path)
+                    .spawn()
+                    .map_err(|e| IOError::with_path(e, &full_path))?
+                    .wait()
+                    .await
+                    .map_err(IOError::from)?;
+
+                if !result.success() {
+                    return Err(crate::ErrorKind::LauncherError(format!(
+                        "Non-zero exit code for pre-launch hook: {}",
+                        result.code().unwrap_or(-1)
+                    ))
+                    .as_error());
+                }
+            } else {
+                // Don't wait for the pre-launch command; just spawn it
+                Command::new(command)
+                    .args(cmd)
+                    .current_dir(&full_path)
+                    .spawn()
+                    .map_err(|e| IOError::with_path(e, &full_path))?;
             }
         }
     }
@@ -97,15 +109,25 @@ async fn run_credentials(
         .launch_overrides
         .extra_launch_args
         .clone()
-        .unwrap_or(settings.extra_launch_args);
+        .unwrap_or_else(|| settings.extra_launch_args.clone());
     let wrapper = context
         .launch_overrides
         .hooks
         .wrapper
         .clone()
-        .or(settings.hooks.wrapper)
+        .or(settings.hooks.wrapper.clone())
         .filter(|hook_command| !hook_command.is_empty());
-    let memory = context.launch_overrides.memory.unwrap_or(settings.memory);
+    let memory = context.launch_overrides.memory.unwrap_or_else(|| {
+        if settings.memory_allocation_mode == MemoryAllocationMode::Auto {
+            MemorySettings {
+                maximum: calculate_auto_memory(&state, &context).unwrap_or(
+                    settings.memory.maximum,
+                ),
+            }
+        } else {
+            settings.memory
+        }
+    });
     let resolution = context
         .launch_overrides
         .game_resolution
@@ -114,13 +136,13 @@ async fn run_credentials(
         .launch_overrides
         .custom_env_vars
         .clone()
-        .unwrap_or(settings.custom_env_vars);
+        .unwrap_or_else(|| settings.custom_env_vars.clone());
     let post_exit_hook = context
         .launch_overrides
         .hooks
         .post_exit
         .clone()
-        .or(settings.hooks.post_exit)
+        .or(settings.hooks.post_exit.clone())
         .filter(|hook_command| !hook_command.is_empty());
 
     let mut mc_set_options: Vec<(String, String)> = vec![];
@@ -191,6 +213,7 @@ async fn run_credentials(
         post_exit_hook,
         &context,
         quick_play_type,
+        &settings,
     )
     .await
 }
@@ -292,4 +315,71 @@ pub async fn try_update_playtime_by_instance_id(
     }
 
     res
+}
+
+/// Calculate automatic memory allocation based on system RAM, instance type, and mod count.
+/// Implements a simplified version of PCL-CE's algorithm.
+fn calculate_auto_memory(
+    state: &State,
+    context: &crate::state::InstanceLaunchContext,
+) -> Option<u32> {
+    const BYTES_PER_MIB: u64 = 1024 * 1024;
+
+    let system_memory_mib =
+        crate::api::jre::system_memory_bytes() / BYTES_PER_MIB;
+    let system_gib = system_memory_mib / 1024;
+
+    let instance_path = state
+        .directories
+        .instances_dir()
+        .join(&context.instance.path);
+    let mods_dir = instance_path.join("mods");
+
+    let mod_count: u32 = std::fs::read_dir(&mods_dir)
+        .map(|dir| {
+            dir.filter_map(|e| e.ok())
+                .filter(|e| {
+                    e.file_type()
+                        .map(|t| t.is_file())
+                        .unwrap_or(false)
+                })
+                .filter(|e| {
+                    e.file_name()
+                        .to_str()
+                        .map(|name| name.ends_with(".jar"))
+                        .unwrap_or(false)
+                })
+                .count() as u32
+        })
+        .unwrap_or(0);
+
+    let is_modded = !matches!(
+        context.applied_content_set.loader,
+        crate::state::ModLoader::Vanilla
+    );
+
+    let (min, target1, target2, target3) = if is_modded {
+        (
+            512u32,
+            1536 + mod_count * 1024 / 90,
+            2764 + mod_count * 1024 / 50,
+            4608 + mod_count * 1024 / 25,
+        )
+    } else {
+        (512u32, 1536, 2560, 4096)
+    };
+
+    let target = if system_gib >= 16 {
+        target3
+    } else if system_gib >= 8 {
+        target2
+    } else if system_gib >= 4 {
+        target1
+    } else {
+        min
+    };
+
+    // Don't exceed 75% of system memory
+    let max_allowed = (system_memory_mib as u32 * 3 / 4).min(6144);
+    Some(target.min(max_allowed).max(512))
 }

@@ -62,7 +62,7 @@ pub async fn insert(
     let json = serde_json::to_string(state)?;
     let status_value = status.as_str();
     let kind_value = kind.as_str();
-    let instance_id = instance_id(state);
+    let instance_id = validate_instance_id(instance_id(state), app_state).await?;
     let id_value = id.to_string();
     let created = now.timestamp();
     let modified = created;
@@ -207,7 +207,7 @@ pub async fn update_state(
 ) -> crate::Result<InstallJobRecord> {
     let now = Utc::now();
     let json = serde_json::to_string(state)?;
-    let instance_id = instance_id(state);
+    let instance_id = validate_instance_id(instance_id(state), app_state).await?;
     let id_value = id.to_string();
     let modified = now.timestamp();
 
@@ -238,7 +238,7 @@ pub async fn update_status(
     let finished = status.is_finished().then_some(now.timestamp());
     let json = serde_json::to_string(state)?;
     let status_value = status.as_str();
-    let instance_id = instance_id(state);
+    let instance_id = validate_instance_id(instance_id(state), app_state).await?;
     let id_value = id.to_string();
     let modified = now.timestamp();
 
@@ -316,6 +316,24 @@ fn instance_id(state: &InstallJobState) -> Option<String> {
             Some(instance_id.clone())
         }
     }
+}
+
+/// Verifies that the instance referenced by the job still exists.
+/// If it does not, returns `None` to avoid FOREIGN KEY constraint failures.
+pub async fn validate_instance_id(
+    instance_id: Option<String>,
+    app_state: &State,
+) -> crate::Result<Option<String>> {
+    let Some(id) = instance_id else {
+        return Ok(None);
+    };
+
+    let row = sqlx::query("SELECT id FROM instances WHERE id = ?")
+        .bind(&id)
+        .fetch_optional(&app_state.pool)
+        .await?;
+
+    Ok(row.map(|_| id))
 }
 
 fn timestamp(value: i64) -> DateTime<Utc> {

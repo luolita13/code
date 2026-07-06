@@ -1,5 +1,5 @@
 <template>
-	<ModalWrapper ref="detectJavaModal" header="Select java version" :show-ad-on-close="false">
+	<ModalWrapper ref="detectJavaModal" :header="formatMessage(messages.header)" :show-ad-on-close="false">
 		<div class="flex flex-col gap-4">
 			<Table :columns="javaInstallColumns" :data="chosenInstallOptions" row-key="path">
 				<template #cell-version="{ value }">
@@ -11,15 +11,15 @@
 				<template #cell-actions="{ row }">
 					<div class="flex items-center justify-end">
 						<ButtonStyled v-if="currentSelected.path === row.path">
-							<button class="!shadow-none" disabled><CheckIcon /> Selected</button>
+							<button class="!shadow-none" disabled><CheckIcon /> {{ formatMessage(messages.selected) }}</button>
 						</ButtonStyled>
 						<ButtonStyled v-else>
-							<button class="!shadow-none" @click="setJavaInstall(row)"><PlusIcon /> Select</button>
+							<button class="!shadow-none" @click="setJavaInstall(row)"><PlusIcon /> {{ formatMessage(messages.select) }}</button>
 						</ButtonStyled>
 					</div>
 				</template>
 				<template #empty-state>
-					<div class="p-4 text-secondary">No java installations found!</div>
+					<div class="p-4 text-secondary">{{ formatMessage(messages.notFound) }}</div>
 				</template>
 			</Table>
 			<div class="flex justify-end">
@@ -29,7 +29,7 @@
 						@click="$refs.detectJavaModal.hide()"
 					>
 						<XIcon />
-						Cancel
+						{{ formatMessage(messages.cancel) }}
 					</button>
 				</ButtonStyled>
 			</div>
@@ -38,7 +38,7 @@
 </template>
 <script setup>
 import { CheckIcon, PlusIcon, XIcon } from '@modrinth/assets'
-import { ButtonStyled, injectNotificationManager, Table } from '@modrinth/ui'
+import { ButtonStyled, defineMessages, injectNotificationManager, Table, useVIntl } from '@modrinth/ui'
 import { ref } from 'vue'
 
 import ModalWrapper from '@/components/ui/modal/ModalWrapper.vue'
@@ -46,14 +46,26 @@ import { trackEvent } from '@/helpers/analytics'
 import { find_filtered_jres } from '@/helpers/jre.js'
 
 const { handleError } = injectNotificationManager()
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+	header: { id: 'app.java-detection.header', defaultMessage: 'Select java version' },
+	selected: { id: 'app.java-detection.selected', defaultMessage: 'Selected' },
+	select: { id: 'app.java-detection.select', defaultMessage: 'Select' },
+	notFound: { id: 'app.java-detection.not-found', defaultMessage: 'No java installations found!' },
+	cancel: { id: 'app.java-detection.cancel', defaultMessage: 'Cancel' },
+	version: { id: 'app.java-detection.column.version', defaultMessage: 'Version' },
+	path: { id: 'app.java-detection.column.path', defaultMessage: 'Path' },
+	actions: { id: 'app.java-detection.column.actions', defaultMessage: 'Actions' },
+})
 
 const chosenInstallOptions = ref([])
 const detectJavaModal = ref(null)
 const currentSelected = ref({})
 const javaInstallColumns = [
-	{ key: 'version', label: 'Version', width: '9rem' },
-	{ key: 'path', label: 'Path' },
-	{ key: 'actions', label: 'Actions', align: 'right', width: '10rem' },
+	{ key: 'version', label: formatMessage(messages.version), width: '9rem' },
+	{ key: 'path', label: formatMessage(messages.path) },
+	{ key: 'actions', label: formatMessage(messages.actions), align: 'right', width: '10rem' },
 ]
 
 defineExpose({

@@ -4,8 +4,10 @@ import {
 	Admonition,
 	Avatar,
 	ButtonStyled,
+	defineMessages,
 	injectNotificationManager,
 	StyledInput,
+	useVIntl,
 } from '@modrinth/ui'
 import { useQueryClient } from '@tanstack/vue-query'
 import { convertFileSrc } from '@tauri-apps/api/core'
@@ -18,6 +20,20 @@ import { add_server_to_instance, get_instance_worlds } from '@/helpers/worlds.ts
 
 const { handleError } = injectNotificationManager()
 const queryClient = useQueryClient()
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+	header: { id: 'app.add-server-modal.header', defaultMessage: 'Add server to instance' },
+	warning: {
+		id: 'app.add-server-modal.warning',
+		defaultMessage: 'This server may not be compatible with all instances.',
+	},
+	searchPlaceholder: { id: 'app.add-server-modal.search-placeholder', defaultMessage: 'Search for an instance' },
+	adding: { id: 'app.add-server-modal.adding', defaultMessage: 'Adding...' },
+	added: { id: 'app.add-server-modal.added', defaultMessage: 'Added' },
+	add: { id: 'app.add-server-modal.add', defaultMessage: 'Add' },
+	cancel: { id: 'app.add-server-modal.cancel', defaultMessage: 'Cancel' },
+})
 
 const modal = ref()
 const searchFilter = ref('')
@@ -82,14 +98,14 @@ async function addServer(instance) {
 </script>
 
 <template>
-	<ModalWrapper ref="modal" header="Add server to instance">
+	<ModalWrapper ref="modal" :header="formatMessage(messages.header)">
 		<div class="flex flex-col gap-4 min-w-[350px]">
-			<Admonition type="warning" body="This server may not be compatible with all instances." />
+			<Admonition type="warning" :body="formatMessage(messages.warning)" />
 			<StyledInput
 				v-model="searchFilter"
 				:icon="SearchIcon"
 				type="search"
-				placeholder="Search for an instance"
+				:placeholder="formatMessage(messages.searchPlaceholder)"
 				autocomplete="off"
 			/>
 			<div class="max-h-[21rem] overflow-y-auto">
@@ -113,14 +129,20 @@ async function addServer(instance) {
 						<button :disabled="instance.added || instance.adding" @click="addServer(instance)">
 							<PlusIcon v-if="!instance.added && !instance.adding" />
 							<CheckIcon v-else-if="instance.added" />
-							{{ instance.adding ? 'Adding...' : instance.added ? 'Added' : 'Add' }}
+							{{
+								instance.adding
+									? formatMessage(messages.adding)
+									: instance.added
+										? formatMessage(messages.added)
+										: formatMessage(messages.add)
+							}}
 						</button>
 					</ButtonStyled>
 				</div>
 			</div>
 			<div class="input-group push-right">
 				<ButtonStyled>
-					<button @click="modal.hide()">Cancel</button>
+					<button @click="modal.hide()">{{ formatMessage(messages.cancel) }}</button>
 				</ButtonStyled>
 			</div>
 		</div>

@@ -124,6 +124,7 @@ pub fn get_jvm_arguments(
     quick_play_version: QuickPlayVersion,
     log_config: Option<&LoggingConfiguration>,
     ipc_addr: SocketAddr,
+    disable_java_agent: bool,
 ) -> crate::Result<Vec<String>> {
     let mut parsed_arguments = Vec::new();
 
@@ -168,18 +169,20 @@ pub fn get_jvm_arguments(
         parsed_arguments.push(argument.replace("${path}", &full_path));
     }
 
-    parsed_arguments.push(format!(
-        "-javaagent:{}",
-        canonicalize(agent_path)
-            .map_err(|_| {
-                crate::ErrorKind::LauncherError(format!(
-                    "Specified Java Agent path {} does not exist",
-                    libraries_path.to_string_lossy()
-                ))
-                .as_error()
-            })?
-            .to_string_lossy()
-    ));
+    if !disable_java_agent {
+        parsed_arguments.push(format!(
+            "-javaagent:{}",
+            canonicalize(agent_path)
+                .map_err(|_| {
+                    crate::ErrorKind::LauncherError(format!(
+                        "Specified Java Agent path {} does not exist",
+                        libraries_path.to_string_lossy()
+                    ))
+                    .as_error()
+                })?
+                .to_string_lossy()
+        ));
+    }
 
     parsed_arguments
         .push(format!("-Dmodrinth.internal.ipc.host={}", ipc_addr.ip()));

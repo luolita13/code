@@ -1,0 +1,157 @@
+<script setup lang="ts">
+import { defineMessages, Toggle, useVIntl } from '@modrinth/ui'
+import { ref, watch } from 'vue'
+
+import { get as getSettings, set as setSettings } from '@/helpers/settings.ts'
+import { useTheming } from '@/store/state'
+import type { FeatureFlag } from '@/store/theme.ts'
+
+const themeStore = useTheming()
+const { formatMessage } = useVIntl()
+
+const settings = ref(await getSettings())
+
+const messages = defineMessages({
+	homePageCustomizationTitle: {
+		id: 'app.home-settings.title',
+		defaultMessage: 'Home page customization',
+	},
+	homePageCustomizationDescription: {
+		id: 'app.home-settings.description',
+		defaultMessage: 'Toggle which sections appear on the Home page.',
+	},
+	jumpBackInTitle: {
+		id: 'app.home-settings.jump-back-in.title',
+		defaultMessage: 'Jump back in',
+	},
+	jumpBackInDescription: {
+		id: 'app.home-settings.jump-back-in.description',
+		defaultMessage: 'Shows recently played worlds and instances.',
+	},
+	discoverModpacksTitle: {
+		id: 'app.home-settings.discover-modpacks.title',
+		defaultMessage: 'Discover a modpack',
+	},
+	discoverModpacksDescription: {
+		id: 'app.home-settings.discover-modpacks.description',
+		defaultMessage: 'Shows popular modpacks from Modrinth.',
+	},
+	discoverModsTitle: {
+		id: 'app.home-settings.discover-mods.title',
+		defaultMessage: 'Discover mods',
+	},
+	discoverModsDescription: {
+		id: 'app.home-settings.discover-mods.description',
+		defaultMessage: 'Shows popular mods from Modrinth.',
+	},
+	updateRemindersTitle: {
+		id: 'app.home-settings.update-reminders.title',
+		defaultMessage: 'Game update reminders',
+	},
+	updateRemindersDescription: {
+		id: 'app.home-settings.update-reminders.description',
+		defaultMessage: 'Shows instances with available modpack or mod updates.',
+	},
+	systemStatusTitle: {
+		id: 'app.home-settings.system-status.title',
+		defaultMessage: 'System status',
+	},
+	systemStatusDescription: {
+		id: 'app.home-settings.system-status.description',
+		defaultMessage: 'Shows CPU, memory, disk, network usage, and quick launch actions.',
+	},
+	recentScreenshotsTitle: {
+		id: 'app.home-settings.recent-screenshots.title',
+		defaultMessage: 'Recent screenshots',
+	},
+	recentScreenshotsDescription: {
+		id: 'app.home-settings.recent-screenshots.description',
+		defaultMessage: 'Shows recent screenshots from all instances.',
+	},
+	randomModsTitle: {
+		id: 'app.home-settings.random-mods.title',
+		defaultMessage: 'Random mod spotlight',
+	},
+	randomModsDescription: {
+		id: 'app.home-settings.random-mods.description',
+		defaultMessage: 'Shows a random mod recommendation each time you open Home.',
+	},
+})
+
+const sections: { flag: FeatureFlag; title: string; description: string }[] = [
+	{
+		flag: 'home_show_jump_back_in',
+		title: formatMessage(messages.jumpBackInTitle),
+		description: formatMessage(messages.jumpBackInDescription),
+	},
+	{
+		flag: 'home_show_discover_modpacks',
+		title: formatMessage(messages.discoverModpacksTitle),
+		description: formatMessage(messages.discoverModpacksDescription),
+	},
+	{
+		flag: 'home_show_discover_mods',
+		title: formatMessage(messages.discoverModsTitle),
+		description: formatMessage(messages.discoverModsDescription),
+	},
+	{
+		flag: 'home_show_update_reminders',
+		title: formatMessage(messages.updateRemindersTitle),
+		description: formatMessage(messages.updateRemindersDescription),
+	},
+	{
+		flag: 'home_show_system_status',
+		title: formatMessage(messages.systemStatusTitle),
+		description: formatMessage(messages.systemStatusDescription),
+	},
+	{
+		flag: 'home_show_recent_screenshots',
+		title: formatMessage(messages.recentScreenshotsTitle),
+		description: formatMessage(messages.recentScreenshotsDescription),
+	},
+	{
+		flag: 'home_show_random_mods',
+		title: formatMessage(messages.randomModsTitle),
+		description: formatMessage(messages.randomModsDescription),
+	},
+]
+
+function setFeatureFlag(key: FeatureFlag, value: boolean) {
+	themeStore.featureFlags[key] = value
+	settings.value.feature_flags[key] = value
+}
+
+watch(
+	settings,
+	async () => {
+		await setSettings(settings.value)
+	},
+	{ deep: true },
+)
+</script>
+
+<template>
+	<div class="flex flex-col gap-2">
+		<h2 class="m-0 text-lg font-semibold text-contrast">
+			{{ formatMessage(messages.homePageCustomizationTitle) }}
+		</h2>
+		<p class="m-0 mt-1 mb-2">{{ formatMessage(messages.homePageCustomizationDescription) }}</p>
+
+		<div
+			v-for="section in sections"
+			:key="section.flag"
+			class="mt-2 flex items-center justify-between gap-4"
+		>
+			<div>
+				<h2 class="m-0 text-lg font-semibold text-contrast">
+					{{ section.title }}
+				</h2>
+				<p class="m-0 mt-1">{{ section.description }}</p>
+			</div>
+			<Toggle
+				:model-value="themeStore.getFeatureFlag(section.flag)"
+				@update:model-value="() => setFeatureFlag(section.flag, !themeStore.getFeatureFlag(section.flag))"
+			/>
+		</div>
+	</div>
+</template>

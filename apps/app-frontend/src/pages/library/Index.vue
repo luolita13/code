@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PlusIcon } from '@modrinth/assets'
-import { ButtonStyled, injectNotificationManager, NavTabs } from '@modrinth/ui'
+import { ButtonStyled, defineMessages, injectNotificationManager, NavTabs, useVIntl } from '@modrinth/ui'
 import { inject, onUnmounted, ref, shallowRef } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -10,11 +10,25 @@ import { list } from '@/helpers/instance'
 import { useBreadcrumbs } from '@/store/breadcrumbs.js'
 
 const { handleError } = injectNotificationManager()
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+	libraryTitle: { id: 'app.library.title', defaultMessage: 'Library' },
+	allInstances: { id: 'app.library.all-instances', defaultMessage: 'All instances' },
+	modpacks: { id: 'app.library.modpacks', defaultMessage: 'Modpacks' },
+	servers: { id: 'app.library.servers', defaultMessage: 'Servers' },
+	custom: { id: 'app.library.custom', defaultMessage: 'Custom' },
+	sharedWithMe: { id: 'app.library.shared-with-me', defaultMessage: 'Shared with me' },
+	saved: { id: 'app.library.saved', defaultMessage: 'Saved' },
+	noInstances: { id: 'app.library.no-instances', defaultMessage: 'No instances found' },
+	createNewInstance: { id: 'app.library.create-new-instance', defaultMessage: 'Create new instance' },
+})
+
 const route = useRoute()
 const router = useRouter()
 const breadcrumbs = useBreadcrumbs()
 
-breadcrumbs.setRootContext({ name: 'Library', link: route.path })
+breadcrumbs.setRootContext({ name: formatMessage(messages.libraryTitle), link: route.path })
 
 const instances = shallowRef(await list().catch(handleError))
 
@@ -36,15 +50,15 @@ onUnmounted(() => {
 
 <template>
 	<div class="p-6 flex flex-col gap-3">
-		<h1 class="m-0 text-2xl hidden">Library</h1>
+		<h1 class="m-0 text-2xl hidden">{{ formatMessage(messages.libraryTitle) }}</h1>
 		<NavTabs
 			:links="[
-				{ label: 'All instances', href: `/library` },
-				{ label: 'Modpacks', href: `/library/modpacks` },
-				{ label: 'Servers', href: `/library/servers` },
-				{ label: 'Custom', href: `/library/custom` },
-				{ label: 'Shared with me', href: `/library/shared`, shown: false },
-				{ label: 'Saved', href: `/library/saved`, shown: false },
+				{ label: formatMessage(messages.allInstances), href: `/library` },
+				{ label: formatMessage(messages.modpacks), href: `/library/modpacks` },
+				{ label: formatMessage(messages.servers), href: `/library/servers` },
+				{ label: formatMessage(messages.custom), href: `/library/custom` },
+				{ label: formatMessage(messages.sharedWithMe), href: `/library/shared`, shown: false },
+				{ label: formatMessage(messages.saved), href: `/library/saved`, shown: false },
 			]"
 		/>
 		<template v-if="instances && instances.length > 0">
@@ -54,11 +68,11 @@ onUnmounted(() => {
 			<div class="icon">
 				<NewInstanceImage />
 			</div>
-			<h3>No instances found</h3>
+			<h3>{{ formatMessage(messages.noInstances) }}</h3>
 			<ButtonStyled color="brand">
 				<button :disabled="offline" @click="router.push('/create')">
 					<PlusIcon />
-					Create new instance
+					{{ formatMessage(messages.createNewInstance) }}
 				</button>
 			</ButtonStyled>
 		</div>

@@ -462,7 +462,7 @@ function buildDownloadItems(): PopupNotificationProgressItem[] {
 			iconUrl: currentLoadingBarIconUrls.value[getLoadingBarKey(bar)] ?? null,
 			progress: getLoadingProgress(bar),
 			waiting: !bar.total || bar.total <= 0,
-			progressType: 'percentage',
+			progressType: 'percentage' as const,
 			progressCurrent: bar.current,
 			progressTotal: bar.total,
 		})),
@@ -593,7 +593,7 @@ async function refreshLoadingBars() {
 
 const installJobNotifications = await useInstallJobNotifications({
 	router,
-	handleError,
+	handleError: (err: unknown) => handleError(err instanceof Error ? err : new Error(String(err))),
 	onChange: updateNotification,
 })
 
@@ -602,10 +602,6 @@ await refreshLoadingBars()
 const unlistenLoading = await loading_listener(async () => {
 	await refreshLoadingBars()
 })
-
-function openDownloadToast() {
-	updateNotification(true)
-}
 
 function selectProcess(process: RunningProcess) {
 	selectedProcess.value = process

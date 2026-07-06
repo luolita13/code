@@ -1,0 +1,3179 @@
+{
+  "action.no-permission": {
+    "message": ""
+  },
+  "app.server-settings.failed-to-load-server": {
+    "message": ""
+  },
+  "badge.alpha": {
+    "message": ""
+  },
+  "badge.beta": {
+    "message": ""
+  },
+  "badge.beta-release": {
+    "message": ""
+  },
+  "badge.new": {
+    "message": ""
+  },
+  "badge.release": {
+    "message": ""
+  },
+  "browse.filter-results": {
+    "message": ""
+  },
+  "browse.no-results": {
+    "message": ""
+  },
+  "browse.offline": {
+    "message": ""
+  },
+  "browse.search.placeholder": {
+    "message": ""
+  },
+  "browse.selected-projects-floating-bar.aria-label": {
+    "message": ""
+  },
+  "browse.selected-projects-floating-bar.install": {
+    "message": ""
+  },
+  "browse.selected-projects-floating-bar.selected-count": {
+    "message": ""
+  },
+  "browse.selected-projects-leave-modal.admonition-body": {
+    "message": ""
+  },
+  "browse.selected-projects-leave-modal.admonition-header": {
+    "message": ""
+  },
+  "browse.selected-projects-leave-modal.discard": {
+    "message": ""
+  },
+  "browse.selected-projects-leave-modal.header": {
+    "message": ""
+  },
+  "browse.view-prefix": {
+    "message": ""
+  },
+  "button.accept": {
+    "message": ""
+  },
+  "button.add-server-to-instance": {
+    "message": ""
+  },
+  "button.affiliate-links": {
+    "message": ""
+  },
+  "button.analytics": {
+    "message": ""
+  },
+  "button.back": {
+    "message": ""
+  },
+  "button.cancel": {
+    "message": ""
+  },
+  "button.change-version": {
+    "message": ""
+  },
+  "button.clear": {
+    "message": ""
+  },
+  "button.close": {
+    "message": ""
+  },
+  "button.continue": {
+    "message": ""
+  },
+  "button.copy-filename": {
+    "message": ""
+  },
+  "button.copy-full-path": {
+    "message": ""
+  },
+  "button.copy-id": {
+    "message": ""
+  },
+  "button.copy-link": {
+    "message": ""
+  },
+  "button.copy-permalink": {
+    "message": ""
+  },
+  "button.create-a-project": {
+    "message": ""
+  },
+  "button.decline": {
+    "message": ""
+  },
+  "button.disable": {
+    "message": ""
+  },
+  "button.download": {
+    "message": ""
+  },
+  "button.downloading": {
+    "message": ""
+  },
+  "button.edit": {
+    "message": ""
+  },
+  "button.enable": {
+    "message": ""
+  },
+  "button.extract": {
+    "message": ""
+  },
+  "button.follow": {
+    "message": ""
+  },
+  "button.hide-snapshots": {
+    "message": ""
+  },
+  "button.install": {
+    "message": ""
+  },
+  "button.max": {
+    "message": ""
+  },
+  "button.more-options": {
+    "message": ""
+  },
+  "button.move": {
+    "message": ""
+  },
+  "button.next": {
+    "message": ""
+  },
+  "button.open-folder": {
+    "message": ""
+  },
+  "button.open-in-folder": {
+    "message": ""
+  },
+  "button.open-in-modrinth": {
+    "message": ""
+  },
+  "button.play": {
+    "message": ""
+  },
+  "button.refresh": {
+    "message": ""
+  },
+  "button.reinstall-modpack": {
+    "message": ""
+  },
+  "button.remove": {
+    "message": ""
+  },
+  "button.remove-image": {
+    "message": ""
+  },
+  "button.rename": {
+    "message": ""
+  },
+  "button.repair": {
+    "message": ""
+  },
+  "button.repairing": {
+    "message": ""
+  },
+  "button.report": {
+    "message": ""
+  },
+  "button.reset": {
+    "message": ""
+  },
+  "button.reset-server": {
+    "message": ""
+  },
+  "button.retry": {
+    "message": ""
+  },
+  "button.save": {
+    "message": ""
+  },
+  "button.save-changes": {
+    "message": ""
+  },
+  "button.saving": {
+    "message": ""
+  },
+  "button.show-all-versions": {
+    "message": ""
+  },
+  "button.show-file": {
+    "message": ""
+  },
+  "button.sign-in": {
+    "message": ""
+  },
+  "button.sign-out": {
+    "message": ""
+  },
+  "button.sign-up": {
+    "message": ""
+  },
+  "button.stop": {
+    "message": ""
+  },
+  "button.switch-version": {
+    "message": ""
+  },
+  "button.unfollow": {
+    "message": ""
+  },
+  "button.unlink-modpack": {
+    "message": ""
+  },
+  "button.update": {
+    "message": ""
+  },
+  "button.upload-image": {
+    "message": ""
+  },
+  "changelog.justNow": {
+    "message": ""
+  },
+  "changelog.product.app": {
+    "message": ""
+  },
+  "changelog.product.hosting": {
+    "message": ""
+  },
+  "changelog.product.web": {
+    "message": ""
+  },
+  "collection-widget.empty-collection": {
+    "message": ""
+  },
+  "collection-widget.loading-projects": {
+    "message": ""
+  },
+  "collection-widget.no-search-results": {
+    "message": ""
+  },
+  "collection-widget.project-count": {
+    "message": ""
+  },
+  "collection-widget.search-placeholder": {
+    "message": ""
+  },
+  "content-type.content.lowercase": {
+    "message": ""
+  },
+  "content-type.item.lowercase": {
+    "message": ""
+  },
+  "content.card.select-project": {
+    "message": ""
+  },
+  "content.confirm-bulk-update.admonition-body": {
+    "message": ""
+  },
+  "content.confirm-bulk-update.admonition-header": {
+    "message": ""
+  },
+  "content.confirm-bulk-update.header": {
+    "message": ""
+  },
+  "content.confirm-bulk-update.shift-click-hint": {
+    "message": ""
+  },
+  "content.confirm-bulk-update.update-button": {
+    "message": ""
+  },
+  "content.confirm-deletion.admonition-body": {
+    "message": ""
+  },
+  "content.confirm-deletion.admonition-header": {
+    "message": ""
+  },
+  "content.confirm-deletion.delete-button": {
+    "message": ""
+  },
+  "content.confirm-deletion.header": {
+    "message": ""
+  },
+  "content.confirm-modpack-update.admonition-body": {
+    "message": ""
+  },
+  "content.confirm-modpack-update.admonition-header": {
+    "message": ""
+  },
+  "content.confirm-modpack-update.confirm-button": {
+    "message": ""
+  },
+  "content.confirm-modpack-update.header": {
+    "message": ""
+  },
+  "content.confirm-unlink.admonition-body": {
+    "message": ""
+  },
+  "content.confirm-unlink.admonition-header": {
+    "message": ""
+  },
+  "content.confirm-unlink.header": {
+    "message": ""
+  },
+  "content.confirm-unlink.unlink-button": {
+    "message": ""
+  },
+  "content.dependency-warning.admonition-header": {
+    "message": ""
+  },
+  "content.dependency-warning.affected-dependents-label": {
+    "message": ""
+  },
+  "content.dependency-warning.bulk-admonition-body": {
+    "message": ""
+  },
+  "content.dependency-warning.context.instance": {
+    "message": ""
+  },
+  "content.dependency-warning.context.server": {
+    "message": ""
+  },
+  "content.dependency-warning.delete-anyway-button": {
+    "message": ""
+  },
+  "content.dependency-warning.delete-many-anyway-button": {
+    "message": ""
+  },
+  "content.dependency-warning.deleting-label": {
+    "message": ""
+  },
+  "content.dependency-warning.disable-dependents-label": {
+    "message": ""
+  },
+  "content.dependency-warning.effect-dependent-content": {
+    "message": ""
+  },
+  "content.dependency-warning.effect-instance": {
+    "message": ""
+  },
+  "content.dependency-warning.header": {
+    "message": ""
+  },
+  "content.dependency-warning.single-admonition-body": {
+    "message": ""
+  },
+  "content.dependency-warning.what-happens-label": {
+    "message": ""
+  },
+  "content.diff-modal.added-count": {
+    "message": ""
+  },
+  "content.diff-modal.diff-type.added": {
+    "message": ""
+  },
+  "content.diff-modal.diff-type.removed": {
+    "message": ""
+  },
+  "content.diff-modal.diff-type.updated": {
+    "message": ""
+  },
+  "content.diff-modal.removed-count": {
+    "message": ""
+  },
+  "content.diff-modal.unknown-content-body": {
+    "message": ""
+  },
+  "content.diff-modal.updated-count": {
+    "message": ""
+  },
+  "content.filter.disabled": {
+    "message": ""
+  },
+  "content.filter.enabled": {
+    "message": ""
+  },
+  "content.filter.updates": {
+    "message": ""
+  },
+  "content.filter.warnings": {
+    "message": ""
+  },
+  "content.inline-backup.backing-up": {
+    "message": ""
+  },
+  "content.inline-backup.backup-complete": {
+    "message": ""
+  },
+  "content.inline-backup.backup-failed": {
+    "message": ""
+  },
+  "content.inline-backup.backup-in-progress": {
+    "message": ""
+  },
+  "content.inline-backup.backup-takes-a-while": {
+    "message": ""
+  },
+  "content.inline-backup.create-backup": {
+    "message": ""
+  },
+  "content.inline-backup.instance-label": {
+    "message": ""
+  },
+  "content.inline-backup.shift-click-hint": {
+    "message": ""
+  },
+  "content.inline-backup.warning-body": {
+    "message": ""
+  },
+  "content.inline-backup.world-label": {
+    "message": ""
+  },
+  "content.modpack-card.content-hint-description": {
+    "message": ""
+  },
+  "content.modpack-card.content-hint-title": {
+    "message": ""
+  },
+  "content.modpack-card.dismiss-hint": {
+    "message": ""
+  },
+  "content.page-layout.additional-content": {
+    "message": ""
+  },
+  "content.page-layout.browse-content": {
+    "message": ""
+  },
+  "content.page-layout.busy-description": {
+    "message": ""
+  },
+  "content.page-layout.empty.hint": {
+    "message": ""
+  },
+  "content.page-layout.empty.modpack-hint": {
+    "message": ""
+  },
+  "content.page-layout.empty.no-content-installed": {
+    "message": ""
+  },
+  "content.page-layout.empty.no-extra-content-installed": {
+    "message": ""
+  },
+  "content.page-layout.failed-to-load": {
+    "message": ""
+  },
+  "content.page-layout.loading": {
+    "message": ""
+  },
+  "content.page-layout.no-content-found": {
+    "message": ""
+  },
+  "content.page-layout.please-wait": {
+    "message": ""
+  },
+  "content.page-layout.search-placeholder": {
+    "message": ""
+  },
+  "content.page-layout.share.file-names": {
+    "message": ""
+  },
+  "content.page-layout.share.label": {
+    "message": ""
+  },
+  "content.page-layout.share.markdown-links": {
+    "message": ""
+  },
+  "content.page-layout.share.project-links": {
+    "message": ""
+  },
+  "content.page-layout.share.project-names": {
+    "message": ""
+  },
+  "content.page-layout.sort.alphabetical": {
+    "message": ""
+  },
+  "content.page-layout.sort.date-added-newest": {
+    "message": ""
+  },
+  "content.page-layout.sort.date-added-oldest": {
+    "message": ""
+  },
+  "content.page-layout.sort.label": {
+    "message": ""
+  },
+  "content.page-layout.update-all": {
+    "message": ""
+  },
+  "content.page-layout.upload-files": {
+    "message": ""
+  },
+  "content.selection-bar.all-already-disabled": {
+    "message": ""
+  },
+  "content.selection-bar.all-already-enabled": {
+    "message": ""
+  },
+  "content.selection-bar.bulk.deleting": {
+    "message": ""
+  },
+  "content.selection-bar.bulk.deleting-count": {
+    "message": ""
+  },
+  "content.selection-bar.bulk.deleting-waiting": {
+    "message": ""
+  },
+  "content.selection-bar.bulk.disabling": {
+    "message": ""
+  },
+  "content.selection-bar.bulk.disabling-count": {
+    "message": ""
+  },
+  "content.selection-bar.bulk.disabling-waiting": {
+    "message": ""
+  },
+  "content.selection-bar.bulk.enabling": {
+    "message": ""
+  },
+  "content.selection-bar.bulk.enabling-count": {
+    "message": ""
+  },
+  "content.selection-bar.bulk.enabling-waiting": {
+    "message": ""
+  },
+  "content.selection-bar.bulk.updating": {
+    "message": ""
+  },
+  "content.selection-bar.bulk.updating-count": {
+    "message": ""
+  },
+  "content.selection-bar.bulk.updating-waiting": {
+    "message": ""
+  },
+  "content.selection-bar.selected-count": {
+    "message": ""
+  },
+  "content.selection-bar.selected-count-simple": {
+    "message": ""
+  },
+  "creation-flow.button.create-instance": {
+    "message": ""
+  },
+  "creation-flow.button.create-world": {
+    "message": ""
+  },
+  "creation-flow.button.finish": {
+    "message": ""
+  },
+  "creation-flow.button.import": {
+    "message": ""
+  },
+  "creation-flow.button.import-instances": {
+    "message": ""
+  },
+  "creation-flow.button.setup-server": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.build-number.label": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.build-number.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.build-number.search-placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.content-loader.label": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.game-version.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.game-version.search-placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.icon.remove": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.icon.select": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.loader-version-type.latest": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.loader-version-type.other": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.loader-version-type.stable": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.loader-version.label": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.loader-version.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.loader-version.search-placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.loader.label": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.name.label": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.name.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.custom-setup.options.no-versions-available": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.additional-settings.title": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.backup.before-reset-server.name": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.difficulty.easy": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.difficulty.hard": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.difficulty.label": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.difficulty.normal": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.difficulty.peaceful": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.game-version.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.gamemode.creative": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.gamemode.hardcore": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.gamemode.label": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.gamemode.survival": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.generate-structures.description": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.generate-structures.label": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.generator-settings-json.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.generator-settings.custom": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.generator-settings.default": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.generator-settings.description": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.generator-settings.flat": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.generator-settings.label": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.generator-settings.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.world-name.label": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.world-name.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.world-seed.description": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.world-seed.label-with-optional": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.world-seed.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.world-type.amplified": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.world-type.default": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.world-type.label": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.world-type.large-biomes": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.world-type.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.world-type.single-biome": {
+    "message": ""
+  },
+  "creation-flow.modal.final-config.world-type.superflat": {
+    "message": ""
+  },
+  "creation-flow.modal.import-instance.action.add": {
+    "message": ""
+  },
+  "creation-flow.modal.import-instance.custom-launcher.name": {
+    "message": ""
+  },
+  "creation-flow.modal.import-instance.detecting-launcher-instances": {
+    "message": ""
+  },
+  "creation-flow.modal.import-instance.launcher-instances.title": {
+    "message": ""
+  },
+  "creation-flow.modal.import-instance.launcher-path.add": {
+    "message": ""
+  },
+  "creation-flow.modal.import-instance.launcher-path.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.import-instance.notification.no-instances-found.text": {
+    "message": ""
+  },
+  "creation-flow.modal.import-instance.notification.no-instances-found.title": {
+    "message": ""
+  },
+  "creation-flow.modal.import-instance.search.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.import-instance.selection.clear-all": {
+    "message": ""
+  },
+  "creation-flow.modal.modpack.action.browse": {
+    "message": ""
+  },
+  "creation-flow.modal.modpack.action.import": {
+    "message": ""
+  },
+  "creation-flow.modal.modpack.known-modpack.prompt": {
+    "message": ""
+  },
+  "creation-flow.modal.modpack.search.no-results": {
+    "message": ""
+  },
+  "creation-flow.modal.modpack.search.placeholder": {
+    "message": ""
+  },
+  "creation-flow.modal.setup-type.instance.description": {
+    "message": ""
+  },
+  "creation-flow.modal.setup-type.option.custom-setup.description": {
+    "message": ""
+  },
+  "creation-flow.modal.setup-type.option.custom-setup.title": {
+    "message": ""
+  },
+  "creation-flow.modal.setup-type.option.import-instance.description": {
+    "message": ""
+  },
+  "creation-flow.modal.setup-type.option.import-instance.title": {
+    "message": ""
+  },
+  "creation-flow.modal.setup-type.option.modpack-base.description": {
+    "message": ""
+  },
+  "creation-flow.modal.setup-type.option.modpack-base.title": {
+    "message": ""
+  },
+  "creation-flow.modal.setup-type.option.vanilla-minecraft.description": {
+    "message": ""
+  },
+  "creation-flow.modal.setup-type.option.vanilla-minecraft.title": {
+    "message": ""
+  },
+  "creation-flow.modal.setup-type.title.installation": {
+    "message": ""
+  },
+  "creation-flow.modal.setup-type.title.instance": {
+    "message": ""
+  },
+  "creation-flow.modal.setup-type.title.world": {
+    "message": ""
+  },
+  "creation-flow.title.choose-modpack": {
+    "message": ""
+  },
+  "creation-flow.title.create-instance": {
+    "message": ""
+  },
+  "creation-flow.title.create-world": {
+    "message": ""
+  },
+  "creation-flow.title.import-instance": {
+    "message": ""
+  },
+  "creation-flow.title.reset-server": {
+    "message": ""
+  },
+  "creation-flow.title.set-up-server": {
+    "message": ""
+  },
+  "external-files.permissions-card.add-files-modal.confirm": {
+    "message": ""
+  },
+  "external-files.permissions-card.add-files-modal.description": {
+    "message": ""
+  },
+  "external-files.permissions-card.add-files-modal.empty": {
+    "message": ""
+  },
+  "external-files.permissions-card.add-files-modal.load-error.title": {
+    "message": ""
+  },
+  "external-files.permissions-card.add-files-modal.no-search-results": {
+    "message": ""
+  },
+  "external-files.permissions-card.add-files-modal.search-placeholder": {
+    "message": ""
+  },
+  "external-files.permissions-card.add-files-modal.selected-count": {
+    "message": ""
+  },
+  "external-files.permissions-card.add-files-modal.title": {
+    "message": ""
+  },
+  "external-files.permissions-card.add-files-to-group": {
+    "message": ""
+  },
+  "external-files.permissions-card.assign-files-error.title": {
+    "message": ""
+  },
+  "external-files.permissions-card.attribution.moderation-status.content-not-allowed": {
+    "message": ""
+  },
+  "external-files.permissions-card.attribution.moderation-status.passed": {
+    "message": ""
+  },
+  "external-files.permissions-card.attribution.moderation-status.rejected-proof": {
+    "message": ""
+  },
+  "external-files.permissions-card.badge.attributed": {
+    "message": ""
+  },
+  "external-files.permissions-card.badge.no-permission": {
+    "message": ""
+  },
+  "external-files.permissions-card.badge.not-allowed": {
+    "message": ""
+  },
+  "external-files.permissions-card.badge.pending": {
+    "message": ""
+  },
+  "external-files.permissions-card.badge.proof-rejected": {
+    "message": ""
+  },
+  "external-files.permissions-card.custom-license-option": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.add": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.all-rights-reserved": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.custom-license-label": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.custom-license-my-project-label": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.error.license-required": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.error.link-invalid-url": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.example-spdx-license": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.input-optional": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.license-label": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.link-label": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.link-to-license-url-placeholder": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.link-to-work-url-placeholder": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.modrinth-link-to-work": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.notes-label": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.notes-placeholder": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.proof-image-alt": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.proof-image-remove": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.proof-images-label": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.proof-images-upload-prompt": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.proof-warning.body": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.proof-warning.title": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.save": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.select-license-label": {
+    "message": ""
+  },
+  "external-files.permissions-card.editor.type-label": {
+    "message": ""
+  },
+  "external-files.permissions-card.error.custom-license-required": {
+    "message": ""
+  },
+  "external-files.permissions-card.error.explanation-or-images-required": {
+    "message": ""
+  },
+  "external-files.permissions-card.error.link-required": {
+    "message": ""
+  },
+  "external-files.permissions-card.error.notes-or-images-required": {
+    "message": ""
+  },
+  "external-files.permissions-card.error.proof-image-invalid-type": {
+    "message": ""
+  },
+  "external-files.permissions-card.error.proof-images-required": {
+    "message": ""
+  },
+  "external-files.permissions-card.explanation-description": {
+    "message": ""
+  },
+  "external-files.permissions-card.explanation-label": {
+    "message": ""
+  },
+  "external-files.permissions-card.fallback-group-title": {
+    "message": ""
+  },
+  "external-files.permissions-card.file-count": {
+    "message": ""
+  },
+  "external-files.permissions-card.included-files": {
+    "message": ""
+  },
+  "external-files.permissions-card.included-in-versions": {
+    "message": ""
+  },
+  "external-files.permissions-card.last-updated": {
+    "message": ""
+  },
+  "external-files.permissions-card.license.unknown": {
+    "message": ""
+  },
+  "external-files.permissions-card.licensed-as": {
+    "message": ""
+  },
+  "external-files.permissions-card.link-label": {
+    "message": ""
+  },
+  "external-files.permissions-card.moderation-reason": {
+    "message": ""
+  },
+  "external-files.permissions-card.moderation.error.title": {
+    "message": ""
+  },
+  "external-files.permissions-card.not-used-in-versions": {
+    "message": ""
+  },
+  "external-files.permissions-card.notes-label": {
+    "message": ""
+  },
+  "external-files.permissions-card.notes-none": {
+    "message": ""
+  },
+  "external-files.permissions-card.original-project-page": {
+    "message": ""
+  },
+  "external-files.permissions-card.proof-image-alt": {
+    "message": ""
+  },
+  "external-files.permissions-card.proof-images-label": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.globally-allowed": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.globally-allowed.description": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.license": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.license.description": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.license.proof-images-description": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.my-project": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.my-project.description": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.my-project.proof-images-description": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.no-permission": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.no-permission.automatic.description": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.no-permission.description": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.special-permission": {
+    "message": ""
+  },
+  "external-files.permissions-card.reason.special-permission.description": {
+    "message": ""
+  },
+  "external-files.permissions-card.split-file": {
+    "message": ""
+  },
+  "external-files.permissions-card.split-file-error.title": {
+    "message": ""
+  },
+  "external-files.permissions-card.unnamed-multi-group-title": {
+    "message": ""
+  },
+  "external-files.permissions-card.updated-by-moderator": {
+    "message": ""
+  },
+  "format.bytes.0": {
+    "message": ""
+  },
+  "format.bytes.1": {
+    "message": ""
+  },
+  "format.bytes.2": {
+    "message": ""
+  },
+  "format.bytes.3": {
+    "message": ""
+  },
+  "format.bytes.4": {
+    "message": ""
+  },
+  "hosting.content.failed-to-bulk-delete": {
+    "message": ""
+  },
+  "hosting.content.failed-to-bulk-disable": {
+    "message": ""
+  },
+  "hosting.content.failed-to-bulk-enable": {
+    "message": ""
+  },
+  "hosting.content.failed-to-bulk-update": {
+    "message": ""
+  },
+  "hosting.content.failed-to-install": {
+    "message": ""
+  },
+  "hosting.content.failed-to-load-modpack-content": {
+    "message": ""
+  },
+  "hosting.content.failed-to-load-versions": {
+    "message": ""
+  },
+  "hosting.content.failed-to-remove": {
+    "message": ""
+  },
+  "hosting.content.failed-to-toggle": {
+    "message": ""
+  },
+  "hosting.content.failed-to-unlink": {
+    "message": ""
+  },
+  "hosting.content.failed-to-update": {
+    "message": ""
+  },
+  "hosting.content.failed-to-upload": {
+    "message": ""
+  },
+  "hosting.loader.failed-to-change-version": {
+    "message": ""
+  },
+  "hosting.loader.failed-to-load-versions": {
+    "message": ""
+  },
+  "hosting.loader.failed-to-reinstall": {
+    "message": ""
+  },
+  "hosting.loader.failed-to-repair": {
+    "message": ""
+  },
+  "hosting.loader.failed-to-reset-to-onboarding": {
+    "message": ""
+  },
+  "hosting.loader.failed-to-save-settings": {
+    "message": ""
+  },
+  "hosting.loader.failed-to-unlink": {
+    "message": ""
+  },
+  "hosting.loader.loader-version": {
+    "message": ""
+  },
+  "hosting.loader.repair-started-text": {
+    "message": ""
+  },
+  "hosting.loader.repair-started-title": {
+    "message": ""
+  },
+  "hosting.loader.reset-server": {
+    "message": ""
+  },
+  "hosting.loader.reset-server-description": {
+    "message": ""
+  },
+  "hosting.loader.reset-to-onboarding-button": {
+    "message": ""
+  },
+  "hosting.loader.reset-to-onboarding-modal-description": {
+    "message": ""
+  },
+  "hosting.loader.reset-to-onboarding-modal-title": {
+    "message": ""
+  },
+  "hosting.loader.reset-to-onboarding-success-description": {
+    "message": ""
+  },
+  "hosting.loader.reset-to-onboarding-success-title": {
+    "message": ""
+  },
+  "hosting.loader.support-options-title": {
+    "message": ""
+  },
+  "hosting.specs.burst": {
+    "message": ""
+  },
+  "hosting.specs.burst.tooltip": {
+    "message": ""
+  },
+  "hosting.specs.gb-ram": {
+    "message": ""
+  },
+  "hosting.specs.gb-storage": {
+    "message": ""
+  },
+  "hosting.specs.shared-cpus": {
+    "message": ""
+  },
+  "icon-select.edit": {
+    "message": ""
+  },
+  "icon-select.remove": {
+    "message": ""
+  },
+  "icon-select.replace": {
+    "message": ""
+  },
+  "icon-select.select": {
+    "message": ""
+  },
+  "input.search-version.placeholder": {
+    "message": ""
+  },
+  "input.search.placeholder": {
+    "message": ""
+  },
+  "input.select-version.placeholder": {
+    "message": ""
+  },
+  "input.view.gallery": {
+    "message": ""
+  },
+  "input.view.grid": {
+    "message": ""
+  },
+  "input.view.list": {
+    "message": ""
+  },
+  "installation-settings.aria.select-game-version": {
+    "message": ""
+  },
+  "installation-settings.aria.select-loader-version": {
+    "message": ""
+  },
+  "installation-settings.aria.select-platform": {
+    "message": ""
+  },
+  "installation-settings.confirm-version-change": {
+    "message": ""
+  },
+  "installation-settings.confirm-version-change-description": {
+    "message": ""
+  },
+  "installation-settings.confirm-version-change-header": {
+    "message": ""
+  },
+  "installation-settings.edit-installation.title": {
+    "message": ""
+  },
+  "installation-settings.edit.warning-instance": {
+    "message": ""
+  },
+  "installation-settings.edit.warning-server": {
+    "message": ""
+  },
+  "installation-settings.incompatible-content.auto-fix-button": {
+    "message": ""
+  },
+  "installation-settings.incompatible-content.change-loader-button": {
+    "message": ""
+  },
+  "installation-settings.incompatible-content.disable-conflicts-button": {
+    "message": ""
+  },
+  "installation-settings.incompatible-content.game-version-warning-body": {
+    "message": ""
+  },
+  "installation-settings.incompatible-content.game-version-warning-title": {
+    "message": ""
+  },
+  "installation-settings.incompatible-content.header": {
+    "message": ""
+  },
+  "installation-settings.incompatible-content.loader-change-body": {
+    "message": ""
+  },
+  "installation-settings.incompatible-content.loader-change-title": {
+    "message": ""
+  },
+  "installation-settings.linked-instance.title": {
+    "message": ""
+  },
+  "installation-settings.linked.modpack": {
+    "message": ""
+  },
+  "installation-settings.linked.server-project": {
+    "message": ""
+  },
+  "installation-settings.loader-version": {
+    "message": ""
+  },
+  "installation-settings.platform-lock-tooltip": {
+    "message": ""
+  },
+  "installation-settings.reinstall-modpack.description": {
+    "message": ""
+  },
+  "installation-settings.reinstall-modpack.title": {
+    "message": ""
+  },
+  "installation-settings.reinstalling-modpack": {
+    "message": ""
+  },
+  "installation-settings.removed-incompatible": {
+    "message": ""
+  },
+  "installation-settings.repair.instance-description": {
+    "message": ""
+  },
+  "installation-settings.repair.instance-title": {
+    "message": ""
+  },
+  "installation-settings.repair.server-description": {
+    "message": ""
+  },
+  "installation-settings.repair.server-title": {
+    "message": ""
+  },
+  "installation-settings.saving": {
+    "message": ""
+  },
+  "installation-settings.search-game-version": {
+    "message": ""
+  },
+  "installation-settings.type.instance": {
+    "message": ""
+  },
+  "installation-settings.type.instance-possessive": {
+    "message": ""
+  },
+  "installation-settings.type.server": {
+    "message": ""
+  },
+  "installation-settings.type.server-possessive": {
+    "message": ""
+  },
+  "installation-settings.unlink": {
+    "message": ""
+  },
+  "installation-settings.unlink.description": {
+    "message": ""
+  },
+  "installation-settings.verifying": {
+    "message": ""
+  },
+  "instance.confirm-reinstall.admonition-body": {
+    "message": ""
+  },
+  "instance.confirm-reinstall.admonition-header": {
+    "message": ""
+  },
+  "instance.confirm-reinstall.header": {
+    "message": ""
+  },
+  "instance.confirm-reinstall.reinstall-button": {
+    "message": ""
+  },
+  "instance.confirm-repair.body.instance": {
+    "message": ""
+  },
+  "instance.confirm-repair.body.server": {
+    "message": ""
+  },
+  "instance.confirm-repair.header": {
+    "message": ""
+  },
+  "instance.confirm-repair.instance-label": {
+    "message": ""
+  },
+  "instance.confirm-repair.repair-button": {
+    "message": ""
+  },
+  "instance.confirm-repair.server-label": {
+    "message": ""
+  },
+  "instance.worlds.game_mode.adventure": {
+    "message": ""
+  },
+  "instance.worlds.game_mode.creative": {
+    "message": ""
+  },
+  "instance.worlds.game_mode.spectator": {
+    "message": ""
+  },
+  "instance.worlds.game_mode.survival": {
+    "message": ""
+  },
+  "instance.worlds.game_mode.unknown": {
+    "message": ""
+  },
+  "instances.content-install.compatible-count": {
+    "message": ""
+  },
+  "instances.content-install.existing-tab": {
+    "message": ""
+  },
+  "instances.content-install.game-version-placeholder": {
+    "message": ""
+  },
+  "instances.content-install.header": {
+    "message": ""
+  },
+  "instances.content-install.incompatible-tooltip": {
+    "message": ""
+  },
+  "instances.content-install.install-button": {
+    "message": ""
+  },
+  "instances.content-install.installed-badge": {
+    "message": ""
+  },
+  "instances.content-install.instance-type": {
+    "message": ""
+  },
+  "instances.content-install.loader-label": {
+    "message": ""
+  },
+  "instances.content-install.name-label": {
+    "message": ""
+  },
+  "instances.content-install.name-placeholder": {
+    "message": ""
+  },
+  "instances.content-install.new-tab": {
+    "message": ""
+  },
+  "instances.content-install.no-instances": {
+    "message": ""
+  },
+  "instances.content-install.remove-icon": {
+    "message": ""
+  },
+  "instances.content-install.search-placeholder": {
+    "message": ""
+  },
+  "instances.content-install.select-icon": {
+    "message": ""
+  },
+  "instances.modpack-content-modal.empty-description": {
+    "message": ""
+  },
+  "instances.modpack-content-modal.empty-title": {
+    "message": ""
+  },
+  "instances.modpack-content-modal.header": {
+    "message": ""
+  },
+  "instances.modpack-content-modal.loading": {
+    "message": ""
+  },
+  "instances.modpack-content-modal.no-results": {
+    "message": ""
+  },
+  "instances.modpack-content-modal.search-placeholder": {
+    "message": ""
+  },
+  "instances.updater-modal.badge.current": {
+    "message": ""
+  },
+  "instances.updater-modal.badge.incompatible": {
+    "message": ""
+  },
+  "instances.updater-modal.downgrade-to": {
+    "message": ""
+  },
+  "instances.updater-modal.header": {
+    "message": ""
+  },
+  "instances.updater-modal.header-modpack": {
+    "message": ""
+  },
+  "instances.updater-modal.header-switch": {
+    "message": ""
+  },
+  "instances.updater-modal.hide-incompatible": {
+    "message": ""
+  },
+  "instances.updater-modal.incompatibility-warning": {
+    "message": ""
+  },
+  "instances.updater-modal.incompatibility-warning-header": {
+    "message": ""
+  },
+  "instances.updater-modal.incompatible-update.description": {
+    "message": ""
+  },
+  "instances.updater-modal.incompatible-update.header": {
+    "message": ""
+  },
+  "instances.updater-modal.incompatible-update.proceed": {
+    "message": ""
+  },
+  "instances.updater-modal.install-anyway": {
+    "message": ""
+  },
+  "instances.updater-modal.loading-changelog": {
+    "message": ""
+  },
+  "instances.updater-modal.loading-versions": {
+    "message": ""
+  },
+  "instances.updater-modal.no-changelog": {
+    "message": ""
+  },
+  "instances.updater-modal.no-versions": {
+    "message": ""
+  },
+  "instances.updater-modal.search-placeholder": {
+    "message": ""
+  },
+  "instances.updater-modal.select-version": {
+    "message": ""
+  },
+  "instances.updater-modal.show-incompatible": {
+    "message": ""
+  },
+  "instances.updater-modal.switch-to": {
+    "message": ""
+  },
+  "instances.updater-modal.update-to": {
+    "message": ""
+  },
+  "instances.updater-modal.warning-app": {
+    "message": ""
+  },
+  "instances.updater-modal.warning-web": {
+    "message": ""
+  },
+  "label.actions": {
+    "message": ""
+  },
+  "label.available": {
+    "message": ""
+  },
+  "label.changelog": {
+    "message": ""
+  },
+  "label.changes-saved": {
+    "message": ""
+  },
+  "label.client-depends-warning": {
+    "message": ""
+  },
+  "label.client-only-warning": {
+    "message": ""
+  },
+  "label.client-retained-warning": {
+    "message": ""
+  },
+  "label.collections": {
+    "message": ""
+  },
+  "label.confirm-password": {
+    "message": ""
+  },
+  "label.content": {
+    "message": ""
+  },
+  "label.copied-filename": {
+    "message": ""
+  },
+  "label.copied-path": {
+    "message": ""
+  },
+  "label.create-failed": {
+    "message": ""
+  },
+  "label.created-ago": {
+    "message": ""
+  },
+  "label.dashboard": {
+    "message": ""
+  },
+  "label.delete": {
+    "message": ""
+  },
+  "label.delete-failed": {
+    "message": ""
+  },
+  "label.delete-immediately": {
+    "message": ""
+  },
+  "label.description": {
+    "message": ""
+  },
+  "label.details": {
+    "message": ""
+  },
+  "label.done": {
+    "message": ""
+  },
+  "label.download-failed": {
+    "message": ""
+  },
+  "label.email": {
+    "message": ""
+  },
+  "label.email-username": {
+    "message": ""
+  },
+  "label.error": {
+    "message": ""
+  },
+  "label.extract-failed": {
+    "message": ""
+  },
+  "label.filter-by": {
+    "message": ""
+  },
+  "label.filters": {
+    "message": ""
+  },
+  "label.followed-projects": {
+    "message": ""
+  },
+  "label.game-version": {
+    "message": ""
+  },
+  "label.hide-installed-content": {
+    "message": ""
+  },
+  "label.hide-selected-content": {
+    "message": ""
+  },
+  "label.installation-info": {
+    "message": ""
+  },
+  "label.installed": {
+    "message": ""
+  },
+  "label.installed-modpack": {
+    "message": ""
+  },
+  "label.installing": {
+    "message": ""
+  },
+  "label.installing-content": {
+    "message": ""
+  },
+  "label.loading": {
+    "message": ""
+  },
+  "label.moderation": {
+    "message": ""
+  },
+  "label.modpack": {
+    "message": ""
+  },
+  "label.move-failed": {
+    "message": ""
+  },
+  "label.no": {
+    "message": ""
+  },
+  "label.no-items": {
+    "message": ""
+  },
+  "label.notifications": {
+    "message": ""
+  },
+  "label.or": {
+    "message": ""
+  },
+  "label.password": {
+    "message": ""
+  },
+  "label.plan-custom": {
+    "message": ""
+  },
+  "label.plan-large": {
+    "message": ""
+  },
+  "label.plan-medium": {
+    "message": ""
+  },
+  "label.plan-small": {
+    "message": ""
+  },
+  "label.plan-unknown": {
+    "message": ""
+  },
+  "label.platform": {
+    "message": ""
+  },
+  "label.played": {
+    "message": ""
+  },
+  "label.project": {
+    "message": ""
+  },
+  "label.public": {
+    "message": ""
+  },
+  "label.rejected": {
+    "message": ""
+  },
+  "label.rename-failed": {
+    "message": ""
+  },
+  "label.saved": {
+    "message": ""
+  },
+  "label.scopes": {
+    "message": ""
+  },
+  "label.search": {
+    "message": ""
+  },
+  "label.select-all": {
+    "message": ""
+  },
+  "label.selected": {
+    "message": ""
+  },
+  "label.selection-actions": {
+    "message": ""
+  },
+  "label.server": {
+    "message": ""
+  },
+  "label.servers": {
+    "message": ""
+  },
+  "label.settings": {
+    "message": ""
+  },
+  "label.singleplayer": {
+    "message": ""
+  },
+  "label.sort-by": {
+    "message": ""
+  },
+  "label.success": {
+    "message": ""
+  },
+  "label.title": {
+    "message": ""
+  },
+  "label.unknown": {
+    "message": ""
+  },
+  "label.unlisted": {
+    "message": ""
+  },
+  "label.update-available": {
+    "message": ""
+  },
+  "label.updating": {
+    "message": ""
+  },
+  "label.upload-failed": {
+    "message": ""
+  },
+  "label.username": {
+    "message": ""
+  },
+  "label.validating": {
+    "message": ""
+  },
+  "label.version": {
+    "message": ""
+  },
+  "label.view": {
+    "message": ""
+  },
+  "label.visibility": {
+    "message": ""
+  },
+  "label.visit-your-profile": {
+    "message": ""
+  },
+  "label.yes": {
+    "message": ""
+  },
+  "locale.cs-CZ": {
+    "message": ""
+  },
+  "locale.da-DK": {
+    "message": ""
+  },
+  "locale.de-CH": {
+    "message": ""
+  },
+  "locale.de-DE": {
+    "message": ""
+  },
+  "locale.en-US": {
+    "message": ""
+  },
+  "locale.es-419": {
+    "message": ""
+  },
+  "locale.es-ES": {
+    "message": ""
+  },
+  "locale.fi-FI": {
+    "message": ""
+  },
+  "locale.fil-PH": {
+    "message": ""
+  },
+  "locale.fr-FR": {
+    "message": ""
+  },
+  "locale.he-IL": {
+    "message": ""
+  },
+  "locale.hu-HU": {
+    "message": ""
+  },
+  "locale.id-ID": {
+    "message": ""
+  },
+  "locale.it-IT": {
+    "message": ""
+  },
+  "locale.ja-JP": {
+    "message": ""
+  },
+  "locale.ko-KR": {
+    "message": ""
+  },
+  "locale.ms-MY": {
+    "message": ""
+  },
+  "locale.nl-NL": {
+    "message": ""
+  },
+  "locale.no-NO": {
+    "message": ""
+  },
+  "locale.pl-PL": {
+    "message": ""
+  },
+  "locale.pt-BR": {
+    "message": ""
+  },
+  "locale.pt-PT": {
+    "message": ""
+  },
+  "locale.ro-RO": {
+    "message": ""
+  },
+  "locale.ru-RU": {
+    "message": ""
+  },
+  "locale.sr-CS": {
+    "message": ""
+  },
+  "locale.sv-SE": {
+    "message": ""
+  },
+  "locale.th-TH": {
+    "message": ""
+  },
+  "locale.tr-TR": {
+    "message": ""
+  },
+  "locale.uk-UA": {
+    "message": ""
+  },
+  "locale.vi-VN": {
+    "message": ""
+  },
+  "locale.zh-CN": {
+    "message": ""
+  },
+  "locale.zh-TW": {
+    "message": ""
+  },
+  "markdown-editor.default-image-alt-text": {
+    "message": ""
+  },
+  "markdown-editor.error-label": {
+    "message": ""
+  },
+  "markdown-editor.image-modal.description-field.description": {
+    "message": ""
+  },
+  "markdown-editor.image-modal.description-field.placeholder": {
+    "message": ""
+  },
+  "markdown-editor.image-modal.description-field.title": {
+    "message": ""
+  },
+  "markdown-editor.image-modal.header": {
+    "message": ""
+  },
+  "markdown-editor.image-modal.upload-mode.label": {
+    "message": ""
+  },
+  "markdown-editor.image-modal.upload-mode.link": {
+    "message": ""
+  },
+  "markdown-editor.image-modal.upload-mode.upload": {
+    "message": ""
+  },
+  "markdown-editor.image-modal.upload.prompt": {
+    "message": ""
+  },
+  "markdown-editor.image-modal.url-field.placeholder": {
+    "message": ""
+  },
+  "markdown-editor.insert-button": {
+    "message": ""
+  },
+  "markdown-editor.link-modal.header": {
+    "message": ""
+  },
+  "markdown-editor.link-modal.label-field.placeholder": {
+    "message": ""
+  },
+  "markdown-editor.link-modal.label-field.title": {
+    "message": ""
+  },
+  "markdown-editor.link-modal.url-field.placeholder": {
+    "message": ""
+  },
+  "markdown-editor.markdown-formatting-support": {
+    "message": ""
+  },
+  "markdown-editor.max-length.label": {
+    "message": ""
+  },
+  "markdown-editor.max-length.unlimited": {
+    "message": ""
+  },
+  "markdown-editor.max-length.value": {
+    "message": ""
+  },
+  "markdown-editor.placeholder": {
+    "message": ""
+  },
+  "markdown-editor.preview-label": {
+    "message": ""
+  },
+  "markdown-editor.preview-toggle.label": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.bold": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.bulleted-list": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.code": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.heading-1": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.heading-2": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.heading-3": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.image": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.italic": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.link": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.ordered-list": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.quote": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.spoiler": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.strikethrough": {
+    "message": ""
+  },
+  "markdown-editor.toolbar.video": {
+    "message": ""
+  },
+  "markdown-editor.upload-error.no-file": {
+    "message": ""
+  },
+  "markdown-editor.upload-error.no-handler": {
+    "message": ""
+  },
+  "markdown-editor.url-label": {
+    "message": ""
+  },
+  "markdown-editor.url-validation-error.blocked-domain": {
+    "message": ""
+  },
+  "markdown-editor.url-validation-error.malformed": {
+    "message": ""
+  },
+  "markdown-editor.url-validation-error.unsupported-protocol": {
+    "message": ""
+  },
+  "markdown-editor.video-embed.title": {
+    "message": ""
+  },
+  "markdown-editor.video-modal.header": {
+    "message": ""
+  },
+  "markdown-editor.video-modal.url-field.description": {
+    "message": ""
+  },
+  "markdown-editor.video-modal.url-field.placeholder": {
+    "message": ""
+  },
+  "markdown-editor.video-modal.url-field.title": {
+    "message": ""
+  },
+  "modal.add-payment-method.action": {
+    "message": ""
+  },
+  "modal.add-payment-method.title": {
+    "message": ""
+  },
+  "modal.open-in-app.benefit.install": {
+    "message": ""
+  },
+  "modal.open-in-app.benefit.launch": {
+    "message": ""
+  },
+  "modal.open-in-app.benefit.update": {
+    "message": ""
+  },
+  "modal.open-in-app.get-app": {
+    "message": ""
+  },
+  "modal.open-in-app.opening-automatically": {
+    "message": ""
+  },
+  "modal.open-in-app.title": {
+    "message": ""
+  },
+  "modal.open-in-app.why-use": {
+    "message": ""
+  },
+  "notification.error.title": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.accepted": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.approved": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.archived": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.closed": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.creator": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.draft": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.failed": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.listed": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.moderator": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.modrinth-team": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.pending": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.private": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.processed": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.rejected": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.returned": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.safe": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.scheduled": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.under-review": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.unlisted": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.unsafe": {
+    "message": ""
+  },
+  "omorphia.component.badge.label.withheld": {
+    "message": ""
+  },
+  "omorphia.component.copy.action.copy": {
+    "message": ""
+  },
+  "omorphia.component.environment-indicator.label.client": {
+    "message": ""
+  },
+  "omorphia.component.environment-indicator.label.client-and-server": {
+    "message": ""
+  },
+  "omorphia.component.environment-indicator.label.client-or-server": {
+    "message": ""
+  },
+  "omorphia.component.environment-indicator.label.server": {
+    "message": ""
+  },
+  "omorphia.component.environment-indicator.label.type": {
+    "message": ""
+  },
+  "omorphia.component.environment-indicator.label.unsupported": {
+    "message": ""
+  },
+  "profile.label.badges": {
+    "message": ""
+  },
+  "project-card.date.published.tooltip": {
+    "message": ""
+  },
+  "project-card.date.updated.tooltip": {
+    "message": ""
+  },
+  "project-card.environment.client": {
+    "message": ""
+  },
+  "project-card.environment.client-and-server": {
+    "message": ""
+  },
+  "project-card.environment.client-or-server": {
+    "message": ""
+  },
+  "project-card.environment.server": {
+    "message": ""
+  },
+  "project-type.all": {
+    "message": ""
+  },
+  "project-type.datapack.capital": {
+    "message": ""
+  },
+  "project-type.datapack.category": {
+    "message": ""
+  },
+  "project-type.datapack.lowercase": {
+    "message": ""
+  },
+  "project-type.mod.capital": {
+    "message": ""
+  },
+  "project-type.mod.category": {
+    "message": ""
+  },
+  "project-type.mod.lowercase": {
+    "message": ""
+  },
+  "project-type.modpack.capital": {
+    "message": ""
+  },
+  "project-type.modpack.category": {
+    "message": ""
+  },
+  "project-type.modpack.lowercase": {
+    "message": ""
+  },
+  "project-type.plugin.capital": {
+    "message": ""
+  },
+  "project-type.plugin.category": {
+    "message": ""
+  },
+  "project-type.plugin.lowercase": {
+    "message": ""
+  },
+  "project-type.project.capital": {
+    "message": ""
+  },
+  "project-type.project.category": {
+    "message": ""
+  },
+  "project-type.project.lowercase": {
+    "message": ""
+  },
+  "project-type.resourcepack.capital": {
+    "message": ""
+  },
+  "project-type.resourcepack.category": {
+    "message": ""
+  },
+  "project-type.resourcepack.lowercase": {
+    "message": ""
+  },
+  "project-type.server.capital": {
+    "message": ""
+  },
+  "project-type.server.category": {
+    "message": ""
+  },
+  "project-type.server.lowercase": {
+    "message": ""
+  },
+  "project-type.shader.capital": {
+    "message": ""
+  },
+  "project-type.shader.category": {
+    "message": ""
+  },
+  "project-type.shader.lowercase": {
+    "message": ""
+  },
+  "project.environment.client-and-server.description": {
+    "message": ""
+  },
+  "project.environment.client-and-server.title": {
+    "message": ""
+  },
+  "project.environment.client-only-server-optional.description": {
+    "message": ""
+  },
+  "project.environment.client-only-server-optional.title": {
+    "message": ""
+  },
+  "project.environment.client-only.description": {
+    "message": ""
+  },
+  "project.environment.client-only.title": {
+    "message": ""
+  },
+  "project.environment.client-or-server-prefers-both.description": {
+    "message": ""
+  },
+  "project.environment.client-or-server-prefers-both.title": {
+    "message": ""
+  },
+  "project.environment.client-or-server.description": {
+    "message": ""
+  },
+  "project.environment.client-or-server.title": {
+    "message": ""
+  },
+  "project.environment.dedicated-server-only.description": {
+    "message": ""
+  },
+  "project.environment.dedicated-server-only.title": {
+    "message": ""
+  },
+  "project.environment.server-only-client-optional.description": {
+    "message": ""
+  },
+  "project.environment.server-only-client-optional.title": {
+    "message": ""
+  },
+  "project.environment.server-only.description": {
+    "message": ""
+  },
+  "project.environment.server-only.title": {
+    "message": ""
+  },
+  "project.environment.singleplayer-only.description": {
+    "message": ""
+  },
+  "project.environment.singleplayer-only.title": {
+    "message": ""
+  },
+  "project.environment.tag.not-applicable": {
+    "message": ""
+  },
+  "project.environment.tag.unknown": {
+    "message": ""
+  },
+  "project.environment.unknown.description": {
+    "message": ""
+  },
+  "project.environment.unknown.title": {
+    "message": ""
+  },
+  "project.server.customModpackTooltip": {
+    "message": ""
+  },
+  "project.server.ping.ms": {
+    "message": ""
+  },
+  "project.server.status.offline": {
+    "message": ""
+  },
+  "project.server.status.offline.tooltip": {
+    "message": ""
+  },
+  "project.server.status.online": {
+    "message": ""
+  },
+  "project.visibility.archived": {
+    "message": ""
+  },
+  "project.visibility.draft": {
+    "message": ""
+  },
+  "project.visibility.private": {
+    "message": ""
+  },
+  "project.visibility.public": {
+    "message": ""
+  },
+  "project.visibility.rejected": {
+    "message": ""
+  },
+  "project.visibility.scheduled": {
+    "message": ""
+  },
+  "project.visibility.under-review": {
+    "message": ""
+  },
+  "project.visibility.unknown": {
+    "message": ""
+  },
+  "project.visibility.unlisted": {
+    "message": ""
+  },
+  "project.visibility.unlisted-by-staff": {
+    "message": ""
+  },
+  "s.bg": {
+    "message": ""
+  },
+  "search.filter.locked.default": {
+    "message": ""
+  },
+  "search.filter.locked.default.description": {
+    "message": ""
+  },
+  "search.filter.locked.default.sync": {
+    "message": ""
+  },
+  "search.filter.locked.default.title": {
+    "message": ""
+  },
+  "search.filter.locked.default.unlock": {
+    "message": ""
+  },
+  "search.filter.option.exclusion.add.tooltip": {
+    "message": ""
+  },
+  "search.filter.option.search.clear.aria_label": {
+    "message": ""
+  },
+  "search.filter.option.search.placeholder": {
+    "message": ""
+  },
+  "search.filter.option.show_fewer": {
+    "message": ""
+  },
+  "search.filter.option.show_more": {
+    "message": ""
+  },
+  "search.filter_type.environment": {
+    "message": ""
+  },
+  "search.filter_type.environment.client": {
+    "message": ""
+  },
+  "search.filter_type.environment.server": {
+    "message": ""
+  },
+  "search.filter_type.game_version": {
+    "message": ""
+  },
+  "search.filter_type.game_version.all_versions": {
+    "message": ""
+  },
+  "search.filter_type.license": {
+    "message": ""
+  },
+  "search.filter_type.license.open_source": {
+    "message": ""
+  },
+  "search.filter_type.mod_loader": {
+    "message": ""
+  },
+  "search.filter_type.modpack_loader": {
+    "message": ""
+  },
+  "search.filter_type.plugin_loader": {
+    "message": ""
+  },
+  "search.filter_type.plugin_platform": {
+    "message": ""
+  },
+  "search.filter_type.project_id": {
+    "message": ""
+  },
+  "search.filter_type.shader_loader": {
+    "message": ""
+  },
+  "settings.display.theme.dark": {
+    "message": ""
+  },
+  "settings.display.theme.description": {
+    "message": ""
+  },
+  "settings.display.theme.light": {
+    "message": ""
+  },
+  "settings.display.theme.oled": {
+    "message": ""
+  },
+  "settings.display.theme.preferred-dark-theme": {
+    "message": ""
+  },
+  "settings.display.theme.preferred-light-theme": {
+    "message": ""
+  },
+  "settings.display.theme.retro": {
+    "message": ""
+  },
+  "settings.display.theme.system": {
+    "message": ""
+  },
+  "settings.display.theme.title": {
+    "message": ""
+  },
+  "settings.language.categories.default": {
+    "message": ""
+  },
+  "settings.language.categories.search-result": {
+    "message": ""
+  },
+  "settings.language.description": {
+    "message": ""
+  },
+  "settings.language.languages.search-field.placeholder": {
+    "message": ""
+  },
+  "settings.language.languages.search-results-announcement": {
+    "message": ""
+  },
+  "settings.language.languages.search.no-results": {
+    "message": ""
+  },
+  "settings.language.platform.app": {
+    "message": ""
+  },
+  "settings.language.title": {
+    "message": ""
+  },
+  "settings.language.warning": {
+    "message": ""
+  },
+  "tag.category.128x": {
+    "message": ""
+  },
+  "tag.category.16x": {
+    "message": ""
+  },
+  "tag.category.256x": {
+    "message": ""
+  },
+  "tag.category.32x": {
+    "message": ""
+  },
+  "tag.category.48x": {
+    "message": ""
+  },
+  "tag.category.512x+": {
+    "message": ""
+  },
+  "tag.category.64x": {
+    "message": ""
+  },
+  "tag.category.8x-": {
+    "message": ""
+  },
+  "tag.category.adventure": {
+    "message": ""
+  },
+  "tag.category.adventure-mode": {
+    "message": ""
+  },
+  "tag.category.anarchy": {
+    "message": ""
+  },
+  "tag.category.atmosphere": {
+    "message": ""
+  },
+  "tag.category.audio": {
+    "message": ""
+  },
+  "tag.category.battle-royale": {
+    "message": ""
+  },
+  "tag.category.bedwars": {
+    "message": ""
+  },
+  "tag.category.blocks": {
+    "message": ""
+  },
+  "tag.category.bloom": {
+    "message": ""
+  },
+  "tag.category.bosses": {
+    "message": ""
+  },
+  "tag.category.cartoon": {
+    "message": ""
+  },
+  "tag.category.challenging": {
+    "message": ""
+  },
+  "tag.category.classes": {
+    "message": ""
+  },
+  "tag.category.colored-lighting": {
+    "message": ""
+  },
+  "tag.category.combat": {
+    "message": ""
+  },
+  "tag.category.competitive": {
+    "message": ""
+  },
+  "tag.category.core-shaders": {
+    "message": ""
+  },
+  "tag.category.creative-mode": {
+    "message": ""
+  },
+  "tag.category.creator-community": {
+    "message": ""
+  },
+  "tag.category.crossplay": {
+    "message": ""
+  },
+  "tag.category.cursed": {
+    "message": ""
+  },
+  "tag.category.custom-content": {
+    "message": ""
+  },
+  "tag.category.decoration": {
+    "message": ""
+  },
+  "tag.category.dungeons": {
+    "message": ""
+  },
+  "tag.category.economy": {
+    "message": ""
+  },
+  "tag.category.entities": {
+    "message": ""
+  },
+  "tag.category.environment": {
+    "message": ""
+  },
+  "tag.category.equipment": {
+    "message": ""
+  },
+  "tag.category.factions": {
+    "message": ""
+  },
+  "tag.category.fantasy": {
+    "message": ""
+  },
+  "tag.category.foliage": {
+    "message": ""
+  },
+  "tag.category.fonts": {
+    "message": ""
+  },
+  "tag.category.food": {
+    "message": ""
+  },
+  "tag.category.game-mechanics": {
+    "message": ""
+  },
+  "tag.category.gens": {
+    "message": ""
+  },
+  "tag.category.gui": {
+    "message": ""
+  },
+  "tag.category.hardcore-mode": {
+    "message": ""
+  },
+  "tag.category.high": {
+    "message": ""
+  },
+  "tag.category.items": {
+    "message": ""
+  },
+  "tag.category.keep-inventory": {
+    "message": ""
+  },
+  "tag.category.kitchen-sink": {
+    "message": ""
+  },
+  "tag.category.kitpvp": {
+    "message": ""
+  },
+  "tag.category.library": {
+    "message": ""
+  },
+  "tag.category.lifesteal": {
+    "message": ""
+  },
+  "tag.category.lightweight": {
+    "message": ""
+  },
+  "tag.category.locale": {
+    "message": ""
+  },
+  "tag.category.low": {
+    "message": ""
+  },
+  "tag.category.magic": {
+    "message": ""
+  },
+  "tag.category.management": {
+    "message": ""
+  },
+  "tag.category.media": {
+    "message": ""
+  },
+  "tag.category.medium": {
+    "message": ""
+  },
+  "tag.category.microgames": {
+    "message": ""
+  },
+  "tag.category.minigame": {
+    "message": ""
+  },
+  "tag.category.minigames": {
+    "message": ""
+  },
+  "tag.category.mmo": {
+    "message": ""
+  },
+  "tag.category.mobs": {
+    "message": ""
+  },
+  "tag.category.modded": {
+    "message": ""
+  },
+  "tag.category.models": {
+    "message": ""
+  },
+  "tag.category.multiplayer": {
+    "message": ""
+  },
+  "tag.category.network": {
+    "message": ""
+  },
+  "tag.category.offline-mode": {
+    "message": ""
+  },
+  "tag.category.oneblock": {
+    "message": ""
+  },
+  "tag.category.op": {
+    "message": ""
+  },
+  "tag.category.optimization": {
+    "message": ""
+  },
+  "tag.category.parkour": {
+    "message": ""
+  },
+  "tag.category.path-tracing": {
+    "message": ""
+  },
+  "tag.category.pbr": {
+    "message": ""
+  },
+  "tag.category.personal-worlds": {
+    "message": ""
+  },
+  "tag.category.plots": {
+    "message": ""
+  },
+  "tag.category.pokemon": {
+    "message": ""
+  },
+  "tag.category.potato": {
+    "message": ""
+  },
+  "tag.category.prison": {
+    "message": ""
+  },
+  "tag.category.pve": {
+    "message": ""
+  },
+  "tag.category.pvp": {
+    "message": ""
+  },
+  "tag.category.questing": {
+    "message": ""
+  },
+  "tag.category.quests": {
+    "message": ""
+  },
+  "tag.category.racing": {
+    "message": ""
+  },
+  "tag.category.realistic": {
+    "message": ""
+  },
+  "tag.category.recording-smp": {
+    "message": ""
+  },
+  "tag.category.reflections": {
+    "message": ""
+  },
+  "tag.category.roleplay": {
+    "message": ""
+  },
+  "tag.category.rpg": {
+    "message": ""
+  },
+  "tag.category.screenshot": {
+    "message": ""
+  },
+  "tag.category.semi-realistic": {
+    "message": ""
+  },
+  "tag.category.shadows": {
+    "message": ""
+  },
+  "tag.category.simplistic": {
+    "message": ""
+  },
+  "tag.category.skyblock": {
+    "message": ""
+  },
+  "tag.category.smp": {
+    "message": ""
+  },
+  "tag.category.social": {
+    "message": ""
+  },
+  "tag.category.storage": {
+    "message": ""
+  },
+  "tag.category.survival-mode": {
+    "message": ""
+  },
+  "tag.category.teams": {
+    "message": ""
+  },
+  "tag.category.technical": {
+    "message": ""
+  },
+  "tag.category.technology": {
+    "message": ""
+  },
+  "tag.category.themed": {
+    "message": ""
+  },
+  "tag.category.towns": {
+    "message": ""
+  },
+  "tag.category.transportation": {
+    "message": ""
+  },
+  "tag.category.tweaks": {
+    "message": ""
+  },
+  "tag.category.utility": {
+    "message": ""
+  },
+  "tag.category.vanilla-like": {
+    "message": ""
+  },
+  "tag.category.whitelisted": {
+    "message": ""
+  },
+  "tag.category.world-resets": {
+    "message": ""
+  },
+  "tag.category.worldgen": {
+    "message": ""
+  },
+  "tag.loader.babric": {
+    "message": ""
+  },
+  "tag.loader.bta-babric": {
+    "message": ""
+  },
+  "tag.loader.bukkit": {
+    "message": ""
+  },
+  "tag.loader.bungeecord": {
+    "message": ""
+  },
+  "tag.loader.canvas": {
+    "message": ""
+  },
+  "tag.loader.datapack": {
+    "message": ""
+  },
+  "tag.loader.fabric": {
+    "message": ""
+  },
+  "tag.loader.folia": {
+    "message": ""
+  },
+  "tag.loader.forge": {
+    "message": ""
+  },
+  "tag.loader.geyser": {
+    "message": ""
+  },
+  "tag.loader.iris": {
+    "message": ""
+  },
+  "tag.loader.java-agent": {
+    "message": ""
+  },
+  "tag.loader.legacy-fabric": {
+    "message": ""
+  },
+  "tag.loader.liteloader": {
+    "message": ""
+  },
+  "tag.loader.minecraft": {
+    "message": ""
+  },
+  "tag.loader.modloader": {
+    "message": ""
+  },
+  "tag.loader.mrpack": {
+    "message": ""
+  },
+  "tag.loader.neoforge": {
+    "message": ""
+  },
+  "tag.loader.nilloader": {
+    "message": ""
+  },
+  "tag.loader.optifine": {
+    "message": ""
+  },
+  "tag.loader.ornithe": {
+    "message": ""
+  },
+  "tag.loader.paper": {
+    "message": ""
+  },
+  "tag.loader.purpur": {
+    "message": ""
+  },
+  "tag.loader.quilt": {
+    "message": ""
+  },
+  "tag.loader.rift": {
+    "message": ""
+  },
+  "tag.loader.spigot": {
+    "message": ""
+  },
+  "tag.loader.sponge": {
+    "message": ""
+  },
+  "tag.loader.vanilla": {
+    "message": ""
+  },
+  "tag.loader.velocity": {
+    "message": ""
+  },
+  "tag.loader.waterfall": {
+    "message": ""
+  },
+  "time-frame-picker.apply": {
+    "message": ""
+  },
+  "time-frame-picker.cancel": {
+    "message": ""
+  },
+  "time-frame-picker.clear-range": {
+    "message": ""
+  },
+  "time-frame-picker.custom-range": {
+    "message": ""
+  },
+  "time-frame-picker.decrease-amount": {
+    "message": ""
+  },
+  "time-frame-picker.empty-range": {
+    "message": ""
+  },
+  "time-frame-picker.end-date": {
+    "message": ""
+  },
+  "time-frame-picker.increase-amount": {
+    "message": ""
+  },
+  "time-frame-picker.last-timeframe": {
+    "message": ""
+  },
+  "time-frame-picker.last-timeframe-prefix": {
+    "message": ""
+  },
+  "time-frame-picker.option.all-time": {
+    "message": ""
+  },
+  "time-frame-picker.option.last-14-days": {
+    "message": ""
+  },
+  "time-frame-picker.option.last-180-days": {
+    "message": ""
+  },
+  "time-frame-picker.option.last-30-days": {
+    "message": ""
+  },
+  "time-frame-picker.option.last-7-days": {
+    "message": ""
+  },
+  "time-frame-picker.option.last-90-days": {
+    "message": ""
+  },
+  "time-frame-picker.option.today": {
+    "message": ""
+  },
+  "time-frame-picker.option.year-to-date": {
+    "message": ""
+  },
+  "time-frame-picker.option.yesterday": {
+    "message": ""
+  },
+  "time-frame-picker.select-timeframe": {
+    "message": ""
+  },
+  "time-frame-picker.selected-range": {
+    "message": ""
+  },
+  "time-frame-picker.selecting-range": {
+    "message": ""
+  },
+  "time-frame-picker.start-date": {
+    "message": ""
+  },
+  "time-frame-picker.timeframe-amount": {
+    "message": ""
+  },
+  "time-frame-picker.timeframe-unit": {
+    "message": ""
+  },
+  "time-frame-picker.unit.days": {
+    "message": ""
+  },
+  "time-frame-picker.unit.hours": {
+    "message": ""
+  },
+  "time-frame-picker.unit.months": {
+    "message": ""
+  },
+  "time-frame-picker.unit.weeks": {
+    "message": ""
+  },
+  "ui.component.unsaved-changes-popup.body": {
+    "message": ""
+  },
+  "ui.confirm-leave-modal.body": {
+    "message": ""
+  },
+  "ui.confirm-leave-modal.header": {
+    "message": ""
+  },
+  "ui.confirm-leave-modal.leave": {
+    "message": ""
+  },
+  "ui.confirm-leave-modal.stay": {
+    "message": ""
+  },
+  "ui.confirm-leave-modal.title": {
+    "message": ""
+  },
+  "ui.stacked-admonitions.alert-count": {
+    "message": ""
+  },
+  "ui.stacked-admonitions.dismiss-all": {
+    "message": ""
+  },
+  "user.profile.badge.alpha.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.alpha.name": {
+    "message": ""
+  },
+  "user.profile.badge.beta.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.beta.link": {
+    "message": ""
+  },
+  "user.profile.badge.beta.name": {
+    "message": ""
+  },
+  "user.profile.badge.downloads.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.downloads.name": {
+    "message": ""
+  },
+  "user.profile.badge.early-datapack-adopter.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.early-datapack-adopter.name": {
+    "message": ""
+  },
+  "user.profile.badge.early-modpack-adopter.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.early-modpack-adopter.name": {
+    "message": ""
+  },
+  "user.profile.badge.early-plugin-adopter.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.early-plugin-adopter.name": {
+    "message": ""
+  },
+  "user.profile.badge.early-resourcepack-adopter.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.early-resourcepack-adopter.name": {
+    "message": ""
+  },
+  "user.profile.badge.early-server-adopter.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.early-server-adopter.name": {
+    "message": ""
+  },
+  "user.profile.badge.early-shader-adopter.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.early-shader-adopter.name": {
+    "message": ""
+  },
+  "user.profile.badge.hosting-alpha.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.hosting-alpha.name": {
+    "message": ""
+  },
+  "user.profile.badge.moderator.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.moderator.about.2": {
+    "message": ""
+  },
+  "user.profile.badge.moderator.name": {
+    "message": ""
+  },
+  "user.profile.badge.plus.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.plus.link": {
+    "message": ""
+  },
+  "user.profile.badge.plus.name": {
+    "message": ""
+  },
+  "user.profile.badge.pride.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.pride.link": {
+    "message": ""
+  },
+  "user.profile.badge.pride.name": {
+    "message": ""
+  },
+  "user.profile.badge.staff.about.1": {
+    "message": ""
+  },
+  "user.profile.badge.staff.name": {
+    "message": ""
+  },
+  "version.content.name": {
+    "message": ""
+  },
+  "version.content.version": {
+    "message": ""
+  },
+  "version.file-type.dev-jar": {
+    "message": ""
+  },
+  "version.file-type.javadoc-jar": {
+    "message": ""
+  },
+  "version.file-type.optional-resource-pack": {
+    "message": ""
+  },
+  "version.file-type.primary": {
+    "message": ""
+  },
+  "version.file-type.required-resource-pack": {
+    "message": ""
+  },
+  "version.file-type.signature": {
+    "message": ""
+  },
+  "version.file-type.sources-jar": {
+    "message": ""
+  },
+  "version.file-type.unknown": {
+    "message": ""
+  },
+  "version.section.changes": {
+    "message": ""
+  },
+  "version.section.compatibility": {
+    "message": ""
+  },
+  "version.section.content": {
+    "message": ""
+  },
+  "version.section.content.search-placeholder": {
+    "message": ""
+  },
+  "version.section.dependencies.any-compatible-version": {
+    "message": ""
+  },
+  "version.section.dependencies.any-version": {
+    "message": ""
+  },
+  "version.section.dependencies.unavailable-version": {
+    "message": ""
+  },
+  "version.section.dependencies.unavailable-version.description": {
+    "message": ""
+  },
+  "version.section.dependencies.unavailable-version.description.required": {
+    "message": ""
+  },
+  "version.section.files": {
+    "message": ""
+  },
+  "version.section.included-content": {
+    "message": ""
+  },
+  "version.section.known-incompatibilities": {
+    "message": ""
+  },
+  "version.section.no-changes": {
+    "message": ""
+  },
+  "version.section.no-modpack-mod-loader": {
+    "message": ""
+  },
+  "version.section.optional-dependencies": {
+    "message": ""
+  },
+  "version.section.required-content": {
+    "message": ""
+  },
+  "version.section.supplementary-resources": {
+    "message": ""
+  },
+  "version.supplementary-resources.file": {
+    "message": ""
+  },
+  "version.supplementary-resources.size": {
+    "message": ""
+  },
+  "version.supplementary-resources.type": {
+    "message": ""
+  }
+}

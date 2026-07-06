@@ -1,23 +1,39 @@
 <script setup lang="ts">
-import { injectNotificationManager } from '@modrinth/ui'
+import { defineMessages, injectNotificationManager, useVIntl } from '@modrinth/ui'
 import type { SearchResult } from '@modrinth/utils'
 import dayjs from 'dayjs'
 import { computed, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import RowDisplay from '@/components/RowDisplay.vue'
+import HomeRandomMods from '@/components/ui/home/HomeRandomMods.vue'
+import HomeRecentScreenshots from '@/components/ui/home/HomeRecentScreenshots.vue'
+import HomeSystemStatus from '@/components/ui/home/HomeSystemStatus.vue'
+import HomeUpdateReminders from '@/components/ui/home/HomeUpdateReminders.vue'
 import RecentWorldsList from '@/components/ui/world/RecentWorldsList.vue'
 import { get_search_results } from '@/helpers/cache.js'
 import { instance_listener } from '@/helpers/events'
 import { list } from '@/helpers/instance'
 import type { GameInstance } from '@/helpers/types'
 import { useBreadcrumbs } from '@/store/breadcrumbs'
+import { useTheming } from '@/store/state'
 
 const { handleError } = injectNotificationManager()
 const route = useRoute()
 const breadcrumbs = useBreadcrumbs()
+const themeStore = useTheming()
 
-breadcrumbs.setRootContext({ name: 'Home', link: route.path })
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+  home: { id: 'app.home.title', defaultMessage: 'Home' },
+  welcomeBack: { id: 'app.home.welcome-back', defaultMessage: 'Welcome back!' },
+  welcomeTo: { id: 'app.home.welcome-to', defaultMessage: 'Welcome to Modrinth App!' },
+  discoverModpack: { id: 'app.home.discover-modpack', defaultMessage: 'Discover a modpack' },
+  discoverMods: { id: 'app.home.discover-mods', defaultMessage: 'Discover mods' },
+})
+
+breadcrumbs.setRootContext({ name: formatMessage(messages.home), link: route.path })
 
 const instances = ref<GameInstance[]>([])
 
@@ -32,8 +48,17 @@ const recentInstances = computed(() =>
 		.sort((a, b) => dayjs(b.last_played).diff(dayjs(a.last_played))),
 )
 
-const hasFeaturedProjects = computed(
-	() => (featuredModpacks.value?.length ?? 0) + (featuredMods.value?.length ?? 0) > 0,
+const showJumpBackIn = computed(() => themeStore.getFeatureFlag('home_show_jump_back_in'))
+const showDiscoverModpacks = computed(() => themeStore.getFeatureFlag('home_show_discover_modpacks'))
+const showDiscoverMods = computed(() => themeStore.getFeatureFlag('home_show_discover_mods'))
+const showUpdateReminders = computed(() => themeStore.getFeatureFlag('home_show_update_reminders'))
+const showSystemStatus = computed(() => themeStore.getFeatureFlag('home_show_system_status'))
+const showRecentScreenshots = computed(() => themeStore.getFeatureFlag('home_show_recent_screenshots'))
+const showRandomMods = computed(() => themeStore.getFeatureFlag('home_show_random_mods'))
+
+const showFeaturedRow = computed(
+	() => (showDiscoverModpacks.value && featuredModpacks.value.length > 0) ||
+		(showDiscoverMods.value && featuredMods.value.length > 0),
 )
 
 const offline = ref<boolean>(!navigator.onLine)
@@ -85,6 +110,33 @@ async function refreshFeaturedProjects() {
 await fetchInstances()
 await refreshFeaturedProjects()
 
+const featuredRows = computed(() => {
+	const rows: Array<{
+		label: string
+		route: string
+		instances: SearchResult[]
+		downloaded: boolean
+		show?: boolean
+	}> = []
+	if (showDiscoverModpacks.value && featuredModpacks.value.length > 0) {
+		rows.push({
+			label: formatMessage(messages.discoverModpack),
+			route: '/browse/modpack',
+			instances: featuredModpacks.value,
+			downloaded: false,
+		})
+	}
+	if (showDiscoverMods.value && featuredMods.value.length > 0) {
+		rows.push({
+			label: formatMessage(messages.discoverMods),
+			route: '/browse/mod',
+			instances: featuredMods.value,
+			downloaded: false,
+		})
+	}
+	return rows
+})
+
 const unlistenInstance = await instance_listener(
 	async (e: { event: string; instance_id: string }) => {
 		await fetchInstances()
@@ -101,27 +153,24 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<div class="p-6 flex flex-col gap-2">
-		<h1 v-if="recentInstances?.length > 0" class="m-0 text-2xl font-extrabold">Welcome back!</h1>
-		<h1 v-else class="m-0 text-2xl font-extrabold">Welcome to Modrinth App!</h1>
-		<RecentWorldsList :recent-instances="recentInstances" />
+	<div class="p-6 flex flex-col gap-4">
+		<h1 v-if="recentInstances?.length > 0" class="m-0 text-2xl font-extrabold">{{ formatMessage(messages.welcomeBack) }}</h1>
+		<h1 v-else class="m-0 text-2xl font-extrabold">{{ formatMessage(messages.welcomeTo) }}</h1>
+
+		<RecentWorldsList v-if="showJumpBackIn" :recent-instances="recentInstances" />
+
+		<HomeUpdateReminders v-if="showUpdateReminders" />
+
+		<HomeSystemStatus v-if="showSystemStatus" />
+
 		<RowDisplay
-			v-if="hasFeaturedProjects"
-			:instances="[
-				{
-					label: 'Discover a modpack',
-					route: '/browse/modpack',
-					instances: featuredModpacks,
-					downloaded: false,
-				},
-				{
-					label: 'Discover mods',
-					route: '/browse/mod',
-					instances: featuredMods,
-					downloaded: false,
-				},
-			]"
+			v-if="showFeaturedRow && featuredRows.length > 0"
+			:instances="featuredRows"
 			:can-paginate="true"
 		/>
+
+		<HomeRandomMods v-if="showRandomMods" />
+
+		<HomeRecentScreenshots v-if="showRecentScreenshots" />
 	</div>
 </template>

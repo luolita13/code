@@ -216,6 +216,19 @@ export async function install_project_with_dependencies(
 	})
 }
 
+// Resolve an install plan without starting the install.
+// Pair with install_content_to_instance (from helpers/install.ts) to get a
+// progress popup during mod/resourcepack/datapack/shader installation.
+export async function resolve_install_plan(
+	instanceId: string,
+	request: ResolveContentRequest,
+): Promise<ResolveContentPlan> {
+	return await invoke('plugin:instance|instance_resolve_install_plan', {
+		instanceId,
+		request,
+	})
+}
+
 export async function switch_project_version_with_dependencies(
 	instanceId: string,
 	projectPath: string,

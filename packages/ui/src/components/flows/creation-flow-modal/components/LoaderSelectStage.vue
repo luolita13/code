@@ -1,14 +1,18 @@
 <template>
 	<div class="flex flex-col gap-4">
+		<!-- Back to game version -->
+		<button
+			class="flex items-center gap-2 text-sm text-secondary hover:text-contrast transition-colors"
+			@click="ctx.modal.value?.setStage('game-version-select')"
+		>
+			<LeftArrowIcon class="size-4" />
+			{{ formatMessage(messages.backToGameVersion) }}
+		</button>
+
 		<!-- Game version display -->
 		<div class="flex items-center justify-between rounded-lg bg-surface-2 border border-surface-5 px-4 py-2">
 			<span class="text-sm text-secondary">{{ formatMessage(messages.gameVersionLabel) }}</span>
-			<button
-				class="font-semibold text-brand hover:underline"
-				@click="ctx.modal.value?.setStage('game-version-select')"
-			>
-				{{ ctx.selectedGameVersion.value }}
-			</button>
+			<span class="font-semibold text-contrast">{{ ctx.selectedGameVersion.value }}</span>
 		</div>
 
 		<!-- Loader cards -->
@@ -104,16 +108,11 @@
 <script setup lang="ts">
 import {
 	CheckIcon,
-	TagLoaderVanillaIcon,
-	TagLoaderForgeIcon,
-	TagLoaderFabricIcon,
-	TagLoaderQuiltIcon,
-	TagLoaderNeoforgeIcon,
-	TagLoaderOptifineIcon,
-	TagLoaderLiteloaderIcon,
-	TagLoaderModloaderIcon,
-	WrenchIcon,
 	CubeIcon,
+	LeftArrowIcon,
+	TagLoaderModloaderIcon,
+	TagLoaderVanillaIcon,
+	loaderIconMap as baseLoaderIconMap,
 } from '@modrinth/assets'
 import { commonMessages, defineMessages, useVIntl } from '@modrinth/ui'
 import { type Component, computed, markRaw, onMounted, ref, watch } from 'vue'
@@ -126,19 +125,19 @@ import { formatLoaderLabel } from '../shared'
 const ctx = injectCreationFlowContext()
 const { formatMessage } = useVIntl()
 
+// Extend the shared loader icon map with the loaders exposed by this stage.
 const loaderIconMap: Record<string, Component> = {
+	...baseLoaderIconMap,
 	vanilla: markRaw(TagLoaderVanillaIcon),
-	forge: markRaw(TagLoaderForgeIcon),
-	neoforge: markRaw(TagLoaderNeoforgeIcon),
-	fabric: markRaw(TagLoaderFabricIcon),
-	quilt: markRaw(TagLoaderQuiltIcon),
-	optifine: markRaw(TagLoaderOptifineIcon),
-	liteloader: markRaw(TagLoaderLiteloaderIcon),
-	cleanroom: markRaw(WrenchIcon),
+	cleanroom: markRaw(CubeIcon),
 	labymod: markRaw(CubeIcon),
 }
 
 const messages = defineMessages({
+	backToGameVersion: {
+		id: 'creation-flow.modal.loader-select.back',
+		defaultMessage: 'Back to game version',
+	},
 	gameVersionLabel: {
 		id: 'creation-flow.modal.loader-select.game-version',
 		defaultMessage: 'Game version',
@@ -342,7 +341,7 @@ watch(selectedLoaderId, async (loaderId) => {
 	autoSelectLoaderVersion()
 })
 
-// On mount, default to vanilla
+// On mount, default to vanilla and prefetch loader metadata so cards show correct availability
 onMounted(() => {
 	if (!ctx.selectedLoader.value) {
 		selectedLoaderId.value = 'vanilla'
@@ -352,6 +351,9 @@ onMounted(() => {
 	}
 	// Sync loaderVersionType from context
 	loaderVersionType.value = ctx.loaderVersionType.value
+
+	// Pre-fetch metadata for all available loaders to avoid "Incompatible" placeholders
+	ctx.prefetchLoaderMetadata()
 })
 
 // Sync back to context

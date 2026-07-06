@@ -3,6 +3,7 @@ import {
 	CoffeeIcon,
 	GameIcon,
 	GaugeIcon,
+	HomeIcon,
 	LanguagesIcon,
 	ModrinthIcon,
 	PaintbrushIcon,
@@ -26,6 +27,7 @@ import { ref, watch } from 'vue'
 import AppearanceSettings from '@/components/ui/settings/AppearanceSettings.vue'
 import DefaultInstanceSettings from '@/components/ui/settings/DefaultInstanceSettings.vue'
 import FeatureFlagSettings from '@/components/ui/settings/FeatureFlagSettings.vue'
+import HomeSettings from '@/components/ui/settings/HomeSettings.vue'
 import JavaSettings from '@/components/ui/settings/JavaSettings.vue'
 import LanguageSettings from '@/components/ui/settings/LanguageSettings.vue'
 import PrivacySettings from '@/components/ui/settings/PrivacySettings.vue'
@@ -45,6 +47,11 @@ const developerModeEnabled = defineMessage({
 	defaultMessage: 'Developer mode enabled.',
 })
 
+const settingsTitle = defineMessage({
+	id: 'app.settings.title',
+	defaultMessage: 'Settings',
+})
+
 const tabs = [
 	{
 		name: defineMessage({
@@ -53,6 +60,14 @@ const tabs = [
 		}),
 		icon: PaintbrushIcon,
 		content: AppearanceSettings,
+	},
+	{
+		name: defineMessage({
+			id: 'app.settings.tabs.home',
+			defaultMessage: 'Home page',
+		}),
+		icon: HomeIcon,
+		content: HomeSettings,
 	},
 	{
 		name: defineMessage({
@@ -147,10 +162,10 @@ const messages = defineMessages({
 })
 </script>
 <template>
-	<TabbedModal ref="modal" :tabs="tabs.filter((t) => !t.developerOnly || themeStore.devMode)">
+	<TabbedModal ref="modal" width="900px" :tabs="tabs.filter((t) => !t.developerOnly || themeStore.devMode)">
 		<template #title>
 			<span class="flex items-center gap-2 text-lg font-extrabold text-contrast">
-				<SettingsIcon /> Settings
+				<SettingsIcon /> {{ formatMessage(settingsTitle) }}
 			</span>
 		</template>
 		<template #footer>
@@ -177,14 +192,21 @@ const messages = defineMessages({
 					>
 						<ModrinthIcon class="w-6 h-6" />
 					</button>
-					<div class="max-w-[200px]">
-						<p class="m-0">Modrinth App {{ version }}</p>
-						<p class="m-0">
-							<span v-if="osPlatform === 'macos'">macOS</span>
-							<span v-else class="capitalize">{{ osPlatform }}</span>
-							{{ osVersion }}
-						</p>
-					</div>
+					<div class="max-w-[220px]">
+					<p class="m-0">Modrinth App {{ version }} (Custom Edition)</p>
+					<p class="m-0">
+						<span v-if="osPlatform === 'macos'">macOS</span>
+						<span v-else class="capitalize">{{ osPlatform }}</span>
+						{{ osVersion }}
+					</p>
+					<a
+						href="https://github.com/luolita13"
+						target="_blank"
+						class="text-brand hover:underline text-xs"
+					>
+						github.com/luolita13
+					</a>
+				</div>
 				</div>
 			</div>
 		</template>

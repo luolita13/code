@@ -93,12 +93,35 @@ pub async fn install_project_with_dependencies(
     instance_id: &str,
     request: InstallProjectWithDependenciesRequest,
 ) -> crate::Result<ResolveContentPlan> {
+    let plan = resolve_install_plan_only(instance_id, request).await?;
+
+    // Trigger install through the InstallJob system for progress reporting.
+    // The InstallContent runner emits ContentInstallFinished/Failed events on
+    // completion, so the existing instance_listener in the frontend keeps
+    // working.
+    let _ = crate::install::install_content_to_instance(
+        instance_id.to_string(),
+        plan.clone(),
+    )
+    .await?;
+
+    Ok(plan)
+}
+
+/// Resolve an install plan without spawning the install task.
+/// Used when the caller wants to drive the install separately (e.g. via
+/// `install_content_to_instance` to get a progress popup).
+#[tracing::instrument]
+pub async fn resolve_install_plan_only(
+    instance_id: &str,
+    request: InstallProjectWithDependenciesRequest,
+) -> crate::Result<ResolveContentPlan> {
     let state = State::get().await?;
     let metadata = super::get::get(instance_id).await?.ok_or_else(|| {
         crate::ErrorKind::InputError("Unknown instance".to_string())
     })?;
     let plan = crate::state::instances::commands::resolve_install_plan(
-        instance_id,
+        &metadata.instance.id,
         crate::state::instances::commands::InstanceInstallProjectRequest {
             project_id: request.project_id,
             version_id: request.version_id,
@@ -108,70 +131,7 @@ pub async fn install_project_with_dependencies(
         &state,
     )
     .await?;
-
-    let instance_id = metadata.instance.id;
-    let project_ids = plan_project_ids(&plan);
-    let install_plan = plan.clone();
-    tokio::spawn(async move {
-        match crate::state::instances::commands::install_resolved_content_plan(
-            &instance_id,
-            &install_plan,
-            &state,
-        )
-        .await
-        {
-            Ok(()) => {
-                if let Err(error) = emit_instance(
-                    &instance_id,
-                    InstancePayloadType::ContentInstallFinished {
-                        project_ids: project_ids.clone(),
-                    },
-                )
-                .await
-                {
-                    tracing::error!(
-                        "Failed to emit content install finished event: {error}"
-                    );
-                }
-                if let Err(error) =
-                    emit_instance(&instance_id, InstancePayloadType::Edited)
-                        .await
-                {
-                    tracing::error!(
-                        "Failed to emit instance edited event after content install: {error}"
-                    );
-                }
-            }
-            Err(error) => {
-                if let Err(emit_error) = emit_instance(
-                    &instance_id,
-                    InstancePayloadType::ContentInstallFailed {
-                        project_ids,
-                        message: error.to_string(),
-                    },
-                )
-                .await
-                {
-                    tracing::error!(
-                        "Failed to emit content install failed event: {emit_error}"
-                    );
-                }
-            }
-        }
-    });
-
     Ok(plan)
-}
-
-fn plan_project_ids(plan: &ResolveContentPlan) -> Vec<String> {
-    let mut project_ids = Vec::with_capacity(plan.dependencies.len() + 1);
-    project_ids.push(plan.primary.project_id.clone());
-    project_ids.extend(
-        plan.dependencies
-            .iter()
-            .map(|dependency| dependency.project_id.clone()),
-    );
-    project_ids
 }
 
 #[tracing::instrument]

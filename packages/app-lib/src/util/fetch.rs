@@ -404,6 +404,20 @@ async fn fetch_advanced_with_client_and_progress(
 ) -> crate::Result<Bytes> {
     let _permit = semaphore.0.acquire().await?;
 
+    // Determine fetch strategy based on mirror settings
+    let strategy = super::mirror::get_fetch_strategy(url);
+
+    let (primary_url, fallback_url) = match &strategy {
+        super::mirror::FetchStrategy::OfficialOnly => (url, None),
+        super::mirror::FetchStrategy::MirrorFirst { mirror_url } => {
+            (mirror_url.as_str(), Some(url))
+        }
+        super::mirror::FetchStrategy::OfficialFirstWithFallback { mirror_url } => {
+            (url, Some(mirror_url.as_str()))
+        }
+    };
+
+    // Auth/fence logic always uses the ORIGINAL url for correct behavior
     let is_api_url = url.starts_with(env!("MODRINTH_API_URL"))
         || url.starts_with(env!("MODRINTH_API_URL_V3"));
     let fence_key = if is_api_url { uri_path } else { None };
@@ -421,6 +435,78 @@ async fn fetch_advanced_with_client_and_progress(
     let download_meta_header = download_meta
         .map(|m| (DOWNLOAD_META_HEADER.to_string(), m.to_header_value()));
 
+    // Phase 1: Try primary URL (official or mirror depending on strategy)
+    match fetch_with_url(
+        method.clone(),
+        primary_url,
+        url,
+        sha1,
+        json_body.clone(),
+        header,
+        &creds,
+        &download_meta_header,
+        loading_bar,
+        progress,
+        fence_key,
+        client,
+    )
+    .await
+    {
+        Ok(bytes) => return Ok(bytes),
+        Err(primary_err) => {
+            if let Some(fallback) = fallback_url {
+                tracing::info!(
+                    "Primary URL failed for {url}, trying fallback: {fallback}"
+                );
+                // Phase 2: Try fallback URL (no progress callback for fallback attempt)
+                match fetch_with_url(
+                    method,
+                    fallback,
+                    url,
+                    sha1,
+                    json_body,
+                    header,
+                    &creds,
+                    &download_meta_header,
+                    loading_bar,
+                    None,
+                    fence_key,
+                    client,
+                )
+                .await
+                {
+                    Ok(bytes) => return Ok(bytes),
+                    Err(fallback_err) => {
+                        // Both failed - return the more recent error
+                        tracing::warn!(
+                            "Both primary and fallback URLs failed for {url}"
+                        );
+                        return Err(fallback_err);
+                    }
+                }
+            }
+            Err(primary_err)
+        }
+    }
+}
+
+/// Internal helper: try fetching a single URL with retry logic.
+/// `auth_url` is the original URL used for auth/fence checks.
+#[allow(clippy::too_many_arguments)]
+async fn fetch_with_url(
+    method: Method,
+    fetch_url: &str,
+    auth_url: &str,
+    sha1: Option<&str>,
+    json_body: Option<serde_json::Value>,
+    header: Option<(&str, &str)>,
+    creds: &Option<crate::state::ModrinthCredentials>,
+    download_meta_header: &Option<(String, String)>,
+    loading_bar: Option<(&LoadingBarId, f64)>,
+    mut progress: Option<&mut FetchProgressFn<'_>>,
+    fence_key: Option<&'static str>,
+    client: &reqwest::Client,
+) -> crate::Result<Bytes> {
     for attempt in 1..=(FETCH_ATTEMPTS + 1) {
         if let Some(fence_key) = fence_key
             && GLOBAL_FETCH_FENCE.is_blocked(fence_key)
@@ -431,7 +517,7 @@ async fn fetch_advanced_with_client_and_progress(
             .into());
         }
 
-        let mut req = client.request(method.clone(), url);
+        let mut req = client.request(method.clone(), fetch_url);
 
         if let Some(body) = json_body.clone() {
             req = req.json(&body);
@@ -441,7 +527,7 @@ async fn fetch_advanced_with_client_and_progress(
             req = req.header(header.0, header.1);
         }
 
-        if let Some(ref creds) = creds {
+        if let Some(creds) = creds {
             req = req.header("Authorization", &creds.session);
         }
 
@@ -488,7 +574,7 @@ async fn fetch_advanced_with_client_and_progress(
                             while let Some(item) = stream.next().await {
                                 let chunk = item.wrap_err_with(|| {
                                     eyre!(
-                                        "failed to read response body from {url}"
+                                        "failed to read response body from {auth_url}"
                                     )
                                 })?;
 
@@ -515,12 +601,12 @@ async fn fetch_advanced_with_client_and_progress(
                         .await
                     } else {
                         resp.bytes().await.wrap_err_with(|| {
-                            eyre!("failed to read response body from {url}")
+                            eyre!("failed to read response body from {auth_url}")
                         })
                     }
                 } else {
                     resp.bytes().await.wrap_err_with(|| {
-                        eyre!("failed to read response body from {url}")
+                        eyre!("failed to read response body from {auth_url}")
                     })
                 };
 
@@ -540,7 +626,7 @@ async fn fetch_advanced_with_client_and_progress(
                         }
                     }
 
-                    tracing::trace!("Done downloading URL {url}");
+                    tracing::trace!("Done downloading URL {auth_url}");
 
                     if let Some(fence_key) = fence_key {
                         GLOBAL_FETCH_FENCE.record_ok(fence_key);

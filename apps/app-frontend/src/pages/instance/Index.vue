@@ -39,7 +39,7 @@
 									<template v-if="timePlayed > 0">
 										{{ timePlayedHumanized }}
 									</template>
-									<template v-else> Never played </template>
+									<template v-else> {{ formatMessage(messages.neverPlayed) }} </template>
 								</div>
 							</template>
 						</template>
@@ -74,7 +74,7 @@
 								v-if="linkedProjectV3"
 								class="flex gap-1.5 items-center font-medium text-primary"
 							>
-								Linked to
+								{{ formatMessage(messages.linkedTo) }}
 								<Avatar
 									:src="linkedProjectV3.icon_url"
 									:alt="linkedProjectV3.name"
@@ -106,7 +106,7 @@
 							color="brand"
 							size="large"
 						>
-							<button disabled>Installing...</button>
+							<button disabled>{{ formatMessage(messages.installing) }}</button>
 						</ButtonStyled>
 						<ButtonStyled
 							v-else-if="instance.install_stage !== 'installed'"
@@ -115,13 +115,13 @@
 						>
 							<button @click="repairInstance()">
 								<DownloadIcon />
-								Repair
+								{{ formatMessage(messages.repair) }}
 							</button>
 						</ButtonStyled>
 						<ButtonStyled v-else-if="playing === true" color="red" size="large">
 							<button :disabled="stopping" @click="stopInstance('InstancePage')">
 								<StopCircleIcon />
-								{{ stopping ? 'Stopping...' : 'Stop' }}
+								{{ stopping ? formatMessage(messages.stopping) : formatMessage(messages.stop) }}
 							</button>
 						</ButtonStyled>
 						<ButtonStyled
@@ -131,7 +131,7 @@
 						>
 							<button @click="startInstance('InstancePage')">
 								<PlayIcon />
-								Play
+								{{ formatMessage(messages.play) }}
 							</button>
 						</ButtonStyled>
 						<div
@@ -141,7 +141,7 @@
 							<ButtonStyled color="brand" size="large">
 								<button @click="handlePlayServer()">
 									<PlayIcon />
-									Play
+									{{ formatMessage(messages.play) }}
 								</button>
 							</ButtonStyled>
 							<ButtonStyled color="brand" size="large">
@@ -163,11 +163,11 @@
 
 									<template #join_server>
 										<PlayIcon />
-										Join server
+										{{ formatMessage(messages.joinServer) }}
 									</template>
 									<template #launch_instance>
 										<PlayIcon />
-										Launch instance
+										{{ formatMessage(messages.launchInstance) }}
 									</template>
 								</OverflowMenu>
 							</ButtonStyled>
@@ -177,10 +177,10 @@
 							color="brand"
 							size="large"
 						>
-							<button disabled>Starting...</button>
+							<button disabled>{{ formatMessage(messages.starting) }}</button>
 						</ButtonStyled>
 						<ButtonStyled circular size="large">
-							<button v-tooltip="'Instance settings'" @click="settingsModal?.show()">
+							<button v-tooltip="formatMessage(messages.instanceSettings)" @click="settingsModal?.show()">
 								<SettingsIcon />
 							</button>
 						</ButtonStyled>
@@ -204,11 +204,11 @@
 								]"
 							>
 								<MoreVerticalIcon />
-								<template #share-instance> <UserPlusIcon /> Share instance </template>
-								<template #host-a-server> <ServerIcon /> Create a server </template>
-								<template #open-folder> <FolderOpenIcon /> Open folder </template>
-								<template #export-mrpack> <PackageIcon /> Export modpack </template>
-								<template #create-shortcut> <ExternalIcon /> Create shortcut </template>
+								<template #share-instance> <UserPlusIcon /> {{ formatMessage(messages.shareInstance) }} </template>
+								<template #host-a-server> <ServerIcon /> {{ formatMessage(messages.createServer) }} </template>
+								<template #open-folder> <FolderOpenIcon /> {{ formatMessage(messages.openFolder) }} </template>
+								<template #export-mrpack> <PackageIcon /> {{ formatMessage(messages.exportModpack) }} </template>
+								<template #create-shortcut> <ExternalIcon /> {{ formatMessage(messages.createShortcut) }} </template>
 							</OverflowMenu>
 						</ButtonStyled>
 					</div>
@@ -244,25 +244,25 @@
 			</RouterView>
 		</div>
 		<ContextMenu ref="options" @option-clicked="handleOptionsClick">
-			<template #play> <PlayIcon /> Play </template>
-			<template #stop> <StopCircleIcon /> Stop </template>
-			<template #add_content> <PlusIcon /> Add content </template>
-			<template #edit> <EditIcon /> Edit </template>
-			<template #copy_path> <ClipboardCopyIcon /> Copy path </template>
-			<template #open_folder> <FolderOpenIcon /> Open folder </template>
-			<template #copy_link> <ClipboardCopyIcon /> Copy link </template>
-			<template #open_link> <GlobeIcon /> Open in Modrinth <ExternalIcon /> </template>
-			<template #copy_names><EditIcon />Copy names</template>
-			<template #copy_slugs><HashIcon />Copy slugs</template>
-			<template #copy_links><GlobeIcon />Copy links</template>
-			<template #toggle><EditIcon />Toggle selected</template>
-			<template #disable><XIcon />Disable selected</template>
-			<template #enable><CheckCircleIcon />Enable selected</template>
-			<template #hide_show><EyeIcon />Show/Hide unselected</template>
+			<template #play> <PlayIcon /> {{ formatMessage(messages.play) }} </template>
+			<template #stop> <StopCircleIcon /> {{ formatMessage(messages.stop) }} </template>
+			<template #add_content> <PlusIcon /> {{ formatMessage(messages.addContent) }} </template>
+			<template #edit> <EditIcon /> {{ formatMessage(messages.edit) }} </template>
+			<template #copy_path> <ClipboardCopyIcon /> {{ formatMessage(messages.copyPath) }} </template>
+			<template #open_folder> <FolderOpenIcon /> {{ formatMessage(messages.openFolder) }} </template>
+			<template #copy_link> <ClipboardCopyIcon /> {{ formatMessage(messages.copyLink) }} </template>
+			<template #open_link> <GlobeIcon /> {{ formatMessage(messages.openInModrinth) }} <ExternalIcon /> </template>
+			<template #copy_names><EditIcon />{{ formatMessage(messages.copyNames) }}</template>
+			<template #copy_slugs><HashIcon />{{ formatMessage(messages.copySlugs) }}</template>
+			<template #copy_links><GlobeIcon />{{ formatMessage(messages.copyLinks) }}</template>
+			<template #toggle><EditIcon />{{ formatMessage(messages.toggleSelected) }}</template>
+			<template #disable><XIcon />{{ formatMessage(messages.disableSelected) }}</template>
+			<template #enable><CheckCircleIcon />{{ formatMessage(messages.enableSelected) }}</template>
+			<template #hide_show><EyeIcon />{{ formatMessage(messages.showHideUnselected) }}</template>
 			<template #update_all
-				><UpdatedIcon />Update {{ selected.length > 0 ? 'selected' : 'all' }}</template
+				><UpdatedIcon />{{ formatMessage(selected.length > 0 ? messages.updateSelected : messages.updateAll) }}</template
 			>
-			<template #filter_update><UpdatedIcon />Select Updatable</template>
+			<template #filter_update><UpdatedIcon />{{ formatMessage(messages.selectUpdatable) }}</template>
 		</ContextMenu>
 	</div>
 </template>
@@ -298,6 +298,7 @@ import {
 	Avatar,
 	ButtonStyled,
 	ContentPageHeader,
+	defineMessages,
 	injectNotificationManager,
 	NavTabs,
 	OverflowMenu,
@@ -306,6 +307,7 @@ import {
 	ServerRecentPlays,
 	ServerRegion,
 	useLoadingBarToken,
+	useVIntl,
 } from '@modrinth/ui'
 import { useQueryClient } from '@tanstack/vue-query'
 import { convertFileSrc } from '@tauri-apps/api/core'
@@ -338,6 +340,53 @@ dayjs.extend(duration)
 dayjs.extend(relativeTime)
 
 const { addNotification, handleError } = injectNotificationManager()
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+	tabOverview: { id: 'app.instance.tab.overview', defaultMessage: 'Overview' },
+	tabContent: { id: 'app.instance.tab.content', defaultMessage: 'Content' },
+	tabFiles: { id: 'app.instance.tab.files', defaultMessage: 'Files' },
+	tabWorlds: { id: 'app.instance.tab.worlds', defaultMessage: 'Worlds' },
+	tabScreenshots: { id: 'app.instance.tab.screenshots', defaultMessage: 'Screenshots' },
+	tabResourcePacks: { id: 'app.instance.tab.resource-packs', defaultMessage: 'Resource packs' },
+	tabShaderPacks: { id: 'app.instance.tab.shader-packs', defaultMessage: 'Shader packs' },
+	tabLogs: { id: 'app.instance.tab.logs', defaultMessage: 'Logs' },
+	neverPlayed: { id: 'app.instance.never-played', defaultMessage: 'Never played' },
+	linkedTo: { id: 'app.instance.linked-to', defaultMessage: 'Linked to' },
+	installing: { id: 'app.instance.installing', defaultMessage: 'Installing...' },
+	repair: { id: 'app.instance.repair', defaultMessage: 'Repair' },
+	stopping: { id: 'app.instance.stopping', defaultMessage: 'Stopping...' },
+	stop: { id: 'app.instance.stop', defaultMessage: 'Stop' },
+	play: { id: 'app.instance.play', defaultMessage: 'Play' },
+	joinServer: { id: 'app.instance.join-server', defaultMessage: 'Join server' },
+	launchInstance: { id: 'app.instance.launch-instance', defaultMessage: 'Launch instance' },
+	starting: { id: 'app.instance.starting', defaultMessage: 'Starting...' },
+	instanceSettings: { id: 'app.instance.instance-settings', defaultMessage: 'Instance settings' },
+	shareInstance: { id: 'app.instance.share-instance', defaultMessage: 'Share instance' },
+	createServer: { id: 'app.instance.create-server', defaultMessage: 'Create a server' },
+	openFolder: { id: 'app.instance.open-folder', defaultMessage: 'Open folder' },
+	exportModpack: { id: 'app.instance.export-modpack', defaultMessage: 'Export modpack' },
+	createShortcut: { id: 'app.instance.create-shortcut', defaultMessage: 'Create shortcut' },
+	addContent: { id: 'app.instance.add-content', defaultMessage: 'Add content' },
+	edit: { id: 'app.instance.edit', defaultMessage: 'Edit' },
+	copyPath: { id: 'app.instance.copy-path', defaultMessage: 'Copy path' },
+	copyLink: { id: 'app.instance.copy-link', defaultMessage: 'Copy link' },
+	openInModrinth: { id: 'app.instance.open-in-modrinth', defaultMessage: 'Open in Modrinth' },
+	copyNames: { id: 'app.instance.copy-names', defaultMessage: 'Copy names' },
+	copySlugs: { id: 'app.instance.copy-slugs', defaultMessage: 'Copy slugs' },
+	copyLinks: { id: 'app.instance.copy-links', defaultMessage: 'Copy links' },
+	toggleSelected: { id: 'app.instance.toggle-selected', defaultMessage: 'Toggle selected' },
+	disableSelected: { id: 'app.instance.disable-selected', defaultMessage: 'Disable selected' },
+	enableSelected: { id: 'app.instance.enable-selected', defaultMessage: 'Enable selected' },
+	showHideUnselected: { id: 'app.instance.show-hide-unselected', defaultMessage: 'Show/Hide unselected' },
+	updateSelected: { id: 'app.instance.update-selected', defaultMessage: 'Update selected' },
+	updateAll: { id: 'app.instance.update-all', defaultMessage: 'Update all' },
+	selectUpdatable: { id: 'app.instance.select-updatable', defaultMessage: 'Select Updatable' },
+	shortcutCreated: { id: 'app.instance.shortcut-created', defaultMessage: 'Shortcut created' },
+	shortcutError: { id: 'app.instance.shortcut-error', defaultMessage: 'Error creating shortcut' },
+	instanceBreadcrumb: { id: 'app.instance.breadcrumb', defaultMessage: 'Instance' },
+})
+
 const { playServerProject } = injectServerInstall()
 const queryClient = useQueryClient()
 const route = useRoute()
@@ -503,42 +552,42 @@ const contentSubpageProps = computed(() =>
 
 const tabs = computed(() => [
 	{
-		label: 'Overview',
+		label: formatMessage(messages.tabOverview),
 		href: `${basePath.value}`,
 		icon: HomeIcon,
 	},
 	{
-		label: 'Content',
+		label: formatMessage(messages.tabContent),
 		href: `${basePath.value}/mods`,
 		icon: BoxesIcon,
 	},
 	{
-		label: 'Files',
+		label: formatMessage(messages.tabFiles),
 		href: `${basePath.value}/files`,
 		icon: FolderOpenIcon,
 	},
 	{
-		label: 'Worlds',
+		label: formatMessage(messages.tabWorlds),
 		href: `${basePath.value}/worlds`,
 		icon: GlobeIcon,
 	},
 	{
-		label: 'Screenshots',
+		label: formatMessage(messages.tabScreenshots),
 		href: `${basePath.value}/screenshots`,
 		icon: ImageIcon,
 	},
 	{
-		label: 'Resource packs',
+		label: formatMessage(messages.tabResourcePacks),
 		href: `${basePath.value}/resource-packs`,
 		icon: PackageIcon,
 	},
 	{
-		label: 'Shader packs',
+		label: formatMessage(messages.tabShaderPacks),
 		href: `${basePath.value}/shader-packs`,
 		icon: ImageIcon,
 	},
 	{
-		label: 'Logs',
+		label: formatMessage(messages.tabLogs),
 		href: `${basePath.value}/logs`,
 		icon: TerminalSquareIcon,
 	},
@@ -546,7 +595,7 @@ const tabs = computed(() => [
 
 if (instance.value) {
 	breadcrumbs.setName(
-		'Instance',
+		formatMessage(messages.instanceBreadcrumb),
 		instance.value.name.length > 40
 			? instance.value.name.substring(0, 40) + '...'
 			: instance.value.name,
@@ -633,12 +682,12 @@ const createShortcut = async () => {
 
 		addNotification({
 			type: 'success',
-			title: 'Shortcut created',
+			title: formatMessage(messages.shortcutCreated),
 		})
 	} catch (error: unknown) {
 		addNotification({
 			type: 'error',
-			title: `Error creating shortcut`,
+			title: formatMessage(messages.shortcutError),
 			text: `${error}`,
 		})
 	}

@@ -330,7 +330,7 @@ pub async fn test_jre(
     Ok(version == major_version)
 }
 
-fn system_memory_bytes() -> u64 {
+pub fn system_memory_bytes() -> u64 {
     sysinfo::System::new_with_specifics(
         RefreshKind::nothing()
             .with_memory(MemoryRefreshKind::nothing().with_ram()),

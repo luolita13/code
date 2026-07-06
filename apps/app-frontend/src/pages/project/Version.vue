@@ -6,7 +6,7 @@
 				:link-stack="[
 					{
 						href: buildProjectHref(`/project/${route.params.id}/versions`),
-						label: 'Versions',
+						label: formatMessage(messages.versions),
 					},
 				]"
 			/>
@@ -24,17 +24,17 @@
 						<CheckIcon v-else />
 						{{
 							installing
-								? 'Installing...'
+								? formatMessage(messages.installing)
 								: installed && installedVersion === version.id
-									? 'Installed'
-									: 'Install'
+									? formatMessage(messages.installed)
+									: formatMessage(messages.install)
 						}}
 					</button>
 				</ButtonStyled>
 				<ButtonStyled>
 					<button>
 						<ReportIcon />
-						Report
+						{{ formatMessage(messages.report) }}
 					</button>
 				</ButtonStyled>
 				<ButtonStyled>
@@ -42,7 +42,7 @@
 						:href="`https://modrinth.com/mod/${route.params.id}/version/${route.params.version}`"
 						rel="external"
 					>
-						Modrinth website
+						{{ formatMessage(messages.modrinthWebsite) }}
 						<ExternalIcon />
 					</a>
 				</ButtonStyled>
@@ -51,11 +51,11 @@
 		<div class="version-container">
 			<div class="description-cards">
 				<Card>
-					<h3 class="card-title">Changelog</h3>
+					<h3 class="card-title">{{ formatMessage(messages.changelog) }}</h3>
 					<div class="markdown-body" v-html="renderString(version.changelog ?? '')" />
 				</Card>
 				<Card>
-					<h3 class="card-title">Files</h3>
+					<h3 class="card-title">{{ formatMessage(messages.files) }}</h3>
 					<Card
 						v-for="file in version.files"
 						:key="file.id"
@@ -69,20 +69,20 @@
 									{{ file.filename }}
 								</span>
 								({{ formatBytes(file.size) }})
-								<span v-if="file.primary" class="primary-label"> Primary </span>
+								<span v-if="file.primary" class="primary-label"> {{ formatMessage(messages.primary) }} </span>
 							</span>
 						</span>
 						<ButtonStyled v-if="project.project_type !== 'modpack' || file.primary" color="brand">
 							<button class="download" :disabled="installed" @click="() => install(version.id)">
 								<DownloadIcon v-if="!installed" />
 								<CheckIcon v-else />
-								{{ installed ? 'Installed' : 'Install' }}
+								{{ installed ? formatMessage(messages.installed) : formatMessage(messages.install) }}
 							</button>
 						</ButtonStyled>
 					</Card>
 				</Card>
 				<Card v-if="displayDependencies.length > 0">
-					<h2>Dependencies</h2>
+					<h2>{{ formatMessage(messages.dependencies) }}</h2>
 					<div v-for="dependency in displayDependencies" :key="dependency.title">
 						<router-link v-if="dependency.link" class="btn dependency" :to="dependency.link">
 							<Avatar size="sm" :src="dependency.icon" />
@@ -102,10 +102,10 @@
 				</Card>
 			</div>
 			<Card class="metadata-card">
-				<h3 class="card-title">Metadata</h3>
+				<h3 class="card-title">{{ formatMessage(messages.metadata) }}</h3>
 				<div class="metadata">
 					<div class="metadata-item">
-						<span class="metadata-label">Release Channel</span>
+						<span class="metadata-label">{{ formatMessage(messages.releaseChannel) }}</span>
 						<span class="metadata-value"
 							><Badge
 								:color="releaseColor(version.version_type)"
@@ -115,11 +115,11 @@
 						/></span>
 					</div>
 					<div class="metadata-item">
-						<span class="metadata-label">Version Number</span>
+						<span class="metadata-label">{{ formatMessage(messages.versionNumber) }}</span>
 						<span class="metadata-value">{{ version.version_number }}</span>
 					</div>
 					<div class="metadata-item">
-						<span class="metadata-label">Loaders</span>
+						<span class="metadata-label">{{ formatMessage(messages.loaders) }}</span>
 						<span class="metadata-value">{{
 							version.loaders
 								.map((loader) => loader.charAt(0).toUpperCase() + loader.slice(1))
@@ -127,21 +127,21 @@
 						}}</span>
 					</div>
 					<div class="metadata-item">
-						<span class="metadata-label">Game Versions</span>
+						<span class="metadata-label">{{ formatMessage(messages.gameVersions) }}</span>
 						<span class="metadata-value"> {{ version.game_versions.join(', ') }} </span>
 					</div>
 					<div class="metadata-item">
-						<span class="metadata-label">Downloads</span>
+						<span class="metadata-label">{{ formatMessage(messages.downloads) }}</span>
 						<span class="metadata-value">{{ version.downloads }}</span>
 					</div>
 					<div class="metadata-item">
-						<span class="metadata-label">Publication Date</span>
+						<span class="metadata-label">{{ formatMessage(messages.publicationDate) }}</span>
 						<span class="metadata-value">
 							{{ formatDateTime(version.date_published) }}
 						</span>
 					</div>
 					<div v-if="author" class="metadata-item">
-						<span class="metadata-label">Author</span>
+						<span class="metadata-label">{{ formatMessage(messages.author) }}</span>
 						<a
 							:href="`https://modrinth.com/user/${author.user.username}`"
 							rel="external"
@@ -158,7 +158,7 @@
 						</a>
 					</div>
 					<div class="metadata-item">
-						<span class="metadata-label">Version ID</span>
+						<span class="metadata-label">{{ formatMessage(messages.versionId) }}</span>
 						<span class="metadata-value"><CopyCode class="copycode" :text="version.id" /></span>
 					</div>
 				</div>
@@ -167,7 +167,7 @@
 	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { CheckIcon, DownloadIcon, ExternalIcon, FileIcon, ReportIcon } from '@modrinth/assets'
 import {
 	Avatar,
@@ -176,8 +176,10 @@ import {
 	ButtonStyled,
 	Card,
 	CopyCode,
+	defineMessages,
 	useFormatBytes,
 	useFormatDateTime,
+	useVIntl,
 } from '@modrinth/ui'
 import { renderString } from '@modrinth/utils'
 import { computed, ref, watch } from 'vue'
@@ -187,6 +189,38 @@ import { SwapIcon } from '@/assets/icons'
 import { get_project_many, get_version_many } from '@/helpers/cache.js'
 import { releaseColor } from '@/helpers/utils'
 import { useBreadcrumbs } from '@/store/breadcrumbs'
+
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+	versions: { id: 'app.project.version.versions', defaultMessage: 'Versions' },
+	installing: { id: 'app.project.version.installing', defaultMessage: 'Installing...' },
+	installed: { id: 'app.project.version.installed', defaultMessage: 'Installed' },
+	install: { id: 'app.project.version.install', defaultMessage: 'Install' },
+	report: { id: 'app.project.version.report', defaultMessage: 'Report' },
+	modrinthWebsite: { id: 'app.project.version.modrinth-website', defaultMessage: 'Modrinth website' },
+	changelog: { id: 'app.project.version.changelog', defaultMessage: 'Changelog' },
+	files: { id: 'app.project.version.files', defaultMessage: 'Files' },
+	primary: { id: 'app.project.version.primary', defaultMessage: 'Primary' },
+	dependencies: { id: 'app.project.version.dependencies', defaultMessage: 'Dependencies' },
+	metadata: { id: 'app.project.version.metadata', defaultMessage: 'Metadata' },
+	releaseChannel: { id: 'app.project.version.release-channel', defaultMessage: 'Release Channel' },
+	versionNumber: { id: 'app.project.version.version-number', defaultMessage: 'Version Number' },
+	loaders: { id: 'app.project.version.loaders', defaultMessage: 'Loaders' },
+	gameVersions: { id: 'app.project.version.game-versions', defaultMessage: 'Game Versions' },
+	downloads: { id: 'app.project.version.downloads', defaultMessage: 'Downloads' },
+	publicationDate: { id: 'app.project.version.publication-date', defaultMessage: 'Publication Date' },
+	author: { id: 'app.project.version.author', defaultMessage: 'Author' },
+	versionId: { id: 'app.project.version.version-id', defaultMessage: 'Version ID' },
+	versionDependency: {
+		id: 'app.project.version.dependency.subtitle',
+		defaultMessage: 'Version {versionNumber} is {dependencyType}',
+	},
+	addedViaOverrides: {
+		id: 'app.project.version.dependency.added-via-overrides',
+		defaultMessage: 'Added via overrides',
+	},
+})
 
 const formatDateTime = useFormatDateTime({
 	timeStyle: 'short',
@@ -230,7 +264,7 @@ const props = defineProps({
 })
 
 const version = ref(props.versions.find((version) => version.id === route.params.version))
-breadcrumbs.setName('Version', version.value.name)
+breadcrumbs.setName(formatMessage(messages.versions), version.value.name)
 
 watch(
 	() => props.versions,
@@ -238,7 +272,7 @@ watch(
 		if (route.params.version) {
 			version.value = props.versions.find((version) => version.id === route.params.version)
 			await refreshDisplayDependencies()
-			breadcrumbs.setName('Version', version.value.name)
+			breadcrumbs.setName(formatMessage(messages.versions), version.value.name)
 		}
 	},
 )
@@ -294,7 +328,7 @@ async function refreshDisplayDependencies() {
 			return {
 				icon: project?.icon_url,
 				title: project?.title || project?.name,
-				subtitle: `Version ${version.version_number} is ${dependency.dependency_type}`,
+				subtitle: formatMessage(messages.versionDependency, { versionNumber: version.version_number, dependencyType: dependency.dependency_type }),
 				link: buildProjectHref(`/project/${project.slug}/version/${version.id}`),
 			}
 		} else {
@@ -311,7 +345,7 @@ async function refreshDisplayDependencies() {
 				return {
 					icon: null,
 					title: dependency.file_name,
-					subtitle: `Added via overrides`,
+				subtitle: formatMessage(messages.addedViaOverrides),
 					link: null,
 				}
 			}

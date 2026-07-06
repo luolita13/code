@@ -1,0 +1,48 @@
+components\ui\AddContentButton.vue: Install content Add from file
+components\ui\friends\FriendsList.vue: You have no pending friend requests
+components\ui\friends\FriendsList.vue: sent you
+components\ui\friends\FriendsList.vue: friend request
+components\ui\home\HomeRandomMods.vue: flex flex
+components\ui\home\HomeRandomMods.vue: col gap
+components\ui\InstanceIndicator.vue: Back to instance
+components\ui\instance_settings\JavaSettings.vue: Detect Browse
+components\ui\JavaSelector.vue: Detect Browse
+components\ui\modal\AuthGrantFlowWaitModal.vue: Sign in
+components\ui\QuickInstanceSwitcher.vue: auto my
+components\ui\ResourcePackManager.vue: flex flex
+components\ui\ResourcePackManager.vue: col gap
+components\ui\settings\AppearanceSettings.vue: Launcher visibility dropdown
+components\ui\settings\AppearanceSettings.vue: Keep open
+components\ui\settings\AppearanceSettings.vue: reopen on exit
+components\ui\settings\AppearanceSettings.vue: exit on game exit
+components\ui\settings\AppearanceSettings.vue: Exit immediately
+components\ui\settings\AppearanceSettings.vue: const newValue
+components\ui\settings\AppearanceSettings.vue: newValue settings
+components\ui\settings\AppearanceSettings.vue: const newValue
+components\ui\settings\AppearanceSettings.vue: newValue settings
+components\ui\settings\AppearanceSettings.vue: const warnBeforeUnknownPackInstall
+components\ui\settings\AppearanceSettings.vue: const skipUnknownPackWarning
+components\ui\settings\AppearanceSettings.vue: warnBeforeUnknownPackInstall themeStore
+components\ui\settings\AppearanceSettings.vue: skipUnknownPackWarning settings
+components\ui\settings\AppearanceSettings.vue: const newValue
+components\ui\settings\AppearanceSettings.vue: newValue settings
+components\ui\settings\DefaultInstanceSettings.vue: MB settings
+components\ui\settings\FeatureFlagSettings.vue: Reset to default setFeatureFlag
+components\ui\world\modal\ServerModalBody.vue: Server resource pack
+components\ui\world\RecentWorldsList.vue: Jump back in
+components\ui\world\RecentWorldsList.vue: flex flex
+components\ui\world\RecentWorldsList.vue: col gap
+components\ui\world\RecentWorldsList.vue: Jump back in Jump back in item
+components\ui\world\RecentWorldsList.vue: id currentWorld
+components\ui\world\RecentWorldsList.vue: id playInstance
+pages\Index.vue: xl font
+pages\instance\Screenshots.vue: grid grid
+pages\instance\Worlds.vue: flex flex
+pages\instance\Worlds.vue: col gap
+pages\instance\Worlds.vue: world as ServerWorld
+pages\project\Index.vue: Open in browser
+pages\project\Version.vue: Report Modrinth website Changelog Files
+pages\project\Version.vue: Primary install
+pages\project\Version.vue: Dependencies Metadata Release Channel Version Number Loaders Game Versions Downloads Publication Date Author Version ID
+pages\project\Versions.vue: More options
+pages\project\Versions.vue: Add to another instance

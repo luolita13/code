@@ -16,7 +16,9 @@ use crate::server_address::{ServerAddress, parse_server_address};
 use crate::state::server_join_log::JoinLogEntry;
 use crate::state::{
     Credentials, InstanceInstallStage, InstanceLaunchContext, InstanceLink,
-    JavaVersion, LoginType, MemorySettings, ProcessMetadata, WindowSize,
+    JavaVersion, LauncherVisibility, LoginType, MemorySettings,
+    PreferredIpStack, ProcessMetadata, ProcessPriority, Renderer, Settings,
+    WindowSize,
 };
 use crate::state::yggdrasil_auth;
 use crate::util::io;
@@ -689,6 +691,7 @@ pub async fn launch_minecraft(
     post_exit_hook: Option<String>,
     context: &InstanceLaunchContext,
     mut quick_play_type: QuickPlayType,
+    settings: &Settings,
 ) -> crate::Result<ProcessMetadata> {
     let instance = &context.instance;
     let content_set = &context.applied_content_set;
@@ -786,6 +789,20 @@ pub async fn launch_minecraft(
     let java_version =
         crate::api::jre::check_jre(java_version.path.clone().into()).await?;
 
+    // If user prefers java.exe over javaw.exe, replace the path
+    let java_path = if settings.use_java_exe {
+        let path_str = &java_version.path;
+        if path_str.to_lowercase().ends_with("javaw.exe") {
+            let mut new_path = path_str.to_string();
+            new_path.truncate(new_path.len() - "javaw.exe".len());
+            format!("{new_path}java.exe")
+        } else {
+            java_version.path.clone()
+        }
+    } else {
+        java_version.path.clone()
+    };
+
     let client_path = state
         .directories
         .version_dir(&version_jar)
@@ -807,13 +824,47 @@ pub async fn launch_minecraft(
                 ),
             )?);
             command.args(cmd);
-            command.arg(&java_version.path);
+            command.arg(&java_path);
             command
         }
-        None => Command::new(&java_version.path),
+        None => Command::new(&java_path),
     };
 
     let env_args = Vec::from(env_args);
+
+    // Apply renderer environment variables
+    match settings.renderer {
+        Renderer::Default => {}
+        Renderer::Llvmpipe => {
+            command.env("LIBGL_ALWAYS_SOFTWARE", "1");
+        }
+        Renderer::D3d12 => {
+            command.env("GALLIUM_DRIVER", "d3d12");
+        }
+        Renderer::Zink => {
+            command.env("GALLIUM_DRIVER", "zink");
+        }
+    }
+
+    // Apply GPU preference hint (Windows)
+    #[cfg(target_os = "windows")]
+    if settings.set_gpu_preference {
+        command.env("PCL_GPU_PREFERENCE", "2");
+    }
+
+    // Apply process priority (Windows)
+    #[cfg(target_os = "windows")]
+    {
+        use std::os::windows::process::CommandExt;
+        let priority = match settings.process_priority {
+            ProcessPriority::RealTime => 0x00000100,    // REALTIME_PRIORITY_CLASS
+            ProcessPriority::High => 0x00000080,         // HIGH_PRIORITY_CLASS
+            ProcessPriority::AboveNormal => 0x00008000,  // ABOVE_NORMAL_PRIORITY_CLASS
+            ProcessPriority::Normal => 0x00000020,       // NORMAL_PRIORITY_CLASS
+            ProcessPriority::BelowNormal => 0x00004000,  // BELOW_NORMAL_PRIORITY_CLASS
+        };
+        command.creation_flags(priority);
+    }
 
     // Check if instance has a running process, and reject running the command if it does
     // Done late so a quick double call doesn't launch two instances
@@ -899,9 +950,76 @@ pub async fn launch_minecraft(
                 .as_ref()
                 .and_then(|x| x.get(&LoggingSide::Client)),
             rpc_server.address(),
+            settings.disable_java_launch_wrapper,
         )?
         .into_iter(),
     );
+
+    // Apply LegacyFix compatibility parameters for old Minecraft versions
+    // (released before 2013-06-25, i.e. 1.5.x and below)
+    if !settings.disable_legacy_fix {
+        let legacy_cutoff = chrono::DateTime::parse_from_rfc3339("2013-06-25T00:00:00Z")
+            .unwrap()
+            .with_timezone(&chrono::Utc);
+        if version.release_time < legacy_cutoff {
+            // Add legacy compatibility JVM parameters
+            command.arg("-Djava.net.useSystemProxies=true");
+            command.arg("-Dhttp.agent=Mozilla/4.0");
+            command.arg("-Dsun.java2d.noddraw=true");
+            // Attempt to load legacyfix.jar from instance directory if present
+            let legacyfix_path = instance_path.join("legacyfix.jar");
+            if legacyfix_path.exists() {
+                if let Some(path_str) = legacyfix_path.to_str() {
+                    command.arg(format!("-javaagent:{}", path_str));
+                }
+            }
+        }
+    }
+
+    // Apply LWJGL Unsafe Agent for LWJGL 3.4.1 performance issues
+    if !settings.disable_lwjgl_unsafe_agent {
+        let uses_lwjgl_341 = version_info.libraries.iter().any(|lib| {
+            lib.name.starts_with("org.lwjgl:lwjgl:") && lib.name.contains("3.4.1")
+        });
+        if uses_lwjgl_341 {
+            // Add LWJGL compatibility JVM parameters
+            command.arg("-Dorg.lwjgl.system.allocator=system");
+            // Attempt to load lwjgl-unsafe-agent.jar from instance directory if present
+            let agent_path = instance_path.join("lwjgl-unsafe-agent.jar");
+            if agent_path.exists() {
+                if let Some(path_str) = agent_path.to_str() {
+                    command.arg(format!("-javaagent:{}", path_str));
+                }
+            }
+        }
+    }
+
+    // Apply JVM IP stack preference
+    match settings.preferred_ip_stack {
+        PreferredIpStack::PreferV4 => {
+            command.arg("-Djava.net.preferIPv4Stack=true");
+        }
+        PreferredIpStack::PreferV6 => {
+            command.arg("-Djava.net.preferIPv6Stack=true");
+        }
+        PreferredIpStack::Default => {}
+    }
+
+    // Pass window title as JVM property (theseus.jar can use it if supported)
+    if !settings.window_title.is_empty() {
+        command.arg(format!(
+            "-Dmodrinth.window.title={}",
+            settings.window_title
+        ));
+    }
+
+    // Pass custom info as JVM property (theseus.jar can use it if supported)
+    if !settings.custom_info.is_empty() {
+        command.arg(format!(
+            "-Dmodrinth.custom.info={}",
+            settings.custom_info
+        ));
+    }
 
     // If the account uses a third-party (authlib-injector / Yggdrasil) auth
     // server, inject `authlib-injector.jar` as a -javaagent and pre-fetch the
@@ -965,8 +1083,14 @@ pub async fn launch_minecraft(
             )
             .await?
             .into_iter(),
-        )
-        .current_dir(instance_path.clone());
+        );
+
+    // Append extra game arguments from global settings
+    if !settings.extra_game_args.is_empty() {
+        command.args(&settings.extra_game_args);
+    }
+
+    command.current_dir(instance_path.clone());
 
     // CARGO-set DYLD_LIBRARY_PATH breaks Minecraft on macOS during testing on playground
     #[cfg(target_os = "macos")]
@@ -1028,16 +1152,31 @@ pub async fn launch_minecraft(
     )
     .await?;
 
-    // If in tauri, and the 'minimize on launch' setting is enabled, minimize the window
+    // Apply launcher visibility behavior when game starts
     #[cfg(feature = "tauri")]
     {
         use crate::EventState;
 
         let window = EventState::get_main_window().await?;
         if let Some(window) = window {
-            let settings = crate::state::Settings::get(&state.pool).await?;
-            if settings.hide_on_process_start {
-                window.minimize()?;
+            match settings.launcher_visibility {
+                LauncherVisibility::ExitImmediately => {
+                    // Close the launcher app
+                    window.close()?;
+                }
+                LauncherVisibility::HideAndExit => {
+                    // Hide the window; the app will exit when the game exits
+                    window.hide()?;
+                }
+                LauncherVisibility::HideAndReopen => {
+                    // Hide the window; it will be shown again when the game exits
+                    window.hide()?;
+                }
+                LauncherVisibility::MinimizeAndReopen => {
+                    // Minimize the window; it will be restored when the game exits
+                    window.minimize()?;
+                }
+                LauncherVisibility::DoNothing => {}
             }
         }
     }
@@ -1066,6 +1205,7 @@ pub async fn launch_minecraft(
             version_info.logging.is_some(),
             main_class_keep_alive,
             rpc_server,
+            settings.launcher_visibility,
             async |process: &ProcessMetadata, rpc_server| {
                 let process_start_time = process.start_time.to_rfc3339();
                 let instance_created_time = instance.created.to_rfc3339();

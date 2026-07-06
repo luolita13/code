@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CalendarIcon, UsersIcon, XIcon } from '@modrinth/assets'
-import { injectModrinthClient, ProgressBar } from '@modrinth/ui'
+import { defineMessages, injectModrinthClient, ProgressBar, useVIntl } from '@modrinth/ui'
 import { useQuery } from '@tanstack/vue-query'
 import { openUrl } from '@tauri-apps/plugin-opener'
 import { computed, ref } from 'vue'
@@ -9,6 +9,19 @@ const DISMISSED_STORAGE_KEY = 'pride-fundraiser-2026-dismissed'
 
 const client = injectModrinthClient()
 const dismissed = ref(localStorage.getItem(DISMISSED_STORAGE_KEY) === 'true')
+
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+  title: { id: 'app.pride-fundraiser.title', defaultMessage: 'Pride Fundraiser 2026' },
+  open: { id: 'app.pride-fundraiser.open', defaultMessage: 'Open Pride fundraiser' },
+  dismiss: { id: 'app.pride-fundraiser.dismiss', defaultMessage: 'Dismiss Pride fundraiser' },
+  of: { id: 'app.pride-fundraiser.of', defaultMessage: 'of' },
+  supporter: { id: 'app.pride-fundraiser.supporter', defaultMessage: 'supporter' },
+  supporters: { id: 'app.pride-fundraiser.supporters', defaultMessage: 'supporters' },
+  dayLeft: { id: 'app.pride-fundraiser.day-left', defaultMessage: 'day left' },
+  daysLeft: { id: 'app.pride-fundraiser.days-left', defaultMessage: 'days left' },
+})
 
 const { data: campaignInfo } = useQuery({
 	queryKey: ['campaign', 'pride-26'],
@@ -53,19 +66,19 @@ function daysLeft() {
 			role="link"
 			tabindex="0"
 			class="flex w-full cursor-pointer flex-col gap-3 rounded-xl border border-solid border-surface-5 bg-button-bg p-3 text-primary transition-[border-color,filter] hover:border-surface-6 hover:brightness-125 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-			aria-label="Open Pride fundraiser"
+			:aria-label="formatMessage(messages.open)"
 			@click="openPrideFundraiser"
 			@keydown.enter="openPrideFundraiser"
 			@keydown.space.prevent="openPrideFundraiser"
 		>
 			<div class="flex w-full items-center justify-between gap-2">
 				<h2 class="m-0 min-w-0 truncate text-base font-semibold text-contrast">
-					Pride Fundraiser 2026
+					{{ formatMessage(messages.title) }}
 				</h2>
 				<button
 					type="button"
 					class="m-0 flex size-5 shrink-0 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-primary transition-colors hover:text-contrast focus-visible:text-contrast"
-					aria-label="Dismiss Pride fundraiser"
+					:aria-label="formatMessage(messages.dismiss)"
 					@click.stop="dismissBanner"
 					@keydown.stop
 				>
@@ -79,7 +92,7 @@ function daysLeft() {
 						{{ formatUsd(campaignInfo.total_donations_usd) }}
 					</span>
 					<span class="text-xs font-medium leading-4">
-						of {{ formatUsd(campaignInfo.target_usd) }}
+						{{ formatMessage(messages.of) }} {{ formatUsd(campaignInfo.target_usd) }}
 					</span>
 				</div>
 				<ProgressBar
@@ -97,11 +110,11 @@ function daysLeft() {
 					<span class="flex items-center gap-1">
 						<UsersIcon aria-hidden="true" class="size-4 shrink-0" />
 						{{ campaignInfo.num_donators.toLocaleString('en-US') }}
-						{{ campaignInfo.num_donators === 1 ? 'supporter' : 'supporters' }}
+						{{ campaignInfo.num_donators === 1 ? formatMessage(messages.supporter) : formatMessage(messages.supporters) }}
 					</span>
 					<span class="flex items-center gap-1">
 						<CalendarIcon aria-hidden="true" class="size-4 shrink-0" />
-						{{ daysLeft() }} {{ daysLeft() === 1 ? 'day left' : 'days left' }}
+						{{ daysLeft() }} {{ daysLeft() === 1 ? formatMessage(messages.dayLeft) : formatMessage(messages.daysLeft) }}
 					</span>
 				</div>
 			</div>

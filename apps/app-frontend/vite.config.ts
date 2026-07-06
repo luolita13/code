@@ -92,6 +92,9 @@ export default defineConfig({
 				.join('; '),
 		},
 	},
+	optimizeDeps: {
+		exclude: ['@modrinth/ui', '@modrinth/assets'],
+	},
 	// to make use of `TAURI_ENV_DEBUG` and other env variables
 	// https://v2.tauri.app/reference/environment-variables/#tauri-cli-hook-commands
 	envPrefix: ['VITE_', 'TAURI_', 'MODRINTH_'],

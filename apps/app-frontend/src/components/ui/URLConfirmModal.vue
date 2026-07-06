@@ -1,5 +1,5 @@
 <script setup>
-import { ButtonStyled, injectNotificationManager, ProjectCard } from '@modrinth/ui'
+import { ButtonStyled, defineMessages, injectNotificationManager, ProjectCard, useVIntl } from '@modrinth/ui'
 import { ref } from 'vue'
 
 import ModalWrapper from '@/components/ui/modal/ModalWrapper.vue'
@@ -8,6 +8,14 @@ import { injectContentInstall } from '@/providers/content-install'
 
 const { handleError } = injectNotificationManager()
 const { install: installVersion } = injectContentInstall()
+
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+	installName: { id: 'app.url-confirm.install-name', defaultMessage: 'Install {name}' },
+	installingFrom: { id: 'app.url-confirm.installing-from', defaultMessage: 'Installing {version} from Modrinth' },
+	install: { id: 'app.url-confirm.install', defaultMessage: 'Install' },
+})
 
 const confirmModal = ref(null)
 const project = ref(null)
@@ -45,7 +53,7 @@ async function install() {
 </script>
 
 <template>
-	<ModalWrapper ref="confirmModal" :header="`Install ${project?.name}`">
+	<ModalWrapper ref="confirmModal" :header="formatMessage(messages.installName, { name: project?.name })">
 		<div class="modal-body">
 			<ProjectCard
 				:title="project.name"
@@ -65,12 +73,12 @@ async function install() {
 			<div class="button-row">
 				<div class="markdown-body">
 					<p>
-						Installing <code>{{ version.id }}</code> from Modrinth
+						{{ formatMessage(messages.installingFrom, { version: version.id }) }}
 					</p>
 				</div>
 				<div class="button-group">
 					<ButtonStyled color="brand">
-						<button @click="install">Install</button>
+						<button @click="install">{{ formatMessage(messages.install) }}</button>
 					</ButtonStyled>
 				</div>
 			</div>

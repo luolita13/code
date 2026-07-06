@@ -11,6 +11,7 @@ import {
 } from '@modrinth/assets'
 import {
 	Accordion,
+	defineMessages,
 	DropdownSelect,
 	formatLoader,
 	injectNotificationManager,
@@ -30,6 +31,30 @@ import { remove } from '@/helpers/instance'
 const { handleError } = injectNotificationManager()
 
 const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+	searchPlaceholder: { id: 'app.grid-display.search-placeholder', defaultMessage: 'Search' },
+	sortBy: { id: 'app.grid-display.sort-by', defaultMessage: 'Sort by: ' },
+	groupBy: { id: 'app.grid-display.group-by', defaultMessage: 'Group by: ' },
+	selectPlaceholder: { id: 'app.grid-display.select-placeholder', defaultMessage: 'Select...' },
+	label: { id: 'app.grid-display.label', defaultMessage: 'Instances' },
+	name: { id: 'app.grid-display.name', defaultMessage: 'Name' },
+	lastPlayed: { id: 'app.grid-display.last-played', defaultMessage: 'Last played' },
+	dateCreated: { id: 'app.grid-display.date-created', defaultMessage: 'Date created' },
+	dateModified: { id: 'app.grid-display.date-modified', defaultMessage: 'Date modified' },
+	gameVersion: { id: 'app.grid-display.game-version', defaultMessage: 'Game version' },
+	group: { id: 'app.grid-display.group', defaultMessage: 'Group' },
+	loader: { id: 'app.grid-display.loader', defaultMessage: 'Loader' },
+	none: { id: 'app.grid-display.none', defaultMessage: 'None' },
+	play: { id: 'app.grid-display.play', defaultMessage: 'Play' },
+	stop: { id: 'app.grid-display.stop', defaultMessage: 'Stop' },
+	addContent: { id: 'app.grid-display.add-content', defaultMessage: 'Add content' },
+	viewInstance: { id: 'app.grid-display.view-instance', defaultMessage: 'View instance' },
+	duplicateInstance: { id: 'app.grid-display.duplicate-instance', defaultMessage: 'Duplicate instance' },
+	delete: { id: 'app.grid-display.delete', defaultMessage: 'Delete' },
+	openFolder: { id: 'app.grid-display.open-folder', defaultMessage: 'Open folder' },
+	copyPath: { id: 'app.grid-display.copy-path', defaultMessage: 'Copy path' },
+})
 
 const props = defineProps({
 	instances: {
@@ -130,11 +155,29 @@ const handleOptionsClick = async (args) => {
 	}
 }
 
+const sortOptions = ['Name', 'Last played', 'Date created', 'Date modified', 'Game version']
+const groupOptions = ['Group', 'Loader', 'Game version', 'None']
+
+const sortLabelMap = {
+	Name: messages.name,
+	'Last played': messages.lastPlayed,
+	'Date created': messages.dateCreated,
+	'Date modified': messages.dateModified,
+	'Game version': messages.gameVersion,
+}
+
+const groupLabelMap = {
+	Group: messages.group,
+	Loader: messages.loader,
+	'Game version': messages.gameVersion,
+	None: messages.none,
+}
+
 const state = useStorage(
 	`${props.label}-grid-display-state`,
 	{
-		group: 'Group',
-		sortBy: 'Name',
+		group: groupOptions[0],
+		sortBy: sortOptions[0],
 		collapsedGroups: [],
 	},
 	localStorage,
@@ -163,15 +206,17 @@ const setSectionCollapsed = (sectionName, collapsed) => {
 	state.value.collapsedGroups = [...collapsedSections]
 }
 
+const NONE_KEY = 'None'
+
 const filteredResults = computed(() => {
-	const { group = 'Group', sortBy = 'Name' } = state.value
+	const { group = groupOptions[0], sortBy = sortOptions[0] } = state.value
 
 	const instances = props.instances.filter((instance) => {
 		const name = instance.name ?? ''
 		return name.toLowerCase().includes(search.value.toLowerCase())
 	})
 
-	if (sortBy === 'Name') {
+	if (sortBy === sortOptions[0]) {
 		instances.sort((a, b) => {
 			return (a.name ?? '').localeCompare(b.name ?? '')
 		})
@@ -223,7 +268,7 @@ const filteredResults = computed(() => {
 	} else if (group === 'Group') {
 		instances.forEach((instance) => {
 			const groups = instance.groups ?? []
-			const effectiveGroups = groups.length > 0 ? groups : ['None']
+			const effectiveGroups = groups.length > 0 ? groups : [NONE_KEY]
 
 			for (const category of effectiveGroups) {
 				if (!instanceMap.has(category)) {
@@ -234,18 +279,18 @@ const filteredResults = computed(() => {
 			}
 		})
 	} else {
-		return instanceMap.set('None', instances)
+		return instanceMap.set(NONE_KEY, instances)
 	}
 
 	// For 'name', we intuitively expect the sorting to apply to the name of the group first, not just the name of the instance
 	// ie: Category A should come before B, even if the first instance in B comes before the first instance in A
-	if (sortBy === 'Name') {
+	if (sortBy === sortOptions[0]) {
 		const sortedEntries = [...instanceMap.entries()].sort((a, b) => {
 			// None should always be first
-			if (a[0] === 'None' && b[0] !== 'None') {
+			if (a[0] === NONE_KEY && b[0] !== NONE_KEY) {
 				return -1
 			}
-			if (a[0] !== 'None' && b[0] === 'None') {
+			if (a[0] !== NONE_KEY && b[0] === NONE_KEY) {
 				return 1
 			}
 			return a[0].localeCompare(b[0])
@@ -276,7 +321,7 @@ const filteredResults = computed(() => {
 			v-model="search"
 			:icon="SearchIcon"
 			type="text"
-			placeholder="Search"
+			:placeholder="formatMessage(messages.searchPlaceholder)"
 			clearable
 			wrapper-class="flex-1"
 		/>
@@ -285,22 +330,24 @@ const filteredResults = computed(() => {
 			v-model="state.sortBy"
 			name="Sort Dropdown"
 			class="max-w-[16rem]"
-			:options="['Name', 'Last played', 'Date created', 'Date modified', 'Game version']"
-			placeholder="Select..."
+			:options="sortOptions"
+			:display-name="(option) => formatMessage(sortLabelMap[option] ?? option)"
+			:placeholder="formatMessage(messages.selectPlaceholder)"
 		>
-			<span class="font-semibold text-primary">Sort by: </span>
-			<span class="font-semibold text-secondary">{{ selected }}</span>
+			<span class="font-semibold text-primary">{{ formatMessage(messages.sortBy) }}</span>
+			<span class="font-semibold text-secondary">{{ formatMessage(sortLabelMap[selected] ?? selected) }}</span>
 		</DropdownSelect>
 		<DropdownSelect
 			v-slot="{ selected }"
 			v-model="state.group"
 			class="max-w-[16rem]"
 			name="Group Dropdown"
-			:options="['Group', 'Loader', 'Game version', 'None']"
-			placeholder="Select..."
+			:options="groupOptions"
+			:display-name="(option) => formatMessage(groupLabelMap[option] ?? option)"
+			:placeholder="formatMessage(messages.selectPlaceholder)"
 		>
-			<span class="font-semibold text-primary">Group by: </span>
-			<span class="font-semibold text-secondary">{{ selected }}</span>
+			<span class="font-semibold text-primary">{{ formatMessage(messages.groupBy) }}</span>
+			<span class="font-semibold text-secondary">{{ formatMessage(groupLabelMap[selected] ?? selected) }}</span>
 		</DropdownSelect>
 	</div>
 	<Accordion
@@ -309,13 +356,13 @@ const filteredResults = computed(() => {
 			value,
 		}))"
 		:key="instanceSection.key"
-		:divider="instanceSection.key !== 'None'"
+		:divider="instanceSection.key !== NONE_KEY"
 		:open-by-default="!isSectionCollapsed(instanceSection.key)"
 		class="row"
 		@on-open="setSectionCollapsed(instanceSection.key, false)"
 		@on-close="setSectionCollapsed(instanceSection.key, true)"
 	>
-		<template v-if="instanceSection.key !== 'None'" #title>
+		<template v-if="instanceSection.key !== NONE_KEY" #title>
 			<span class="text-base">{{ instanceSection.key }}</span>
 		</template>
 		<section class="instances">
@@ -330,14 +377,14 @@ const filteredResults = computed(() => {
 	</Accordion>
 	<ConfirmDeleteInstanceModal ref="confirmModal" @delete="deleteInstance" />
 	<ContextMenu ref="instanceOptions" @option-clicked="handleOptionsClick">
-		<template #play> <PlayIcon /> Play </template>
-		<template #stop> <StopCircleIcon /> Stop </template>
-		<template #add_content> <PlusIcon /> Add content </template>
-		<template #edit> <EyeIcon /> View instance </template>
-		<template #duplicate> <ClipboardCopyIcon /> Duplicate instance</template>
-		<template #delete> <TrashIcon /> Delete </template>
-		<template #open> <FolderOpenIcon /> Open folder </template>
-		<template #copy> <ClipboardCopyIcon /> Copy path </template>
+		<template #play> <PlayIcon /> {{ formatMessage(messages.play) }} </template>
+		<template #stop> <StopCircleIcon /> {{ formatMessage(messages.stop) }} </template>
+		<template #add_content> <PlusIcon /> {{ formatMessage(messages.addContent) }} </template>
+		<template #edit> <EyeIcon /> {{ formatMessage(messages.viewInstance) }} </template>
+		<template #duplicate> <ClipboardCopyIcon /> {{ formatMessage(messages.duplicateInstance) }}</template>
+		<template #delete> <TrashIcon /> {{ formatMessage(messages.delete) }} </template>
+		<template #open> <FolderOpenIcon /> {{ formatMessage(messages.openFolder) }} </template>
+		<template #copy> <ClipboardCopyIcon /> {{ formatMessage(messages.copyPath) }} </template>
 	</ContextMenu>
 </template>
 <style lang="scss" scoped>

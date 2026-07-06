@@ -12,7 +12,7 @@
 				<ButtonStyled circular type="transparent" color="green">
 					<button
 						v-tooltip="
-							!installed ? 'Install' : version.id !== installedVersion ? 'Swap version' : ''
+							!installed ? formatMessage(messages.install) : version.id !== installedVersion ? formatMessage(messages.swapVersion) : ''
 						"
 						:disabled="installing || (installed && version.id === installedVersion)"
 						@click.stop="() => install(version.id)"
@@ -38,18 +38,18 @@
 								link: `https://modrinth.com/${project.project_type}/${project.slug}/version/${version.id}`,
 							},
 						]"
-						aria-label="More options"
+						:aria-label="formatMessage(messages.moreOptions)"
 					>
 						<MoreVerticalIcon aria-hidden="true" />
 						<template #install-elsewhere>
 							<DownloadIcon aria-hidden="true" />
-							Add to another instance
+							{{ formatMessage(messages.addToAnotherInstance) }}
 						</template>
-						<template #open-in-browser> <ExternalIcon /> Open in browser </template>
+						<template #open-in-browser> <ExternalIcon /> {{ formatMessage(messages.openInBrowser) }} </template>
 					</OverflowMenu>
 					<a
 						v-else
-						v-tooltip="`Open in browser`"
+						v-tooltip="formatMessage(messages.openInBrowser)"
 						:href="`https://modrinth.com/${project.project_type}/${project.slug}/version/${version.id}`"
 						target="_blank"
 					>
@@ -61,13 +61,15 @@
 	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { CheckIcon, DownloadIcon, ExternalIcon, MoreVerticalIcon } from '@modrinth/assets'
 import {
 	ButtonStyled,
+	defineMessages,
 	injectNotificationManager,
 	OverflowMenu,
 	ProjectPageVersions,
+	useVIntl,
 } from '@modrinth/ui'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -77,6 +79,15 @@ import { get_game_versions, get_loaders } from '@/helpers/tags.js'
 import { useTheming } from '@/store/theme.ts'
 
 const themeStore = useTheming()
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+	install: { id: 'app.project.versions.install', defaultMessage: 'Install' },
+	swapVersion: { id: 'app.project.versions.swap-version', defaultMessage: 'Swap version' },
+	moreOptions: { id: 'app.project.versions.more-options', defaultMessage: 'More options' },
+	addToAnotherInstance: { id: 'app.project.versions.add-to-another-instance', defaultMessage: 'Add to another instance' },
+	openInBrowser: { id: 'app.project.versions.open-in-browser', defaultMessage: 'Open in browser' },
+})
 
 defineProps({
 	project: {

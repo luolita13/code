@@ -20,6 +20,7 @@ pub fn init<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
             install_duplicate_instance,
             install_existing_instance,
             install_pack_to_existing_instance,
+            install_content_to_instance,
             install_job_list,
             install_job_get,
             install_job_retry,
@@ -143,6 +144,15 @@ pub async fn install_pack_to_existing_instance(
         post_install_edit.map(|edit| edit.into_core()).transpose()?,
     )
     .await?)
+}
+
+#[tauri::command]
+pub async fn install_content_to_instance(
+    instance_id: String,
+    plan: theseus::data::ResolveContentPlan,
+) -> Result<InstallJobSnapshot> {
+    Ok(theseus::install::install_content_to_instance(instance_id, plan)
+        .await?)
 }
 
 #[tauri::command]

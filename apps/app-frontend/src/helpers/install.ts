@@ -96,6 +96,8 @@ export interface InstallJobSnapshot {
 		| 'duplicate_instance'
 		| 'install_existing_instance'
 		| 'install_pack_to_existing_instance'
+		| 'install_content'
+		| 'install_curseforge_file'
 	status: InstallJobStatus
 	target:
 		| { type: 'new_instance'; instance_id?: string | null }
@@ -175,6 +177,28 @@ export async function install_pack_to_existing_instance(
 		instanceId,
 		location,
 		postInstallEdit,
+	})
+}
+
+export interface ResolvedContent {
+	project_id: string
+	version_id: string
+	dependent_on_version_id?: string | null
+}
+
+export interface ResolveContentPlan {
+	primary: ResolvedContent
+	dependencies: ResolvedContent[]
+	skipped: { project_id: string; reason: string }[]
+}
+
+export async function install_content_to_instance(
+	instanceId: string,
+	plan: ResolveContentPlan,
+) {
+	return await invoke<InstallJobSnapshot>('plugin:install|install_content_to_instance', {
+		instanceId,
+		plan,
 	})
 }
 

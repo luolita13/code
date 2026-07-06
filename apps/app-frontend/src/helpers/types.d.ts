@@ -151,12 +151,14 @@ type AppSettings = {
 	max_concurrent_downloads: number
 	max_concurrent_writes: number
 
-	theme: 'dark' | 'light' | 'oled'
+	theme: 'dark' | 'light' | 'oled' | 'system'
+	locale: string
 	default_page: 'Home' | 'Library'
 	collapsed_navigation: boolean
+	hide_nametag_skins_page: boolean
 	advanced_rendering: boolean
 	native_decorations: boolean
-	worlds_in_home: boolean
+	toggle_sidebar: boolean
 
 	telemetry: boolean
 	discord_rpc: boolean
@@ -170,10 +172,35 @@ type AppSettings = {
 	memory: MemorySettings
 	force_fullscreen: boolean
 	game_resolution: [number, number]
-	hide_on_process_start: boolean
+	launcher_visibility: number
 	hooks: Hooks
 
 	custom_dir?: string
 	prev_custom_dir?: string
 	migrated: boolean
+
+	feature_flags: Record<string, boolean>
+
+	skipped_update: string | null
+	pending_update_toast_for_version: string | null
+	auto_download_updates: boolean | null
+
+	process_priority: number
+	renderer: number
+	extra_game_args: string[]
+	preferred_ip_stack: number
+	custom_info: string
+	window_title: string
+	memory_allocation_mode: number
+	set_gpu_preference: boolean
+	use_java_exe: boolean
+	pre_launch_wait: boolean
+	disable_java_launch_wrapper: boolean
+	disable_legacy_fix: boolean
+	disable_lwjgl_unsafe_agent: boolean
+
+	game_file_source: number
+	community_source: number
+
+	version: number
 }

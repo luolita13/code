@@ -17,6 +17,7 @@ import {
 } from '@/helpers/cache.js'
 import { instance_listener } from '@/helpers/events.js'
 import {
+	install_content_to_instance,
 	install_create_instance,
 	install_create_modpack_instance,
 	installJobInstanceId,
@@ -26,9 +27,9 @@ import {
 	get,
 	get_install_candidates,
 	get_projects,
-	install_project_with_dependencies,
 	list,
 	remove_project,
+	resolve_install_plan,
 	type ResolveContentPlan,
 } from '@/helpers/instance'
 import { get_game_versions } from '@/helpers/tags'
@@ -622,7 +623,7 @@ export function createContentInstall(opts: {
 				version_id: version.id,
 				content_type: resolveContentType(currentProject.project_type),
 			}
-			const plan = await install_project_with_dependencies(instance.id, request)
+			const plan = await resolve_install_plan(instance.id, request)
 			plannedProjectIds = resolvedProjectIds(plan)
 			await addInstallingItemsForPlan(instance.id, plan, currentProject, version)
 			installedProjectIds.splice(
@@ -631,6 +632,9 @@ export function createContentInstall(opts: {
 				plan.primary.project_id,
 				...plan.dependencies.map((dependency) => dependency.project_id),
 			)
+			// Kick off the install through the InstallJob system so the
+			// download progress popup appears in the action bar.
+			await install_content_to_instance(instance.id, plan)
 			if (storeInstance) {
 				storeInstance.installed = true
 				storeInstance.installing = false
@@ -755,12 +759,13 @@ export function createContentInstall(opts: {
 			createdInstanceId = id
 			addInstallingItem(id, currentProject!, version)
 
-			const plan = await install_project_with_dependencies(id, {
+			const plan = await resolve_install_plan(id, {
 				project_id: currentProject!.id,
 				version_id: version.id,
 				content_type: resolveContentType(currentProject!.project_type),
 			})
 			await addInstallingItemsForPlan(id, plan, currentProject!, version)
+			await install_content_to_instance(id, plan)
 			await opts.router.push(`/instance/${encodeURIComponent(id)}`)
 
 			trackEvent('InstanceCreate', {
@@ -872,7 +877,7 @@ export function createContentInstall(opts: {
 						version_id: version.id,
 						content_type: resolveContentType(project.project_type),
 					}
-					const plan = await install_project_with_dependencies(instance.id, request)
+					const plan = await resolve_install_plan(instance.id, request)
 					plannedProjectIds = resolvedProjectIds(plan)
 					await addInstallingItemsForPlan(instanceId, plan, project, version)
 					installedProjectIds.splice(
@@ -881,6 +886,7 @@ export function createContentInstall(opts: {
 						plan.primary.project_id,
 						...plan.dependencies.map((dependency) => dependency.project_id),
 					)
+					await install_content_to_instance(instance.id, plan)
 
 					trackEvent('ProjectInstall', {
 						loader: instance.loader,

@@ -1,0 +1,173 @@
+<script setup lang="ts">
+import { ImagesIcon } from '@modrinth/assets'
+import { defineMessages, HeadingLink, injectNotificationManager, useVIntl } from '@modrinth/ui'
+import { convertFileSrc } from '@tauri-apps/api/core'
+import { readDir, stat } from '@tauri-apps/plugin-fs'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { computed, onMounted, ref } from 'vue'
+
+import { get_full_path, list } from '@/helpers/instance'
+import { openPath } from '@/helpers/utils.js'
+
+dayjs.extend(relativeTime)
+
+const { handleError } = injectNotificationManager()
+
+const { formatMessage } = useVIntl()
+
+const messages = defineMessages({
+  title: { id: 'app.home.recent-screenshots.title', defaultMessage: 'Recent screenshots' },
+})
+
+interface Screenshot {
+	name: string
+	path: string
+	url: string
+	modified: number
+	instanceId: string
+	instanceName: string
+}
+
+const screenshots = ref<Screenshot[]>([])
+const loading = ref(true)
+
+const MAX_SCREENSHOTS = 12
+const SUPPORTED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'bmp', 'webp', 'tiff']
+
+function normalizePath(p: string): string {
+	return p.replace(/\\/g, '/')
+}
+
+async function fetchScreenshots() {
+	loading.value = true
+	try {
+		const instances = await list().catch(handleError)
+		if (!instances || instances.length === 0) {
+			screenshots.value = []
+			return
+		}
+
+		const all: Screenshot[] = []
+		await Promise.all(
+			instances.map(async (inst) => {
+				try {
+					const root = normalizePath(await get_full_path(inst.id))
+					const folder = `${root}/screenshots`
+					let entries
+					try {
+						entries = await readDir(folder)
+					} catch {
+						return
+					}
+					for (const entry of entries) {
+						if (entry.isDirectory) continue
+						const ext = entry.name.split('.').pop()?.toLowerCase() ?? ''
+						if (!SUPPORTED_EXTENSIONS.includes(ext)) continue
+
+						const absPath = `${folder}/${entry.name}`
+						let mtime = 0
+						try {
+							const metadata = await stat(absPath)
+							mtime = metadata.mtime ? Math.floor(metadata.mtime.getTime() / 1000) : 0
+						} catch {
+							continue
+						}
+
+						all.push({
+							name: entry.name,
+							path: absPath,
+							url: convertFileSrc(absPath),
+							modified: mtime,
+							instanceId: inst.id,
+							instanceName: inst.name,
+						})
+					}
+				} catch {
+					// Skip this instance
+				}
+			}),
+		)
+
+		all.sort((a, b) => b.modified - a.modified)
+		screenshots.value = all.slice(0, MAX_SCREENSHOTS)
+	} finally {
+		loading.value = false
+	}
+}
+
+const hasScreenshots = computed(() => screenshots.value.length > 0)
+
+function formatRelative(timestamp: number): string {
+	if (!timestamp) return ''
+	return dayjs.unix(timestamp).fromNow()
+}
+
+function openScreenshot(shot: Screenshot) {
+	openPath(shot.path).catch(handleError)
+}
+
+onMounted(fetchScreenshots)
+</script>
+
+<template>
+	<div v-if="hasScreenshots" class="flex flex-col gap-2">
+		<HeadingLink to="/library">
+			<ImagesIcon class="inline mr-1" />
+			{{ formatMessage(messages.title) }}
+		</HeadingLink>
+		<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+			<div
+				v-for="shot in screenshots"
+				:key="shot.path"
+				class="screenshot-card group cursor-pointer"
+				@click="openScreenshot(shot)"
+				@contextmenu.prevent.stop
+			>
+				<div class="screenshot-thumb">
+					<img
+						:src="shot.url"
+						:alt="shot.name"
+						loading="lazy"
+						class="w-full h-full object-cover"
+					/>
+				</div>
+				<div class="screenshot-meta">
+					<p class="m-0 text-xs font-medium text-contrast truncate">{{ shot.name }}</p>
+					<p class="m-0 text-xs text-secondary truncate">
+						{{ shot.instanceName }} · {{ formatRelative(shot.modified) }}
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<style scoped lang="scss">
+.screenshot-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	padding: 0.4rem;
+	border-radius: 0.5rem;
+	background: var(--color-surface-2);
+	transition: background 0.15s ease;
+
+	&:hover {
+		background: var(--color-surface-3);
+	}
+}
+
+.screenshot-thumb {
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	border-radius: 0.375rem;
+	background: var(--color-bg);
+}
+
+.screenshot-meta {
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+}
+</style>

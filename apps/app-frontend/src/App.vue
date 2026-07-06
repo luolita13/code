@@ -12,6 +12,7 @@ import {
 	ArrowBigUpDashIcon,
 	ChangeSkinIcon,
 	CompassIcon,
+	DownloadIcon,
 	ExternalIcon,
 	HomeIcon,
 	LeftArrowIcon,
@@ -86,6 +87,7 @@ import PrideFundraiserBanner from '@/components/ui/PrideFundraiserBanner.vue'
 import PromotionWrapper from '@/components/ui/PromotionWrapper.vue'
 import QuickInstanceSwitcher from '@/components/ui/QuickInstanceSwitcher.vue'
 import SplashScreen from '@/components/ui/SplashScreen.vue'
+import StartupNoticeModal from '@/components/ui/StartupNoticeModal.vue'
 import WindowControls from '@/components/ui/WindowControls.vue'
 import { useCheckDisableMouseover } from '@/composables/macCssFix.js'
 import { config } from '@/config'
@@ -335,6 +337,90 @@ const messages = defineMessages({
 		id: 'app.auth-servers.unreachable.body',
 		defaultMessage:
 			'Minecraft authentication servers may be down right now. Check your internet connection and try again later.',
+	},
+	navHome: {
+		id: 'app.nav.home',
+		defaultMessage: 'Home',
+	},
+	navWorlds: {
+		id: 'app.nav.worlds',
+		defaultMessage: 'Worlds',
+	},
+	navDiscover: {
+		id: 'app.nav.discover',
+		defaultMessage: 'Discover content',
+	},
+	navSkins: {
+		id: 'app.nav.skins',
+		defaultMessage: 'Skin selector',
+	},
+	navLibrary: {
+		id: 'app.nav.library',
+		defaultMessage: 'Library',
+	},
+	navHosting: {
+		id: 'app.nav.hosting',
+		defaultMessage: 'Modrinth Hosting',
+	},
+	navDownloads: {
+		id: 'app.nav.downloads',
+		defaultMessage: 'Downloads',
+	},
+	navCreateInstance: {
+		id: 'app.nav.create-instance',
+		defaultMessage: 'Create new instance',
+	},
+	sidebarPlayingAs: {
+		id: 'app.sidebar.playing-as',
+		defaultMessage: 'Playing as',
+	},
+	restarting: {
+		id: 'app.restarting',
+		defaultMessage: 'Restarting...',
+	},
+	signedInAs: {
+		id: 'app.signed-in-as',
+		defaultMessage: 'Signed in as',
+	},
+	signOut: {
+		id: 'app.sign-out',
+		defaultMessage: 'Sign out',
+	},
+	signInModrinth: {
+		id: 'app.sign-in-modrinth',
+		defaultMessage: 'Sign in to a Modrinth account',
+	},
+	settingsTitle: {
+		id: 'app.settings.title',
+		defaultMessage: 'Settings',
+	},
+	newsTitle: {
+		id: 'app.news.title',
+		defaultMessage: 'News',
+	},
+	viewAllNews: {
+		id: 'app.news.view-all',
+		defaultMessage: 'View all news',
+	},
+	surveyHeyThere: {
+		id: 'app.survey.hey-there',
+		defaultMessage: 'Hey there Modrinth user!',
+	},
+	surveyDescription: {
+		id: 'app.survey.description',
+		defaultMessage: 'Would you mind answering a few questions about your experience with Modrinth App?',
+	},
+	surveyFeedback: {
+		id: 'app.survey.feedback',
+		defaultMessage: 'This feedback will go directly to the Modrinth team and help guide future updates!',
+	},
+	surveyTake: {
+		id: 'app.survey.take',
+		defaultMessage: 'Take survey',
+	},
+	surveyNoThanks: {
+		id: 'app.survey.no-thanks',
+		defaultMessage: 'No thanks',
 	},
 })
 
@@ -1404,7 +1490,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 					class="flex items-center gap-4 text-contrast font-semibold text-xl select-none cursor-default"
 				>
 					<RefreshCwIcon data-tauri-drag-region class="animate-spin w-6 h-6" />
-					Restarting...
+					{{ formatMessage(messages.restarting) }}
 				</span>
 			</div>
 		</Transition>
@@ -1429,25 +1515,25 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 		<div
 			class="app-grid-navbar bg-bg-raised flex flex-col p-[0.5rem] pt-0 gap-[0.5rem] w-[--left-bar-width]"
 		>
-			<NavButton v-tooltip.right="'Home'" to="/">
+			<NavButton v-tooltip.right="formatMessage(messages.navHome)" to="/">
 				<HomeIcon />
 			</NavButton>
-			<NavButton v-if="themeStore.featureFlags.worlds_tab" v-tooltip.right="'Worlds'" to="/worlds">
+			<NavButton v-if="themeStore.featureFlags.worlds_tab" v-tooltip.right="formatMessage(messages.navWorlds)" to="/worlds">
 				<WorldIcon />
 			</NavButton>
 			<NavButton
-				v-tooltip.right="'Discover content'"
+				v-tooltip.right="formatMessage(messages.navDiscover)"
 				to="/browse/modpack"
 				:is-primary="() => route.path.startsWith('/browse') && !route.query.i"
 				:is-subpage="(route) => route.path.startsWith('/project') && !route.query.i"
 			>
 				<CompassIcon />
 			</NavButton>
-			<NavButton v-tooltip.right="'Skin selector'" to="/skins">
+			<NavButton v-tooltip.right="formatMessage(messages.navSkins)" to="/skins">
 				<ChangeSkinIcon />
 			</NavButton>
 			<NavButton
-				v-tooltip.right="'Library'"
+				v-tooltip.right="formatMessage(messages.navLibrary)"
 				to="/library"
 				:is-primary="(r) => r.path === '/library' || r.path === '/library'"
 				:is-subpage="
@@ -1461,19 +1547,22 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 			</NavButton>
 			<NavButton
 				v-if="false"
-				v-tooltip.right="'Modrinth Hosting'"
+				v-tooltip.right="formatMessage(messages.navHosting)"
 				to="/hosting/manage"
 				:is-primary="(r) => r.path === '/hosting/manage' || r.path === '/hosting/manage/'"
 				:is-subpage="(r) => r.path.startsWith('/hosting/manage/') && r.path !== '/hosting/manage/'"
 			>
 				<ServerStackIcon />
 			</NavButton>
+			<NavButton v-tooltip.right="formatMessage(messages.navDownloads)" to="/downloads">
+				<DownloadIcon />
+			</NavButton>
 			<div class="h-px w-6 mx-auto my-2 bg-surface-5"></div>
 			<suspense>
 				<QuickInstanceSwitcher />
 			</suspense>
 			<NavButton
-				v-tooltip.right="'Create new instance'"
+				v-tooltip.right="formatMessage(messages.navCreateInstance)"
 				to="/create"
 				:disabled="offline"
 			>
@@ -1507,7 +1596,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 				<template #view-profile>
 					<UserIcon />
 					<span class="inline-flex items-center gap-1">
-						Signed in as
+						{{ formatMessage(messages.signedInAs) }}
 						<span class="inline-flex items-center gap-1 text-contrast font-semibold">
 							<Avatar :src="credentials?.user?.avatar_url" alt="" size="20px" circle />
 							{{ credentials?.user?.username }}
@@ -1515,9 +1604,9 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 					</span>
 					<ExternalIcon />
 				</template>
-				<template #sign-out> <LogOutIcon /> Sign out </template>
+				<template #sign-out> <LogOutIcon /> {{ formatMessage(messages.signOut) }} </template>
 			</OverflowMenu>
-			<NavButton v-else-if="!MODRINTH_LOGIN_DISABLED" v-tooltip.right="'Sign in to a Modrinth account'" :to="() => signIn()">
+			<NavButton v-else-if="!MODRINTH_LOGIN_DISABLED" v-tooltip.right="formatMessage(messages.signInModrinth)" :to="() => signIn()">
 				<LogInIcon class="text-brand" />
 			</NavButton>
 		</div>
@@ -1577,19 +1666,19 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 					v-if="availableSurvey"
 					class="w-[400px] z-20 fixed -bottom-12 pb-16 right-[--right-bar-width] mr-4 rounded-t-2xl card-shadow bg-bg-raised border-surface-5 border-[1px] border-solid border-b-0 p-4"
 				>
-					<h2 class="text-lg font-extrabold mt-0 mb-2">Hey there Modrinth user!</h2>
+					<h2 class="text-lg font-extrabold mt-0 mb-2">{{ formatMessage(messages.surveyHeyThere) }}</h2>
 					<p class="m-0 leading-tight">
-						Would you mind answering a few questions about your experience with Modrinth App?
+						{{ formatMessage(messages.surveyDescription) }}
 					</p>
 					<p class="mt-3 mb-4 leading-tight">
-						This feedback will go directly to the Modrinth team and help guide future updates!
+						{{ formatMessage(messages.surveyFeedback) }}
 					</p>
 					<div class="flex gap-2">
 						<ButtonStyled color="brand">
-							<button @click="openSurvey"><NotepadTextIcon /> Take survey</button>
+							<button @click="openSurvey"><NotepadTextIcon /> {{ formatMessage(messages.surveyTake) }}</button>
 						</ButtonStyled>
 						<ButtonStyled>
-							<button @click="dismissSurvey"><XIcon /> No thanks</button>
+							<button @click="dismissSurvey"><XIcon /> {{ formatMessage(messages.surveyNoThanks) }}</button>
 						</ButtonStyled>
 					</div>
 				</div>
@@ -1657,7 +1746,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 				<div id="sidebar-teleport-target" class="sidebar-teleport-content"></div>
 				<div class="sidebar-default-content" :class="{ 'sidebar-enabled': sidebarVisible }">
 					<div class="p-4 border-0 border-b-[1px] border-[--brand-gradient-border] border-solid">
-						<h3 class="text-base text-primary font-medium m-0">Playing as</h3>
+						<h3 class="text-base text-primary font-medium m-0">{{ formatMessage(messages.sidebarPlayingAs) }}</h3>
 						<suspense>
 							<AccountsCard ref="accounts" />
 						</suspense>
@@ -1672,7 +1761,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 						class="p-4 border-0 border-b-[1px] border-[--brand-gradient-border] border-solid"
 					/>
 					<div v-if="false && news && news.length > 0" class="p-4 flex flex-col items-center">
-						<h3 class="text-base mb-4 text-primary font-medium m-0 text-left w-full">News</h3>
+						<h3 class="text-base mb-4 text-primary font-medium m-0 text-left w-full">{{ formatMessage(messages.newsTitle) }}</h3>
 						<div class="space-y-4 flex flex-col items-center w-full">
 							<NewsArticleCard
 								v-for="(item, index) in news"
@@ -1681,7 +1770,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 							/>
 							<ButtonStyled color="brand" size="large">
 								<a href="https://modrinth.com/news" target="_blank" class="my-4">
-									<NewspaperIcon /> View all news
+									<NewspaperIcon /> {{ formatMessage(messages.viewAllNews) }}
 								</a>
 							</ButtonStyled>
 						</div>
@@ -1750,6 +1839,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 	/>
 	<InstallToPlayModal ref="installToPlayModal" />
 	<UpdateToPlayModal ref="updateToPlayModal" />
+	<StartupNoticeModal />
 </template>
 
 <style lang="scss" scoped>
@@ -1853,7 +1943,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 	*,
 	:deep(*) {
 		box-shadow: none !important;
-		--tw-drop-shadow:;
+		--tw-drop-shadow: none !important;
 	}
 }
 

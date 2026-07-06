@@ -93,6 +93,44 @@ pub async fn install_pack_to_existing_instance(
     .await
 }
 
+/// Install content (mods/resourcepacks/datapacks/shaders) to an existing instance.
+/// Goes through the InstallJob system for progress reporting.
+pub async fn install_content_to_instance(
+    instance_id: String,
+    plan: modrinth_content_management::ResolveContentPlan,
+) -> crate::Result<InstallJobSnapshot> {
+    start(InstallRequest::InstallContent {
+        instance_id,
+        plan,
+    })
+    .await
+}
+
+/// Install a single CurseForge file to an existing instance.
+/// Goes through the InstallJob system so the download popup shows progress.
+pub async fn install_curseforge_file(
+    instance_id: String,
+    mod_id: i64,
+    file_id: i64,
+    file_name: String,
+    download_url: Option<String>,
+    content_type: String,
+    title: String,
+    icon_url: Option<String>,
+) -> crate::Result<InstallJobSnapshot> {
+    start(InstallRequest::InstallCurseForgeFile {
+        instance_id,
+        mod_id,
+        file_id,
+        file_name,
+        download_url,
+        content_type,
+        title,
+        icon_url,
+    })
+    .await
+}
+
 pub async fn list_jobs(
     include_finished: bool,
 ) -> crate::Result<Vec<InstallJobSnapshot>> {
@@ -175,18 +213,32 @@ pub async fn cancel_job(job_id: Uuid) -> crate::Result<InstallJobSnapshot> {
             // Running/Paused job: trigger cancellation token.
             // The running task will detect this and gracefully stop,
             // then update its own status to Canceled.
-            if !control::request_cancel(&job_id) {
-                return Err(crate::ErrorKind::InputError(
-                    "Install job control handle not found".to_string(),
+            if control::request_cancel(&job_id) {
+                // Also resume if paused so it can process the cancellation
+                if job.status == InstallJobStatus::Paused {
+                    control::request_resume(&job_id);
+                }
+                // Return the current snapshot (status will be updated by the runner)
+                Ok(job.snapshot())
+            } else {
+                // No control handle: the job is stale (e.g. app crashed while running).
+                // Mark it as canceled immediately.
+                let mut job_state = job.state.clone();
+                job_state.error = Some(InstallErrorView {
+                    code: "canceled".to_string(),
+                    message: "Install was canceled".to_string(),
+                });
+                clear_deleted_new_instance_id(&mut job_state);
+                let record = store::update_status(
+                    job_id,
+                    InstallJobStatus::Canceled,
+                    &job_state,
+                    &state,
                 )
-                .into());
+                .await?;
+                emit_install_job(&record.snapshot()).await?;
+                Ok(record.snapshot())
             }
-            // Also resume if paused so it can process the cancellation
-            if job.status == InstallJobStatus::Paused {
-                control::request_resume(&job_id);
-            }
-            // Return the current snapshot (status will be updated by the runner)
-            Ok(job.snapshot())
         }
         _ => Err(crate::ErrorKind::InputError(
             "Only queued, running, or paused install jobs can be canceled"
@@ -207,12 +259,9 @@ pub async fn pause_job(job_id: Uuid) -> crate::Result<InstallJobSnapshot> {
         .into());
     }
 
-    if !control::request_pause(&job_id) {
-        return Err(crate::ErrorKind::InputError(
-            "Install job control handle not found".to_string(),
-        )
-        .into());
-    }
+    // If the control handle is missing, the job is stale (e.g. app crashed).
+    // Mark it as paused in the database anyway so the user can retry/cancel.
+    control::request_pause(&job_id);
 
     let record = store::update_status(
         job_id,
@@ -237,12 +286,9 @@ pub async fn resume_job(job_id: Uuid) -> crate::Result<InstallJobSnapshot> {
         .into());
     }
 
-    if !control::request_resume(&job_id) {
-        return Err(crate::ErrorKind::InputError(
-            "Install job control handle not found".to_string(),
-        )
-        .into());
-    }
+    // If the control handle is missing, the job is stale. Update the database
+    // so the UI doesn't get stuck, but it cannot actually resume.
+    control::request_resume(&job_id);
 
     let record = store::update_status(
         job_id,
@@ -390,7 +436,9 @@ async fn prepare_initial_instance(
         InstallRequest::InstallExistingInstance { instance_id, .. }
         | InstallRequest::InstallPackToExistingInstance {
             instance_id, ..
-        } => {
+        }
+        | InstallRequest::InstallContent { instance_id, .. }
+        | InstallRequest::InstallCurseForgeFile { instance_id, .. } => {
             prepare_existing_rollback(job_state, state, &instance_id).await?;
         }
     }
@@ -437,7 +485,23 @@ async fn run_job(job_id: Uuid) -> crate::Result<()> {
             )
         })?;
 
-    let result = run_request(job_id, &mut job_state, &state, &mut guard).await;
+    // Run the request while also listening for cancellation.
+    // This ensures that even if a network I/O step blocks for a long time
+    // without hitting a guard.check() point, the job still responds to cancel.
+    let cancel_token = control::get_control(&job_id)
+        .map(|c| c.cancel.clone());
+    let result = if let Some(token) = cancel_token {
+        tokio::select! {
+            res = run_request(job_id, &mut job_state, &state, &mut guard) => res,
+            _ = token.cancelled() => {
+                Err(crate::ErrorKind::InputError(
+                    "Install was canceled".to_string(),
+                ).into())
+            }
+        }
+    } else {
+        run_request(job_id, &mut job_state, &state, &mut guard).await
+    };
 
     // Always unregister control when done
     control::unregister_job(&job_id);
@@ -731,6 +795,327 @@ async fn run_request(
             )
             .await?;
             apply_post_install_edit(&instance_id, post_install_edit).await?;
+            Ok(Some(instance_id))
+        }
+        InstallRequest::InstallContent { instance_id, plan } => {
+            use crate::install::model::{
+                InstallPhaseDetails, InstallPhaseId,
+            };
+
+            // Collect project ids for completion/failure events
+            let project_ids = {
+                let mut ids =
+                    Vec::with_capacity(plan.dependencies.len() + 1);
+                ids.push(plan.primary.project_id.clone());
+                ids.extend(
+                    plan.dependencies
+                        .iter()
+                        .map(|d| d.project_id.clone()),
+                );
+                ids
+            };
+
+            // Initial progress report
+            update_progress(
+                job_id,
+                job_state,
+                state,
+                InstallPhaseId::DownloadingContent,
+                InstallPhaseDetails::Modpack {
+                    project_id: Some(plan.primary.project_id.clone()),
+                    version_id: Some(plan.primary.version_id.clone()),
+                    title: None,
+                },
+            )
+            .await?;
+            guard.check().await?;
+
+            let reporter = InstallProgressReporter::with_guard(
+                job_id,
+                job_state.clone(),
+                guard.clone(),
+            );
+            let install_result = crate::state::instances::commands::install_resolved_content_plan_with_reporter(
+                &instance_id,
+                &plan,
+                state,
+                &reporter,
+            )
+            .await;
+
+            match install_result {
+                Ok(()) => {
+                    // Emit ContentInstallFinished so frontend removes placeholders
+                    if let Err(e) = crate::event::emit::emit_instance(
+                        &instance_id,
+                        crate::event::InstancePayloadType::ContentInstallFinished {
+                            project_ids: project_ids.clone(),
+                        },
+                    )
+                    .await
+                    {
+                        tracing::error!(
+                            "Failed to emit content install finished event: {e}"
+                        );
+                    }
+                    if let Err(e) = crate::event::emit::emit_instance(
+                        &instance_id,
+                        crate::event::InstancePayloadType::Edited,
+                    )
+                    .await
+                    {
+                        tracing::error!(
+                            "Failed to emit instance edited event after content install: {e}"
+                        );
+                    }
+                    Ok(Some(instance_id))
+                }
+                Err(error) => {
+                    // Emit ContentInstallFailed so frontend can clean up placeholders
+                    if let Err(e) = crate::event::emit::emit_instance(
+                        &instance_id,
+                        crate::event::InstancePayloadType::ContentInstallFailed {
+                            project_ids,
+                            message: error.to_string(),
+                        },
+                    )
+                    .await
+                    {
+                        tracing::error!(
+                            "Failed to emit content install failed event: {e}"
+                        );
+                    }
+                    Err(error)
+                }
+            }
+        }
+        InstallRequest::InstallCurseForgeFile {
+            instance_id,
+            mod_id,
+            file_id,
+            file_name,
+            download_url,
+            content_type,
+            title,
+            icon_url,
+        } => {
+            use crate::install::model::{InstallPhaseDetails, InstallPhaseId};
+            use std::io::Read;
+
+            // The "project id" we use for frontend compatibility is the
+            // stringified CurseForge mod id (prefixed to avoid collision
+            // with Modrinth IDs).
+            let project_ids = vec![format!("cf-{}", mod_id)];
+
+            // Set display info for the install popup
+            job_state.display = Some(
+                crate::install::model::InstallJobDisplay {
+                    title: title.clone(),
+                    icon: icon_url.clone(),
+                },
+            );
+
+            // Initial progress report
+            update_progress(
+                job_id,
+                job_state,
+                state,
+                InstallPhaseId::DownloadingContent,
+                InstallPhaseDetails::Modpack {
+                    project_id: Some(format!("cf-{}", mod_id)),
+                    version_id: Some(format!("cf-{}", file_id)),
+                    title: Some(title.clone()),
+                },
+            )
+            .await?;
+            guard.check().await?;
+
+            // Resolve download URL: use provided URL or fetch it from CF API
+            let download_url = match download_url {
+                Some(url) if !url.is_empty() => url,
+                _ => {
+                    crate::api::curseforge::get_file_download_url(
+                        mod_id,
+                        file_id,
+                        state,
+                    )
+                    .await?
+                    .ok_or_else(|| {
+                        crate::ErrorKind::OtherError(format!(
+                            "CurseForge file {} has no download URL available",
+                            file_id
+                        ))
+                        .as_error()
+                    })?
+                }
+            };
+
+            tracing::info!(
+                "Downloading CurseForge file: {} ({})",
+                file_name,
+                download_url
+            );
+
+            // Download the file bytes
+            let bytes = crate::util::fetch::fetch(
+                &download_url,
+                None,
+                None,
+                None,
+                &state.fetch_semaphore,
+                &state.pool,
+            )
+            .await?;
+
+            guard.check().await?;
+
+            // Get the instance filesystem path
+            let instance_path = crate::api::instance::get_full_path(
+                &instance_id,
+            )
+            .await?;
+
+            // Determine target subfolder based on content_type
+            let subfolder = match content_type.as_str() {
+                "mod" => "mods",
+                "resourcepack" => "resourcepacks",
+                "shader" => "shaderpacks",
+                "datapack" => "datapacks",
+                "world" => "saves",
+                "modpack" => "mods",
+                _ => "mods",
+            };
+
+            let target_dir = instance_path.join(subfolder);
+            tokio::fs::create_dir_all(&target_dir).await.map_err(|e| {
+                crate::ErrorKind::OtherError(format!(
+                    "Failed to create {}: {e}",
+                    target_dir.display()
+                ))
+                .as_error()
+            })?;
+
+            let target_path = target_dir.join(&file_name);
+
+            // For worlds, extract the zip into saves/<world_name>/
+            if content_type == "world" {
+                let world_name = file_name
+                    .trim_end_matches(".zip")
+                    .trim_end_matches(".mcworld");
+                let world_dir = target_dir.join(world_name);
+                tokio::fs::create_dir_all(&world_dir).await.map_err(|e| {
+                    crate::ErrorKind::OtherError(format!(
+                        "Failed to create world dir: {e}"
+                    ))
+                    .as_error()
+                })?;
+
+                let cursor = std::io::Cursor::new(bytes.to_vec());
+                let mut archive =
+                    zip::ZipArchive::new(cursor).map_err(|e| {
+                        crate::ErrorKind::OtherError(format!(
+                            "Failed to read world zip: {e}"
+                        ))
+                        .as_error()
+                    })?;
+
+                for i in 0..archive.len() {
+                    let mut entry = archive
+                        .by_index(i)
+                        .map_err(|e| {
+                            crate::ErrorKind::OtherError(format!(
+                                "Zip entry {i}: {e}"
+                            ))
+                            .as_error()
+                        })?;
+                    let out_path = match entry.enclosed_name() {
+                        Some(p) => world_dir.join(p),
+                        None => continue,
+                    };
+                    if entry.is_dir() {
+                        tokio::fs::create_dir_all(&out_path)
+                            .await
+                            .map_err(|e| {
+                                crate::ErrorKind::OtherError(format!(
+                                    "mkdir: {e}"
+                                ))
+                                .as_error()
+                            })?;
+                    } else {
+                        if let Some(parent) = out_path.parent() {
+                            tokio::fs::create_dir_all(parent)
+                                .await
+                                .map_err(|e| {
+                                    crate::ErrorKind::OtherError(format!(
+                                        "mkdir: {e}"
+                                    ))
+                                    .as_error()
+                                })?;
+                        }
+                        let mut buf =
+                            Vec::with_capacity(entry.size() as usize);
+                        entry.read_to_end(&mut buf).map_err(|e| {
+                            crate::ErrorKind::OtherError(format!(
+                                "read zip entry: {e}"
+                            ))
+                            .as_error()
+                        })?;
+                        tokio::fs::write(&out_path, &buf)
+                            .await
+                            .map_err(|e| {
+                                crate::ErrorKind::OtherError(format!(
+                                    "write {}: {e}",
+                                    out_path.display()
+                                ))
+                                .as_error()
+                            })?;
+                    }
+                }
+                tracing::info!(
+                    "Extracted CurseForge world to {}",
+                    world_dir.display()
+                );
+            } else {
+                // Just write the file directly
+                tokio::fs::write(&target_path, &bytes)
+                    .await
+                    .map_err(|e| {
+                        crate::ErrorKind::OtherError(format!(
+                            "Failed to write {}: {e}",
+                            target_path.display()
+                        ))
+                        .as_error()
+                    })?;
+                tracing::info!(
+                    "Wrote CurseForge file to {}",
+                    target_path.display()
+                );
+            }
+
+            // Emit ContentInstallFinished so frontend removes placeholders
+            if let Err(e) = crate::event::emit::emit_instance(
+                &instance_id,
+                crate::event::InstancePayloadType::ContentInstallFinished {
+                    project_ids: project_ids.clone(),
+                },
+            )
+            .await
+            {
+                tracing::error!(
+                    "Failed to emit CF content install finished event: {e}"
+                );
+            }
+            if let Err(e) = crate::event::emit::emit_instance(
+                &instance_id,
+                crate::event::InstancePayloadType::Edited,
+            )
+            .await
+            {
+                tracing::error!(
+                    "Failed to emit instance edited event after CF install: {e}"
+                );
+            }
+
             Ok(Some(instance_id))
         }
     }

@@ -16,6 +16,14 @@ export const DEFAULT_FEATURE_FLAGS = {
 	pride_fundraiser: true,
 	i18n_debug: false,
 	show_instance_play_time: true,
+	// Home page section visibility
+	home_show_jump_back_in: true,
+	home_show_discover_modpacks: true,
+	home_show_discover_mods: true,
+	home_show_update_reminders: true,
+	home_show_system_status: true,
+	home_show_recent_screenshots: true,
+	home_show_random_mods: true,
 }
 
 export const THEME_OPTIONS = ['dark', 'light', 'oled', 'system'] as const

@@ -53,55 +53,20 @@
 			</div>
 		</Card>
 
-		<!-- Advanced management -->
-		<Card>
-			<template #header>
-				<h2 class="text-xl font-bold text-contrast m-0">
-					{{ formatMessage(messages.advancedManagement) }}
-				</h2>
-			</template>
-			<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 p-2">
-				<button
-					v-for="action in advancedActions"
-					:key="action.id"
-					class="action-card"
-					:class="{ 'action-card-danger': action.danger }"
-					:disabled="action.disabled"
-					@click="action.action"
-				>
-					<component :is="action.icon" class="size-6" :class="action.danger ? 'text-red' : 'text-brand'" />
-					<span class="text-sm font-medium text-contrast">{{ action.label }}</span>
-				</button>
-			</div>
-		</Card>
 	</div>
 </template>
 
 <script setup lang="ts">
-import {
-	CopyIcon,
-	DownloadIcon,
-	PackageIcon,
-	RefreshCwIcon,
-	TrashIcon,
-} from '@modrinth/assets'
 import { Card, defineMessages, injectNotificationManager, useVIntl } from '@modrinth/ui'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { computed, ref, useTemplateRef } from 'vue'
+import { computed, ref } from 'vue'
 
-import ConfirmDeleteInstanceModal from '@/components/ui/modal/ConfirmDeleteInstanceModal.vue'
-import type ContextMenu from '@/components/ui/ContextMenu.vue'
-import ExportModal from '@/components/ui/ExportModal.vue'
-import { install_existing_instance } from '@/helpers/install'
-import { remove as removeInstance } from '@/helpers/instance'
 import type { GameInstance } from '@/helpers/types'
-import { createInstanceShortcut } from '@/helpers/utils.js'
 
 dayjs.extend(relativeTime)
 
 const { formatMessage } = useVIntl()
-const { addNotification, handleError } = injectNotificationManager()
 
 const messages = defineMessages({
 	information: { id: 'app.instance.overview.information', defaultMessage: 'Information' },
@@ -114,15 +79,6 @@ const messages = defineMessages({
 	playTime: { id: 'app.instance.overview.play-time', defaultMessage: 'Play time' },
 	linkType: { id: 'app.instance.overview.link-type', defaultMessage: 'Source' },
 	updateChannel: { id: 'app.instance.overview.update-channel', defaultMessage: 'Update channel' },
-	advancedManagement: {
-		id: 'app.instance.overview.advanced-management',
-		defaultMessage: 'Advanced management',
-	},
-	exportModpack: { id: 'app.instance.overview.export-modpack', defaultMessage: 'Export modpack' },
-	repair: { id: 'app.instance.overview.repair', defaultMessage: 'Repair instance' },
-	createShortcut: { id: 'app.instance.overview.create-shortcut', defaultMessage: 'Create shortcut' },
-	copyInstance: { id: 'app.instance.overview.copy-instance', defaultMessage: 'Copy instance' },
-	deleteInstance: { id: 'app.instance.overview.delete-instance', defaultMessage: 'Delete instance' },
 	installed: { id: 'app.instance.overview.status.installed', defaultMessage: 'Installed' },
 	notInstalled: { id: 'app.instance.overview.status.not-installed', defaultMessage: 'Not installed' },
 	installing: { id: 'app.instance.overview.status.installing', defaultMessage: 'Installing' },
@@ -135,6 +91,13 @@ const messages = defineMessages({
 		id: 'app.instance.overview.status.minecraft-installing',
 		defaultMessage: 'Minecraft installing',
 	},
+	neverPlayed: { id: 'app.instance.overview.never-played', defaultMessage: 'Never played' },
+	modrinthModpack: { id: 'app.instance.overview.link-type.modrinth-modpack', defaultMessage: 'Modrinth modpack' },
+	serverProject: { id: 'app.instance.overview.link-type.server-project', defaultMessage: 'Server project' },
+	serverModpack: { id: 'app.instance.overview.link-type.server-modpack', defaultMessage: 'Server modpack' },
+	importedModpack: { id: 'app.instance.overview.link-type.imported-modpack', defaultMessage: 'Imported modpack' },
+	hosting: { id: 'app.instance.overview.link-type.hosting', defaultMessage: 'Hosting' },
+	sharedInstance: { id: 'app.instance.overview.link-type.shared-instance', defaultMessage: 'Shared instance' },
 })
 
 const props = defineProps<{
@@ -159,7 +122,7 @@ const formatPlayTime = computed(() => {
 	const total = instance.value
 		? instance.value.recent_time_played + instance.value.submitted_time_played
 		: 0
-	if (total <= 0) return 'Never played'
+	if (total <= 0) return formatMessage(messages.neverPlayed)
 	const hours = Math.floor(total / 3600)
 	const minutes = Math.floor((total % 3600) / 60)
 	if (hours >= 1) return `${hours}h ${minutes}m`
@@ -190,94 +153,17 @@ function formatInstallStage(stage: string): string {
 }
 
 function formatLinkType(type: string): string {
-	const labels: Record<string, string> = {
-		modrinth_modpack: 'Modrinth modpack',
-		server_project: 'Server project',
-		server_project_modpack: 'Server modpack',
-		imported_modpack: 'Imported modpack',
-		moderation_hosting: 'Hosting',
-		shared_instance: 'Shared instance',
+	const labels: Record<string, ReturnType<typeof formatMessage>> = {
+		modrinth_modpack: formatMessage(messages.modrinthModpack),
+		server_project: formatMessage(messages.serverProject),
+		server_project_modpack: formatMessage(messages.serverModpack),
+		imported_modpack: formatMessage(messages.importedModpack),
+		moderation_hosting: formatMessage(messages.hosting),
+		shared_instance: formatMessage(messages.sharedInstance),
 	}
 	return labels[type] ?? type
 }
 
-async function repairInstance() {
-	try {
-		await install_existing_instance(instance.value.id, false)
-		addNotification({ type: 'success', title: 'Instance repaired' })
-	} catch (err) {
-		handleError(err as Error)
-	}
-}
-
-async function createShortcut() {
-	try {
-		const shortcutPath = await createInstanceShortcut(instance.value.name, instance.value.id)
-		if (shortcutPath) {
-			addNotification({ type: 'success', title: 'Shortcut created' })
-		}
-	} catch (err) {
-		handleError(err as Error)
-	}
-}
-
-const deleteInstanceModal = useTemplateRef('deleteInstanceModal')
-
-async function deleteInstance() {
-	deleteInstanceModal.value?.show()
-}
-
-async function doDeleteInstance() {
-	try {
-		await removeInstance(instance.value.id)
-		addNotification({ type: 'success', title: 'Instance deleted' })
-	} catch (err) {
-		handleError(err as Error)
-	}
-}
-
-const advancedActions = computed(() => [
-	{
-		id: 'export',
-		label: formatMessage(messages.exportModpack),
-		icon: PackageIcon,
-		action: () => exportModal.value?.show(),
-		disabled: false,
-		danger: false,
-	},
-	{
-		id: 'repair',
-		label: formatMessage(messages.repair),
-		icon: RefreshCwIcon,
-		action: repairInstance,
-		disabled: props.installed,
-		danger: false,
-	},
-	{
-		id: 'shortcut',
-		label: formatMessage(messages.createShortcut),
-		icon: DownloadIcon,
-		action: createShortcut,
-		disabled: false,
-		danger: false,
-	},
-	{
-		id: 'copy',
-		label: formatMessage(messages.copyInstance),
-		icon: CopyIcon,
-		action: () => props.openSettings?.(),
-		disabled: false,
-		danger: false,
-	},
-	{
-		id: 'delete',
-		label: formatMessage(messages.deleteInstance),
-		icon: TrashIcon,
-		action: deleteInstance,
-		disabled: false,
-		danger: true,
-	},
-])
 </script>
 
 <style scoped lang="scss">
@@ -307,33 +193,4 @@ const advancedActions = computed(() => [
 	white-space: nowrap;
 }
 
-.action-card {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	gap: 0.5rem;
-	padding: 1rem;
-	border-radius: 0.5rem;
-	background: var(--color-surface-2);
-	border: 1px solid var(--color-surface-5);
-	cursor: pointer;
-	transition: all 0.15s ease;
-	text-align: center;
-}
-
-.action-card:hover:not(:disabled) {
-	background: var(--color-surface-3);
-	border-color: var(--color-brand);
-	transform: translateY(-1px);
-}
-
-.action-card:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
-}
-
-.action-card-danger:hover:not(:disabled) {
-	border-color: var(--color-red);
-}
 </style>

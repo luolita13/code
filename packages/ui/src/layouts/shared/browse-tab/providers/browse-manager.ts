@@ -101,6 +101,13 @@ export interface BrowseManagerContext {
 	}>
 
 	loadingComponent?: Component
+
+	/**
+	 * Optional component rendered in place of the default "No results" message
+	 * when the project hits list is empty. Returning undefined falls back to
+	 * the default message.
+	 */
+	emptyState?: MaybeRef<Component | undefined>
 }
 
 export const [injectBrowseManager, provideBrowseManager] = createContext<BrowseManagerContext>(

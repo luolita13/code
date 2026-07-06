@@ -242,6 +242,7 @@ fn main() {
         .plugin(api::process::init())
         .plugin(api::settings::init())
         .plugin(api::shortcuts::init())
+        .plugin(api::system::init())
         .plugin(api::tags::init())
         .plugin(api::utils::init())
         .plugin(api::cache::init())
@@ -249,6 +250,7 @@ fn main() {
         .plugin(api::ads::init())
         .plugin(api::friends::init())
         .plugin(api::worlds::init())
+        .plugin(api::curseforge::init())
         .manage(PendingUpdateData::default())
         .invoke_handler(tauri::generate_handler![
             initialize_state,
