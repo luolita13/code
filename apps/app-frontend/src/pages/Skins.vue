@@ -27,10 +27,11 @@ import type { Ref } from 'vue'
 import { computed, inject, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 
 import type AccountsCard from '@/components/ui/AccountsCard.vue'
+import MinecraftLoginModal from '@/components/ui/modal/MinecraftLoginModal.vue'
 import EditSkinModal from '@/components/ui/skin/EditSkinModal.vue'
 import VirtualSkinSectionList from '@/components/ui/skin/VirtualSkinSectionList.vue'
 import { trackEvent } from '@/helpers/analytics'
-import { check_reachable, get_default_user, login as login_flow, users } from '@/helpers/auth'
+import { check_reachable, get_default_user, users } from '@/helpers/auth'
 import type { RenderResult } from '@/helpers/rendering/batch-skin-renderer.ts'
 import { generateSkinPreviews, skinBlobUrlMap } from '@/helpers/rendering/batch-skin-renderer.ts'
 import type { Cape, Skin, SkinTextureUrl } from '@/helpers/skins.ts'
@@ -50,7 +51,6 @@ import {
 	set_custom_skin_order,
 } from '@/helpers/skins.ts'
 import { hasPride26Badge } from '@/helpers/user-campaigns.ts'
-import { handleSevereError } from '@/store/error'
 import { useTheming } from '@/store/state'
 
 type UnlistenFn = () => void
@@ -198,6 +198,7 @@ const capes = ref<Cape[]>([])
 const offline = ref(!navigator.onLine)
 
 const accountsCard = inject('accountsCard') as Ref<typeof AccountsCard>
+const loginModal = ref<InstanceType<typeof MinecraftLoginModal>>()
 const currentUser = ref(undefined)
 const currentUserId = ref<string | undefined>(undefined)
 
@@ -761,13 +762,12 @@ function getBakedSkinTextures(skin: Skin): RenderResult | undefined {
 
 async function login() {
 	accountsCard.value.setLoginDisabled(true)
-	const loggedIn = await login_flow().catch(handleSevereError)
-
-	if (loggedIn && accountsCard) {
-		await accountsCard.value.refreshValues()
-	}
-
+	loginModal.value?.show('microsoft')
 	trackEvent('AccountLogIn')
+}
+
+async function onLoginSuccess() {
+	await accountsCard.value?.refreshValues()
 	accountsCard.value.setLoginDisabled(false)
 }
 
@@ -1144,6 +1144,8 @@ await loadSkins()
 			</div>
 		</div>
 	</div>
+
+	<MinecraftLoginModal ref="loginModal" @success="onLoginSuccess" />
 </template>
 
 <style lang="scss" scoped>
