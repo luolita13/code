@@ -28,6 +28,9 @@ if (existsSync(envFilePath)) {
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	define: {
+		__APP_VERSION__: JSON.stringify(tauriConf.version),
+	},
 	css: {
 		preprocessorOptions: {
 			scss: {
